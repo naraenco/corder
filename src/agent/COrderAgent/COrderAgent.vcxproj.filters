@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="bolt">
+      <UniqueIdentifier>{957aae08-72d9-46cc-ab22-883cdc6dfca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{60bc6225-bbac-4002-b533-b04ae52da945}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="etc">
+      <UniqueIdentifier>{3d375d7f-004b-4667-ae9f-9734123b001b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{aa1e115c-704e-421f-a374-2e2a2bfda90f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="COrderAgentDlg.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="COrderAgent.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>etc</Filter>
+    </ClInclude>
+    <ClInclude Include="bolt\boost_log_wrapper.h">
+      <Filter>bolt</Filter>
+    </ClInclude>
+    <ClInclude Include="bolt\strutil.h">
+      <Filter>bolt</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\service.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ServiceBase.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="main\network.h">
+      <Filter>main</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="COrderAgent.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="COrderAgentDlg.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>etc</Filter>
+    </ClCompile>
+    <ClCompile Include="bolt\boost_log_wrapper.cpp">
+      <Filter>bolt</Filter>
+    </ClCompile>
+    <ClCompile Include="bolt\strutil.cpp">
+      <Filter>bolt</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ServiceBase.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="main\network.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="COrderAgent.rc">
+      <Filter>resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\COrderAgent.rc2">
+      <Filter>resources</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\COrderAgent.ico">
+      <Filter>resources</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

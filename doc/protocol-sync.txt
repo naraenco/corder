@@ -1,0 +1,40 @@
+
+# Sync Server - Agent 
+
+signin (agent --> sync server)
+{
+    "shop_code": "",
+    "datetime": "",
+    "desc": ""
+}
+
+# POS의 변화된 상태(테이블 주문이 True 에서 False 가 되는 등) 변경을 통보
+status (agent --> sync server)
+{
+    "datetime": "",
+    "desc": ""
+}
+
+
+order (sync server --> agent)
+{
+    "datetime": "",
+    "desc": ""
+}
+
+
+
+# Sync Server - Api Server
+
+signin (api server --> sync server)
+{
+    "datetime": "",
+    "desc": ""
+}
+
+order 
+{
+    "datetime": "",
+    "desc": ""
+}
+

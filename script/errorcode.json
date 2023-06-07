@@ -1,0 +1,38 @@
+{
+    "0000": {
+        "name": "ERROR_SUCCESS",
+        "desc": "OK"
+    },
+    "0001": {
+        "name": "ERROR_UNKNOWN",
+        "desc": "unknown error"
+    },
+    "0002": {
+        "name": "ERROR_FAILURE",
+        "desc": "failure"
+    },
+    "0003": {
+        "name": "WRONG_METHOD",
+        "desc": "wrong method"
+    },
+    "0004": {
+        "name": "WRONG_PARAMETER",
+        "desc": "wrong parameter"
+    },
+    "0005": {
+        "name": "NO_DATA",
+        "desc": "no data"
+    },
+    "0100": {
+        "name": "EXIST_USER",
+        "desc": "already exist user"
+    },
+    "0101": {
+        "name": "NOT_EXIST_USER",
+        "desc": "not exist user"
+    },
+    "0102": {
+        "name": "INVALID_PASSWORD",
+        "desc": "invalid password"
+    }
+}
