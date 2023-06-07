@@ -20,7 +20,7 @@ class WebSocketManager:
                 if msgtype == "login":      # 상점 로그인 (실패시 소켓 끊김)
                     await self.login(websocket, json_object)
                 elif msgtype == "genpin":   # PIN 번호 생성 요청
-                    await self.genpin(json_object)
+                    await self.genpin(websocket, json_object)
                 elif msgtype == "order":    # 주문 처리 결과
                     await self.order(json_object)
                 elif msgtype == "notify":   # Notification
@@ -75,13 +75,11 @@ class WebSocketManager:
             self.connections[shop_no] = websocket
             data = json.dumps(recvmsg)
             await websocket.send_text(data)
-            await websocket.send_text(data)
-            await websocket.send_text(data)
         except Exception as e:
             await websocket.close()
             logging.getLogger().error(e)
 
-    async def genpin(self, recvmsg):
+    async def genpin(self, websocket: WebSocket, recvmsg):
         logging.getLogger().debug("ConnectionManager.genpin")
         from common import redis_pool
         try:
@@ -101,7 +99,8 @@ class WebSocketManager:
             data = str(json.dumps(data))
             logging.getLogger().debug(f"생성된 핀 데이터 : {data}")
             redis_pool.set(pin, data)
-            await self.write(shop_no, data)
+            # await self.write(shop_no, data)
+            await websocket.send_text(data)
         except Exception as e:
             logging.getLogger().error(e)
 
