@@ -12,13 +12,12 @@
 #include <string>
 #include <conio.h> 
 
+
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace websocket = beast::websocket; // from <boost/beast/websocket.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
-
-//net::io_context ioc;
 
 
 class session : public std::enable_shared_from_this<session>
@@ -39,11 +38,8 @@ public:
         ::OutputDebugStringA("explicit session");
     };
 
-    //static void service();
-    //void run();
-
     // Start the asynchronous operation
-    void start(char const* host, char const* port, char const* text);
+    void start(char const* host, char const* port);
     void write(char const* text);
 
     void on_resolve(beast::error_code ec, tcp::resolver::results_type results);
@@ -54,6 +50,4 @@ public:
     void on_close(beast::error_code ec);
 
     boost::asio::ip::tcp::socket socket_;
-
-    void req_loop(boost::beast::error_code ec = {}, std::size_t bytes_transferred = 0);
 };

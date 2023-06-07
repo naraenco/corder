@@ -1,6 +1,9 @@
+import logging
 import os
 import sys
 from .jsonconfig import JsonConfig
+from .redisutil import RedisUtil
+from . import rotation_log
 
 uppath = lambda _path, n: os.sep.join(_path.split(os.sep)[:-n])
 
@@ -14,3 +17,10 @@ try:
     config.load(pathfile)
 except IOError as e:
     print(e)
+
+rotation_log.create_date_rotating_file_handler(
+    log_name="wscorder",
+    log_level=logging.DEBUG,
+    console=True)
+logger = rotation_log.logging.getLogger()
+redis_pool = RedisUtil()

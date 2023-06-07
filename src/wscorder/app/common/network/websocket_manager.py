@@ -73,8 +73,9 @@ class WebSocketManager:
         try:
             shop_no = str(recvmsg['shop_no'])
             self.connections[shop_no] = websocket
-            print(f"login : {websocket}")
             data = json.dumps(recvmsg)
+            await websocket.send_text(data)
+            await websocket.send_text(data)
             await websocket.send_text(data)
         except Exception as e:
             await websocket.close()
@@ -125,7 +126,6 @@ class WebSocketManager:
         message = json.dumps(params['pos_order'])
         try:
             conn = self.connections.get(str(params['shop_no']))
-            print(conn)
             ret = await conn.send_text(message)
             # result = await conn.receive_text()
             print("send_order : ", ret)

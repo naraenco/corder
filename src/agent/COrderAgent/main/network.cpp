@@ -2,6 +2,7 @@
 
 #include <boost/asio/streambuf.hpp> // ???
 #include <boost/asio/buffer.hpp> // ???
+#include <boost/asio.hpp>
 
 // Report a failure
 void fail(beast::error_code ec, char const* what)
@@ -26,14 +27,13 @@ void session::write(char const* text)
 }
 
 // Start the asynchronous operation
-void session::start(char const* host, char const* port, char const* text)
+void session::start(char const* host, char const* port)
 {
     std::cout << "start" << std::endl;
     ::OutputDebugString(L"start");
 
     // Save these for later
     host_ = host;
-    text_ = text;
 
     // Look up the domain name
     resolver_.async_resolve(
@@ -80,8 +80,9 @@ void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endp
     //    websocket::stream_base::timeout::suggested(
     //        beast::role_type::client));
     websocket::stream_base::timeout timeoutOpt{
-        std::chrono::seconds(30),   // handshake timeout
+        //std::chrono::seconds(30),   // handshake timeout
         //std::chrono::seconds(20),       // idle timeout. Any ways to set the ping interval as well?
+        boost::beast::websocket::stream_base::none(),
         boost::beast::websocket::stream_base::none(),
         true   //enable ping-pong to keep alive
     };
@@ -119,12 +120,19 @@ void session::on_handshake(beast::error_code ec)
     if (ec)
         return fail(ec, "handshake");
 
-    // Send the message
-    ws_.async_write(
-        net::buffer(text_),
+    ws_.async_read(
+        buffer_,
         beast::bind_front_handler(
-            &session::on_write,
+            &session::on_read,
             shared_from_this()));
+
+    // Send the message
+    //ws_.async_write(
+    //    net::buffer(text_),
+    //    beast::bind_front_handler(
+    //        &session::on_write,
+    //        shared_from_this()));
+
 }
 
 void session::on_write(beast::error_code ec, std::size_t bytes_transferred)
@@ -137,14 +145,14 @@ void session::on_write(beast::error_code ec, std::size_t bytes_transferred)
     if (ec)
         return fail(ec, "write");
 
-    buffer_.clear();
+    //buffer_.clear();
 
-    // Read a message into our buffer
-    ws_.async_read(
-        buffer_,
-        beast::bind_front_handler(
-            &session::on_read,
-            shared_from_this()));
+    //// Read a message into our buffer
+    //ws_.async_read(
+    //    buffer_,
+    //    beast::bind_front_handler(
+    //        &session::on_read,
+    //        shared_from_this()));
 }
 
 void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
@@ -162,17 +170,14 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
 
     std::cout << beast::make_printable(buffer_.data()) << std::endl;
 
-    //ws_.async_read(
-    //    buffer_,
-    //    beast::bind_front_handler(
-    //        &session::on_read,
-    //        shared_from_this()));
+    // Clear the buffer
+    buffer_.consume(buffer_.size());
 
-    // Close the WebSocket connection
-    //ws_.async_close(websocket::close_code::normal,
-    //    beast::bind_front_handler(
-    //        &session::on_close,
-    //        shared_from_this()));
+    ws_.async_read(
+        buffer_,
+        beast::bind_front_handler(
+            &session::on_read,
+            shared_from_this()));
 }
 
 void session::on_close(beast::error_code ec)

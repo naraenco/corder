@@ -11,6 +11,8 @@
 #define IDC_BUTTON_GENPIN               1000
 #define IDC_BUTTON_GENPIN2              1001
 #define IDC_BUTTON_CONNECT              1001
+#define IDC_BUTTON_CONNECT2             1002
+#define IDC_BUTTON_LOGIN                1002
 
 // Next default values for new objects
 // 

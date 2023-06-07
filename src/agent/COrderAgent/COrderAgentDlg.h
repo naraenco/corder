@@ -34,4 +34,5 @@ protected:
 public:
 	afx_msg void OnBnClickedButtonGenpin();
 	afx_msg void OnBnClickedButtonConnect();
+	afx_msg void OnBnClickedButtonLogin();
 };

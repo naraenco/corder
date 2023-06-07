@@ -4,7 +4,6 @@
 #include "COrderAgentDlg.h"
 #include "afxdialogex.h"
 #include "main/network.h"
-//#include <functional>
 //#include <thread>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
@@ -14,21 +13,16 @@ net::io_context ioc;
 std::shared_ptr<session> ws;
 boost::thread_group io_threads;
 
-//session ws(ioc);
-
-
-// The io_context is required for all I/O
-
 static void service()
 {
     ::OutputDebugStringA("static void service()");
-    //auto const host = "192.168.0.4";
+
     auto const host = "127.0.0.1";
     auto const port = "19000";
-    auto const text = "{\"msgtype\":\"login\",\"shop_no\": \"3062\",\"auth_key\":\"4285\"}";
+    auto const text = "";
 
     try {
-        ws->start(host, port, text);
+        ws->start(host, port);
     }
     catch (...) {
 
@@ -98,6 +92,7 @@ BEGIN_MESSAGE_MAP(CCOrderAgentDlg, CDialogEx)
     ON_WM_QUERYDRAGICON()
     ON_BN_CLICKED(IDC_BUTTON_GENPIN, &CCOrderAgentDlg::OnBnClickedButtonGenpin)
     ON_BN_CLICKED(IDC_BUTTON_CONNECT, &CCOrderAgentDlg::OnBnClickedButtonConnect)
+    ON_BN_CLICKED(IDC_BUTTON_LOGIN, &CCOrderAgentDlg::OnBnClickedButtonLogin)
 END_MESSAGE_MAP()
 
 
@@ -192,12 +187,17 @@ void CCOrderAgentDlg::OnBnClickedButtonConnect()
     run();
 }
 
-void CCOrderAgentDlg::OnBnClickedButtonGenpin()
-{
-    ::OutputDebugStringA("OnBnClickedButtonGenpin");
 
-    // 핀 생성
-    auto const text = "{\"msgtype\":\"genpin\",\"shop_no\": \"3062\"}";
+void CCOrderAgentDlg::OnBnClickedButtonLogin()
+{
+    ::OutputDebugStringA("OnBnClickedButtonLogin");
+    auto const text = "{\"msgtype\":\"login\",\"shop_no\": \"3062\",\"auth_key\":\"4285\"}";
     ws->write(text);
 }
 
+void CCOrderAgentDlg::OnBnClickedButtonGenpin()
+{
+    ::OutputDebugStringA("OnBnClickedButtonGenpin");
+    auto const text = "{\"msgtype\":\"genpin\",\"shop_no\": \"3062\"}";
+    ws->write(text);
+}

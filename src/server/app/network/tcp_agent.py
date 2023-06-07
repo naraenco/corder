@@ -18,14 +18,18 @@ class AgentProtocol:
                 message = await stream.read_until(b"\n")
                 self.logger.debug("message from agent {1} : {2}", address, message.decode().strip())
                 json_object = json.loads(message)
-                msgcls = json_object['class']
-                if msgcls == "login":
-                    self.login(json_object)
-                elif msgcls == "genotp":
-                    self.genotp(json_object)
+                msgtype = json_object['msgtype']
+                if msgtype == "login":
+                    await self.login(json_object)
+                elif msgtype == "genpin":
+                    await self.genpin(json_object)
+                elif msgtype == "order":    # 주문 처리 결과
+                    await self.order(json_object)
+                elif msgtype == "notify":   # Notification
+                    await self.notify(json_object)
             except StreamClosedError as e:
-                logging.getLogger().error(e)
                 conns.remove(stream)
+                self.logger.error(e)
                 self.logger.info("StreamClosedError - connection count : {0}".format(len(conns)))
                 break
 
@@ -43,29 +47,46 @@ class AgentProtocol:
             self.logger.debug("connection count (Sync) : {0}".format(len(conns)))
             io_loop.spawn_callback(self.handle_connection, conns, stream, address)
 
-    def login(self, recvmsg):
+    async def login(self, recvmsg):
+        logging.getLogger().debug("AgentProtocol.login")
         print(recvmsg)
 
-    def genotp(self, recvmsg):
-        print(recvmsg)
+    async def genpin(self, recvmsg):
+        logging.getLogger().debug("AgentProtocol.genpin")
+        from util import redis_pool
+        try:
+            shop_no = recvmsg['shop_no']
+            while True:
+                num = random.randrange(1, 9999)
+                pin = str(num).zfill(4)
+                if redis_pool.exists(pin) == 0:     # redis에 pin이 존재하지 않음. 생성된 pin 사용
+                    break
+
+            now = time
+            data = {
+                "pin": pin,
+                "shop_no": shop_no,
+                "created_at": now.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            data = str(json.dumps(data))
+            self.logger.debug(f"생성된 핀 데이터 : {data}")
+            redis_pool.set(pin, data)
+            # await self.write(shop_no, data)
+        except Exception as e:
+            self.logger.error(e)
+
+    async def order(self, recvmsg):
+        logging.getLogger().debug("AgentProtocol.order")
         shop_no = None
-        otp = None
         try:
             shop_no = recvmsg['shop_no']
         except Exception as e:
             logging.getLogger().error(e)
 
-        while True:
-            num = random.randrange(1, 999999)
-            otp = str(num).zfill(6)
-            print(otp)
-            # 6자리 OTP PIN 번호 생성 (redis에 중복이 있는지 확인 필요)
-            break
-        now = time
-        data = {
-            "shop_no": shop_no,
-            "created_at": now.strftime('%Y-%m-%d %H:%M:%S')
-        }
-        data = str(json.dumps(data))
-        print(data)
-        # redis에 data저장 (expired time : 2시간)
+    async def notify(self, recvmsg):
+        logging.getLogger().debug("AgentProtocol.notify")
+        try:
+            shop_no = recvmsg['shop_no']
+            table_no = recvmsg['table_no']
+        except Exception as e:
+            logging.getLogger().error(e)
