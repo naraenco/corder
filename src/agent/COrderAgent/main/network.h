@@ -31,12 +31,13 @@ class session : public std::enable_shared_from_this<session>
 public:
     // Resolver and socket require an io_context
     explicit session(net::io_context& ioc)
-        : socket_(net::make_strand(ioc)),
-        resolver_(net::make_strand(ioc)),
+        : resolver_(net::make_strand(ioc)),
         ws_(net::make_strand(ioc))
     {
         ::OutputDebugStringA("explicit session");
     };
+
+    ~session();
 
     // Start the asynchronous operation
     void start(char const* host, char const* port);
@@ -48,6 +49,4 @@ public:
     void on_write(beast::error_code ec, std::size_t bytes_transferred);
     void on_read(beast::error_code ec, std::size_t bytes_transferred);
     void on_close(beast::error_code ec);
-
-    boost::asio::ip::tcp::socket socket_;
 };

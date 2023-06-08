@@ -11,6 +11,13 @@ void fail(beast::error_code ec, char const* what)
     ::OutputDebugStringA(ec.message().c_str());
 }
 
+session::~session()
+{
+    ::OutputDebugStringA("session::~session()");
+    ws_.close(websocket::close_code::normal);
+    buffer_.clear();
+}
+
 void session::write(char const* text)
 {
     std::cout << "write" << std::endl;
@@ -144,8 +151,6 @@ void session::on_write(beast::error_code ec, std::size_t bytes_transferred)
 
     if (ec)
         return fail(ec, "write");
-
-    //buffer_.clear();
 
     //// Read a message into our buffer
     //ws_.async_read(
