@@ -32,7 +32,7 @@ async def orderpost(orderdto: OrderDto):
     except Exception as e:
         logger.error(f"orderpost : {e}")
         success = False
-        error = "0001"
+        error = "1001"
 
     print("error : ", error)
     response = {"success": success, "error": error}
