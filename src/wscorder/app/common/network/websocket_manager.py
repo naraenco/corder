@@ -126,7 +126,6 @@ class WebSocketManager:
         try:
             conn = self.connections.get(str(params['shop_no']))
             ret = await conn.send_text(message)
-            # result = await conn.receive_text()
             print("send_order : ", ret)
             result = True
         except Exception as e:

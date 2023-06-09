@@ -56,6 +56,15 @@
     <ClInclude Include="main\network.h">
       <Filter>main</Filter>
     </ClInclude>
+    <ClInclude Include="bolt\json_config.h">
+      <Filter>bolt</Filter>
+    </ClInclude>
+    <ClInclude Include="bolt\json_util.h">
+      <Filter>bolt</Filter>
+    </ClInclude>
+    <ClInclude Include="corder_config.h">
+      <Filter>main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="COrderAgent.cpp">
@@ -78,6 +87,12 @@
     </ClCompile>
     <ClCompile Include="main\network.cpp">
       <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="bolt\json_config.cpp">
+      <Filter>bolt</Filter>
+    </ClCompile>
+    <ClCompile Include="bolt\json_util.cpp">
+      <Filter>bolt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

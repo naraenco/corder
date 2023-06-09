@@ -1,4 +1,4 @@
-#include "json_config.h"
+﻿#include "json_config.h"
 #include "lib/rapidjson/istreamwrapper.h"
 #include "lib/rapidjson/prettywriter.h"
 #include "lib/rapidjson/filereadstream.h"
