@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 import random
@@ -96,11 +97,13 @@ class WebSocketManager:
                 "shop_no": shop_no,
                 "created_at": now.strftime('%Y-%m-%d %H:%M:%S')
             }
+            response = copy.deepcopy(data)
+            response['msgtype'] = "genpin"
+            response = str(json.dumps(response))
             data = str(json.dumps(data))
             logging.getLogger().debug(f"생성된 핀 데이터 : {data}")
             redis_pool.set(pin, data)
-            # await self.write(shop_no, data)
-            await websocket.send_text(data)
+            await websocket.send_text(response)
         except Exception as e:
             logging.getLogger().error(e)
 

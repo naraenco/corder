@@ -1,7 +1,0 @@
-{
-    "db_ip" : "127.0.0.1",
-    "db_port" : "3306",
-    "db_name" : "corder",
-    "db_uid" : "corder",
-    "db_pwd" : "corder"
-}
