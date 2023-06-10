@@ -8,10 +8,12 @@ public:
     ~CCOrderAgentDlg();
     void Init();
 
-    // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME
     enum { IDD = IDD_CORDERAGENT_DIALOG };
 #endif
+
+private:
+    CListCtrl m_list_main;
 
 protected:
     virtual void DoDataExchange(CDataExchange* pDX);

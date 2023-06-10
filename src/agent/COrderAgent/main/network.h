@@ -42,6 +42,7 @@ public:
     // Start the asynchronous operation
     void start(char const* host, char const* port);
     void write(char const* text);
+    void handle_message(std::string s);
 
     void on_resolve(beast::error_code ec, tcp::resolver::results_type results);
     void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type ep);

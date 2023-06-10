@@ -56,7 +56,7 @@
     <ClInclude Include="main\network.h">
       <Filter>main</Filter>
     </ClInclude>
-    <ClInclude Include="bolt\json_config.h">
+    <ClInclude Include="bolt\json_file.h">
       <Filter>bolt</Filter>
     </ClInclude>
     <ClInclude Include="bolt\json_util.h">
@@ -88,7 +88,7 @@
     <ClCompile Include="main\network.cpp">
       <Filter>main</Filter>
     </ClCompile>
-    <ClCompile Include="bolt\json_config.cpp">
+    <ClCompile Include="bolt\json_file.cpp">
       <Filter>bolt</Filter>
     </ClCompile>
     <ClCompile Include="bolt\json_util.cpp">

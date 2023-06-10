@@ -192,7 +192,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="bolt\boost_log_wrapper.h" />
-    <ClInclude Include="bolt\json_config.h" />
+    <ClInclude Include="bolt\json_file.h" />
     <ClInclude Include="bolt\json_util.h" />
     <ClInclude Include="bolt\strutil.h" />
     <ClInclude Include="COrderAgent.h" />
@@ -208,7 +208,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bolt\boost_log_wrapper.cpp" />
-    <ClCompile Include="bolt\json_config.cpp" />
+    <ClCompile Include="bolt\json_file.cpp" />
     <ClCompile Include="bolt\json_util.cpp" />
     <ClCompile Include="bolt\strutil.cpp" />
     <ClCompile Include="COrderAgent.cpp" />

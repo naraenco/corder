@@ -4,6 +4,7 @@
 #include <boost/thread.hpp>
 #include <boost/filesystem.hpp>
 #include "afxdialogex.h"
+#include "Resource.h"
 #include "COrderAgent.h"
 #include "COrderAgentDlg.h"
 #include "main/network.h"
@@ -91,6 +92,7 @@ CCOrderAgentDlg::~CCOrderAgentDlg()
 void CCOrderAgentDlg::DoDataExchange(CDataExchange* pDX)
 {
     CDialogEx::DoDataExchange(pDX);
+    DDX_Control(pDX, IDC_LIST_MAIN, m_list_main);
 }
 
 BEGIN_MESSAGE_MAP(CCOrderAgentDlg, CDialogEx)
@@ -130,6 +132,9 @@ BOOL CCOrderAgentDlg::OnInitDialog()
     SetIcon(m_hIcon, FALSE);
 
     // TODO: 여기에 추가 초기화 작업을 추가합니다.
+
+    SetWindowTextW(L"C.Order Agent");
+
     Init();
 
     return TRUE;
@@ -178,6 +183,12 @@ HCURSOR CCOrderAgentDlg::OnQueryDragIcon()
 
 void CCOrderAgentDlg::Init()
 {
+    m_list_main.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+    m_list_main.InsertColumn(0, _T("No"), LVCFMT_LEFT, 0);
+    m_list_main.InsertColumn(1, _T("DateTime"), LVCFMT_LEFT, 150);
+    m_list_main.InsertColumn(2, _T("Text"), LVCFMT_LEFT, 360);
+    m_list_main.ShowWindow(SW_SHOW);
+
 
     char module[_MAX_PATH] = { 0, };
     GetModuleFileNameA(NULL, module, _MAX_PATH);
@@ -193,7 +204,7 @@ void CCOrderAgentDlg::Init()
     }
 
     corder_config::instance()->get_config()->load(path.c_str());
-    ::OutputDebugStringA(corder_config::get_string("db_port").c_str());
+    //::OutputDebugStringA(corder_config::get_string("db_port").c_str());
 }
 
 void CCOrderAgentDlg::OnBnClickedButtonConnect()

@@ -1,10 +1,10 @@
 #pragma once
-#include "bolt/json_config.h"
+#include "bolt/json_file.h"
 
 class corder_config
 {
 private:
-    void init() { config = new cbolt::json_config(); }
+    void init() { config = new cbolt::json_file(); }
     void uninit() { delete config; }
 
 public:
@@ -39,16 +39,16 @@ public:
         return instance()->get_config()->get_bool(key);
     }
 
-    static cbolt::json_config* get() {
+    static cbolt::json_file* get() {
         return instance()->get_config();
     }
 
-    cbolt::json_config* get_config() {
+    cbolt::json_file* get_config() {
         return config;
     }
 
 private:
     static corder_config* instance_;
-    cbolt::json_config *config;
+    cbolt::json_file* config;
 
 };

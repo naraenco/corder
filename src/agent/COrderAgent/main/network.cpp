@@ -3,6 +3,7 @@
 #include <boost/asio/streambuf.hpp> // ???
 #include <boost/asio/buffer.hpp> // ???
 #include <boost/asio.hpp>
+#include "../bolt/json_util.h"
 
 // Report a failure
 void fail(beast::error_code ec, char const* what)
@@ -86,6 +87,7 @@ void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endp
     //ws_.set_option(
     //    websocket::stream_base::timeout::suggested(
     //        beast::role_type::client));
+
     websocket::stream_base::timeout timeoutOpt{
         //std::chrono::seconds(30),   // handshake timeout
         //std::chrono::seconds(20),       // idle timeout. Any ways to set the ping interval as well?
@@ -96,7 +98,6 @@ void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endp
     boost::asio::socket_base::keep_alive option(true);
     
     ws_.set_option(timeoutOpt);
-
 
     // Set a decorator to change the User-Agent of the handshake
     ws_.set_option(websocket::stream_base::decorator(
@@ -132,14 +133,6 @@ void session::on_handshake(beast::error_code ec)
         beast::bind_front_handler(
             &session::on_read,
             shared_from_this()));
-
-    // Send the message
-    //ws_.async_write(
-    //    net::buffer(text_),
-    //    beast::bind_front_handler(
-    //        &session::on_write,
-    //        shared_from_this()));
-
 }
 
 void session::on_write(beast::error_code ec, std::size_t bytes_transferred)
@@ -151,13 +144,6 @@ void session::on_write(beast::error_code ec, std::size_t bytes_transferred)
 
     if (ec)
         return fail(ec, "write");
-
-    //// Read a message into our buffer
-    //ws_.async_read(
-    //    buffer_,
-    //    beast::bind_front_handler(
-    //        &session::on_read,
-    //        shared_from_this()));
 }
 
 void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
@@ -171,12 +157,11 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
         return fail(ec, "read");
 
     std::string s(boost::asio::buffer_cast<const char*>(buffer_.data()), buffer_.size());
-    ::OutputDebugStringA(s.c_str());
+    handle_message(s);
 
-    std::cout << beast::make_printable(buffer_.data()) << std::endl;
+    //std::cout << beast::make_printable(buffer_.data()) << std::endl;
 
-    // Clear the buffer
-    buffer_.consume(buffer_.size());
+    buffer_.consume(buffer_.size()); // Clear the buffer
 
     ws_.async_read(
         buffer_,
@@ -199,3 +184,31 @@ void session::on_close(beast::error_code ec)
     std::cout << beast::make_printable(buffer_.data()) << std::endl;
 }
 
+void session::handle_message(std::string s)
+{
+    ::OutputDebugString(L"handle_message");
+    ::OutputDebugStringA(s.c_str());
+
+    try {
+        json_util util;
+        util.parse(s.c_str());
+        std::string msgtype = util.get_string("msgtype");
+
+        ::OutputDebugStringA(msgtype.c_str());
+
+        if (msgtype == "genpin") {
+            ::OutputDebugStringA(util.get_string("pin").c_str());
+        }
+        else if (msgtype == "order") {
+
+        }
+        else if (msgtype == "login") {
+        }
+        else {
+            ::OutputDebugString(L"Unknown Message Type");
+        }
+    }
+    catch(...) {
+        ::OutputDebugStringA("handle_message exception");
+    }
+}

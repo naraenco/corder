@@ -1,4 +1,4 @@
-﻿#include "json_config.h"
+﻿#include "json_file.h"
 #include "lib/rapidjson/istreamwrapper.h"
 #include "lib/rapidjson/prettywriter.h"
 #include "lib/rapidjson/filereadstream.h"
@@ -7,13 +7,13 @@
 
 namespace cbolt {
 
-json_config::json_config()
+json_file::json_file()
 {
     buffer = NULL;
     document = NULL;
 }
 
-json_config::~json_config()
+json_file::~json_file()
 {
     if (buffer)
     {
@@ -27,7 +27,7 @@ json_config::~json_config()
     }
 }
 
-bool json_config::load(const char *path)
+bool json_file::load(const char *path)
 {
     if (buffer) delete[] buffer;
     if (document) delete[] document;
@@ -47,22 +47,22 @@ bool json_config::load(const char *path)
     return true;
 }
 
-int json_config::get_int(const char *key)
+int json_file::get_int(const char *key)
 {
     return document->HasMember(key) ? (*document)[key].GetInt() : -1; 
 }
 
-bool json_config::get_bool(const char *key) 
+bool json_file::get_bool(const char *key)
 { 
     return document->HasMember(key) ? (*document)[key].GetBool() : false;
 }
 
-string json_config::get_string(const char *key)
+string json_file::get_string(const char *key)
 {
     return document->HasMember(key) ? string((*document)[key].GetString()) : "";
 }
 
-wstring json_config::get_wstring(const char *key)
+wstring json_file::get_wstring(const char *key)
 {
     string value = document->HasMember(key) ? string((*document)[key].GetString()) : "";
     return cbolt::strutil::mbs_to_wcs(value);

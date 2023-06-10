@@ -16,11 +16,11 @@ using namespace rapidjson;
 
 namespace cbolt {
 
-class json_config
+class json_file
 {
 public:
-    json_config();
-    virtual ~json_config();
+    json_file();
+    virtual ~json_file();
     Document& operator()() { return *document; }
 
     bool load(const char *path);
