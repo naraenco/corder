@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="DlgAppInfo.cpp">
+      <Filter>dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgMain.cpp">
+      <Filter>dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCUIView.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCUIDoc.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="MFCUI.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ImgDialogBase.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ImgDialogUtil.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="main\network.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="bolt\boost_log_wrapper.cpp">
+      <Filter>bolt</Filter>
+    </ClCompile>
+    <ClCompile Include="bolt\json_file.cpp">
+      <Filter>bolt</Filter>
+    </ClCompile>
+    <ClCompile Include="bolt\json_util.cpp">
+      <Filter>bolt</Filter>
+    </ClCompile>
+    <ClCompile Include="bolt\strutil.cpp">
+      <Filter>bolt</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DlgMain.h">
+      <Filter>dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgAppInfo.h">
+      <Filter>dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCUIView.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCUIDoc.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="MFCUI.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\CGdiPlusBitmap.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImgDialogBase.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImgDialogUtil.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="common\CommonData.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\CommonFunc.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\Scintilla.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="main\network.h">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="main\corder_config.h">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="bolt\boost_log_wrapper.h">
+      <Filter>bolt</Filter>
+    </ClInclude>
+    <ClInclude Include="bolt\json_file.h">
+      <Filter>bolt</Filter>
+    </ClInclude>
+    <ClInclude Include="bolt\json_util.h">
+      <Filter>bolt</Filter>
+    </ClInclude>
+    <ClInclude Include="bolt\strutil.h">
+      <Filter>bolt</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="res\icon_browse.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\img_resize.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_config.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_delete.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_doc.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_exit.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_folder_doc.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_info.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_max.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_save.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_small.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_start.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_start_gray.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_stop.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_stop_gray.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\image_info.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\image_text.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\bg_bottom.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\bg_top.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\EncodingSel.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\ebooks.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\Encoding.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\title.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\MFCUIDoc.ico">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\MFCUI.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\MFCUI.ico">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\icon_refresh.png">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{a43698bb-1941-4c8f-9ee3-2d8414e61fef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bolt">
+      <UniqueIdentifier>{5429078c-1acb-488a-ab52-8aa4af32229b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common">
+      <UniqueIdentifier>{c12eb2b1-c787-4b64-9154-78a97ccddcae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{3720fdeb-d5d6-45ba-8522-954d06a0ce40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dialog">
+      <UniqueIdentifier>{3e62c4b6-0c06-4b65-a316-95be8ef335b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{e4773e56-ce50-46be-8014-fca583d91641}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{09f87398-6dda-4952-8e4a-5628e3e9cdd4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MFCUI.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\icon_trash.png" />
+    <Image Include="res\pingen.png" />
+  </ItemGroup>
+</Project>
