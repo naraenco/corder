@@ -246,8 +246,9 @@
     <ClInclude Include="lib\CGdiPlusBitmap.h" />
     <ClInclude Include="lib\ImgDialogBase.h" />
     <ClInclude Include="lib\ImgDialogUtil.h" />
-    <ClInclude Include="lib\Scintilla.h" />
+    <ClInclude Include="lib\system.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="main\constant.h" />
     <ClInclude Include="main\corder_config.h" />
     <ClInclude Include="main\network.h" />
     <ClInclude Include="MFCUI.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="DlgMain.cpp" />
     <ClCompile Include="lib\ImgDialogBase.cpp" />
     <ClCompile Include="lib\ImgDialogUtil.cpp" />
+    <ClCompile Include="lib\system.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="main\network.cpp" />
     <ClCompile Include="MFCUI.cpp" />

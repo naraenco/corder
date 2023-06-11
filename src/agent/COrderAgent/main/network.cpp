@@ -2,26 +2,56 @@
 #include <boost/asio/streambuf.hpp> // ???
 #include <boost/asio/buffer.hpp> // ???
 #include <boost/asio.hpp>
-#include "../bolt/json_util.h"
+#include "constant.h"
+//#include "../bolt/json_util.h"
 
-// Report a failure
-void fail(beast::error_code ec, char const* what)
-{
-    std::cerr << what << ": " << ec.message() << "\n";
-    ::OutputDebugStringA(ec.message().c_str());
-}
 
 session::~session()
 {
     ::OutputDebugStringA("session::~session()");
-    ws_.close(websocket::close_code::normal);
+    //ws_.close(websocket::close_code::normal);
     buffer_.clear();
+}
+
+void session::fail(beast::error_code ec, char const* what)
+{
+    //std::cerr << what << ": " << ec.message() << "\n";
+    ::OutputDebugStringA(ec.message().c_str());
+    ::OutputDebugStringA(ec.to_string().c_str());
+    //::OutputDebugStringA(what);
+
+    if (ec.value() == ERROR_CONNECTION_ABORTED) { // 1236
+        connect_status = false;
+        status_handler(ERROR_CONNECTION_ABORTED);
+    }
+    else if (ec.value() == WSAECONNABORTED) { // 10053
+        connect_status = false;
+        status_handler(WSAECONNABORTED);
+    }
+    else if (ec.value() == WSAECONNRESET) { // 10054
+        connect_status = false;
+        status_handler(WSAECONNRESET);
+    }
+}
+
+void session::set_message_handler(func1 func)
+{
+    message_handler = func;
+}
+
+void session::set_status_hanlder(func2 func)
+{
+    status_handler = func;
 }
 
 void session::write(char const* text)
 {
-    std::cout << "write" << std::endl;
     ::OutputDebugString(L"session::write");
+
+    if (connect_status == false) {
+        ::OutputDebugString(L"session::on_write - Not Connected");
+        return;
+    }
 
     text_ = text;
     //::OutputDebugStringA(text_.c_str());
@@ -36,8 +66,7 @@ void session::write(char const* text)
 // Start the asynchronous operation
 void session::start(char const* host, char const* port)
 {
-    std::cout << "start" << std::endl;
-    ::OutputDebugString(L"start");
+    ::OutputDebugString(L"session::start");
 
     // Save these for later
     host_ = host;
@@ -53,8 +82,7 @@ void session::start(char const* host, char const* port)
 
 void session::on_resolve(beast::error_code ec, tcp::resolver::results_type results)
 {
-    std::cout << "on_resolve" << std::endl;
-    ::OutputDebugString(L"on_resolve");
+    ::OutputDebugString(L"session::on_resolve");
 
     if (ec)
         return fail(ec, "resolve");
@@ -72,11 +100,12 @@ void session::on_resolve(beast::error_code ec, tcp::resolver::results_type resul
 
 void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type ep)
 {
-    std::cout << "on_connect" << std::endl;
-    ::OutputDebugString(L"on_connect");
+    ::OutputDebugString(L"session::on_connect");
 
     if (ec)
         return fail(ec, "connect");
+
+    status_handler(CONNECTION_SUCCESS);
 
     // Turn off the timeout on the tcp_stream, because
     // the websocket stream has its own timeout system.
@@ -112,6 +141,8 @@ void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endp
     // See https://tools.ietf.org/html/rfc7230#section-5.4
     host_ += ':' + std::to_string(ep.port());
 
+    connect_status = true;
+
     // Perform the websocket handshake
     ws_.async_handshake(host_, "/ws",
         beast::bind_front_handler(
@@ -121,8 +152,7 @@ void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endp
 
 void session::on_handshake(beast::error_code ec)
 {
-    std::cout << "on_handshake" << std::endl;
-    ::OutputDebugString(L"on_handshake");
+    ::OutputDebugString(L"session::on_handshake");
 
     if (ec)
         return fail(ec, "handshake");
@@ -136,8 +166,7 @@ void session::on_handshake(beast::error_code ec)
 
 void session::on_write(beast::error_code ec, std::size_t bytes_transferred)
 {
-    std::cout << "on_write" << std::endl;
-    ::OutputDebugString(L"on_write");
+    ::OutputDebugString(L"session::on_write");
 
     boost::ignore_unused(bytes_transferred);
 
@@ -147,8 +176,7 @@ void session::on_write(beast::error_code ec, std::size_t bytes_transferred)
 
 void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
 {
-    std::cout << "on_read" << std::endl;
-    ::OutputDebugString(L"on_read");
+    ::OutputDebugString(L"session::on_read");
 
     boost::ignore_unused(bytes_transferred);
 
@@ -156,7 +184,8 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
         return fail(ec, "read");
 
     std::string s(boost::asio::buffer_cast<const char*>(buffer_.data()), buffer_.size());
-    handle_message(s);
+    //process_message(s);
+    message_handler(s);
 
     //std::cout << beast::make_printable(buffer_.data()) << std::endl;
 
@@ -171,8 +200,7 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
 
 void session::on_close(beast::error_code ec)
 {
-    std::cout << "on_close" << std::endl;
-    ::OutputDebugString(L"on_close");
+    ::OutputDebugString(L"session::on_close");
 
     if (ec)
         return fail(ec, "close");
@@ -180,34 +208,34 @@ void session::on_close(beast::error_code ec)
     // If we get here then the connection is closed gracefully
 
     // The make_printable() function helps print a ConstBufferSequence
-    std::cout << beast::make_printable(buffer_.data()) << std::endl;
+    //std::cout << beast::make_printable(buffer_.data()) << std::endl;
 }
 
-void session::handle_message(std::string s)
-{
-    ::OutputDebugString(L"handle_message");
-    ::OutputDebugStringA(s.c_str());
-
-    try {
-        json_util util;
-        util.parse(s.c_str());
-        std::string msgtype = util.get_string("msgtype");
-
-        ::OutputDebugStringA(msgtype.c_str());
-
-        if (msgtype == "genpin") {
-            ::OutputDebugStringA(util.get_string("pin").c_str());
-        }
-        else if (msgtype == "order") {
-
-        }
-        else if (msgtype == "login") {
-        }
-        else {
-            ::OutputDebugString(L"Unknown Message Type");
-        }
-    }
-    catch(...) {
-        ::OutputDebugStringA("handle_message exception");
-    }
-}
+//void session::process_message(std::string s)
+//{
+//    ::OutputDebugString(L"process_message");
+//    ::OutputDebugStringA(s.c_str());
+//
+//    try {
+//        json_util util;
+//        util.parse(s.c_str());
+//        std::string msgtype = util.get_string("msgtype");
+//
+//        ::OutputDebugStringA(msgtype.c_str());
+//
+//        if (msgtype == "genpin") {
+//            ::OutputDebugStringA(util.get_string("pin").c_str());
+//        }
+//        else if (msgtype == "order") {
+//
+//        }
+//        else if (msgtype == "login") {
+//        }
+//        else {
+//            ::OutputDebugString(L"Unknown Message Type");
+//        }
+//    }
+//    catch(...) {
+//        ::OutputDebugStringA("process_message exception");
+//    }
+//}

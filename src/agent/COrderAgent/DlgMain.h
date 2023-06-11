@@ -1,9 +1,6 @@
 ﻿#pragma once
 #include <string>
-#include <vector>
-#include <set>
-#include "common/CommonData.h"
-#include "lib/EncodingUtil.h"
+
 
 class CMFCUIView;
 class CDlgMain : public CDialogEx
@@ -19,6 +16,7 @@ public:
 public:
     void Resize(CRect& rect);
     void ComponentResize();
+    void WriteLog(std::wstring value);
 
     void About();
     void Exit();
@@ -28,8 +26,14 @@ public:
     void Login();
     BOOL GenPin();
 
+    void HandleMessage(std::string message);
+    void HandleStatus(int status);
+    void ConnectionManager();
+    
 private:
     CMFCUIView* pMFCUIView;
+    bool bManager;
+    bool bConnect;
 
     CListCtrl m_list_main;
     CRect m_WindowRect;
@@ -37,14 +41,12 @@ private:
 
     HICON m_hIcon;
 
-    std::set<int> m_set_selected;
-
     UINT nListWidth;
     UINT nListHeight;
     UINT nListX;
     UINT nListY;
 
-    int convert_type;
+    long logNo;
 
     CRect rcIconStart;
     CRect rcIconDocument;

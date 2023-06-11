@@ -43,6 +43,9 @@
     <ClCompile Include="bolt\strutil.cpp">
       <Filter>bolt</Filter>
     </ClCompile>
+    <ClCompile Include="lib\system.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DlgMain.h">
@@ -87,9 +90,6 @@
     <ClInclude Include="common\CommonFunc.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="lib\Scintilla.h">
-      <Filter>lib</Filter>
-    </ClInclude>
     <ClInclude Include="main\network.h">
       <Filter>main</Filter>
     </ClInclude>
@@ -107,6 +107,12 @@
     </ClInclude>
     <ClInclude Include="bolt\strutil.h">
       <Filter>bolt</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\system.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="main\constant.h">
+      <Filter>main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

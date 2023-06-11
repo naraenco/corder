@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include <ShellAPI.h>
-#include <locale>
+#include <functional>
+#include <thread>
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <boost/filesystem.hpp>
@@ -11,14 +12,20 @@
 #include "AfxDialogEx.h"
 #include "DlgMain.h"
 #include "DlgAppInfo.h"
-#include "main/network.h"
+#include "common/CommonData.h"
+#include "bolt/json_util.h"
+#include "bolt/strutil.h"
+#include "lib/system.h"
+#include "main/constant.h"
 #include "main/corder_config.h"
+#include "main/network.h"
 
 net::io_context ioc;
 std::shared_ptr<session> ws_session;
-boost::thread_group io_threads;
+boost::thread session_thread;
+boost::thread connect_thread;
+//std::thread connect_thread;
 corder_config* corder_config::instance_ = nullptr;
-
 
 static void service()
 {
@@ -39,10 +46,9 @@ static void service()
 void run()
 {
     ws_session = std::make_shared<session>(ioc);
+    session_thread = boost::thread(boost::bind(&boost::asio::io_service::run, &ioc));
     ioc.post(boost::bind(&service));
-    io_threads.create_thread(boost::bind(&boost::asio::io_service::run, &ioc));
 }
-
 
 
 IMPLEMENT_DYNAMIC(CDlgMain, CDialogEx)
@@ -126,6 +132,16 @@ void CDlgMain::ComponentResize()
     m_list_main.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 }
 
+
+void CDlgMain::WriteLog(std::wstring value)
+{
+    logNo++;
+    wstring no = cbolt::strutil::long_to_wstr(logNo);
+    m_list_main.InsertItem(0, no.c_str());
+    m_list_main.SetItemText(0, 1, System::get_datetimew().c_str());
+    m_list_main.SetItemText(0, 2, value.c_str());
+}
+
 BOOL CDlgMain::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
@@ -139,8 +155,11 @@ BOOL CDlgMain::OnInitDialog()
 
     ComponentResize();
     
-    setlocale(LC_ALL, "");
+    //setlocale(LC_ALL, "");
 
+    logNo = 0;
+    bManager = true;
+    bConnect = false;
 
     char module[_MAX_PATH] = { 0, };
     GetModuleFileNameA(NULL, module, _MAX_PATH);
@@ -156,6 +175,9 @@ BOOL CDlgMain::OnInitDialog()
     else {
         ::OutputDebugString(L"<config.json> file not found");
     }
+
+    //connect_thread = std::thread(&CDlgMain::ConnectionManager);
+    connect_thread = boost::thread(&CDlgMain::ConnectionManager, this);
 
     return TRUE;
 }
@@ -285,30 +307,30 @@ void CDlgMain::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CDlgMain::OnMouseMove(UINT nFlags, CPoint point)
 {
-    if (IsPosition(rcIconStart, point))
-    {
-        SetCursor(LoadCursor(NULL, IDC_HAND));
-    }
-    else if (IsPosition(rcIconDocument, point))
-    {
-        SetCursor(LoadCursor(NULL, IDC_HAND));
-    }
-    else if (IsPosition(rcIconFolderDoc, point))
-    {
-        SetCursor(LoadCursor(NULL, IDC_HAND));
-    }
-    else if (IsPosition(rcIconTrash, point))
-    {
-        SetCursor(LoadCursor(NULL, IDC_HAND));
-    }
-    else if (IsPosition(rcRefresh, point))
-    {
-        SetCursor(LoadCursor(NULL, IDC_HAND));
-    }
-    else
-    {
-        SetCursor(LoadCursor(NULL, IDC_ARROW));
-    }
+    //if (IsPosition(rcIconStart, point))
+    //{
+    //    SetCursor(LoadCursor(NULL, IDC_HAND));
+    //}
+    //else if (IsPosition(rcIconDocument, point))
+    //{
+    //    SetCursor(LoadCursor(NULL, IDC_HAND));
+    //}
+    //else if (IsPosition(rcIconFolderDoc, point))
+    //{
+    //    SetCursor(LoadCursor(NULL, IDC_HAND));
+    //}
+    //else if (IsPosition(rcIconTrash, point))
+    //{
+    //    SetCursor(LoadCursor(NULL, IDC_HAND));
+    //}
+    //else if (IsPosition(rcRefresh, point))
+    //{
+    //    SetCursor(LoadCursor(NULL, IDC_HAND));
+    //}
+    //else
+    //{
+    //    SetCursor(LoadCursor(NULL, IDC_ARROW));
+    //}
     CDialogEx::OnMouseMove(nFlags, point);
 }
 
@@ -324,7 +346,20 @@ void CDlgMain::About()
 
 void CDlgMain::Exit()
 {
+    bManager = false;
     pMFCUIView->Exit();
+}
+
+void CDlgMain::Connect()
+{
+    ::OutputDebugStringA("CDlgMain::Connect()");
+}
+
+void CDlgMain::Login()
+{
+    ::OutputDebugStringA("CDlgMain::Login()");
+    auto const text = "{\"msgtype\":\"login\",\"shop_no\": \"3062\",\"auth_key\":\"4285\"}";
+    ws_session->write(text);
 }
 
 BOOL CDlgMain::GenPin()
@@ -336,19 +371,6 @@ BOOL CDlgMain::GenPin()
     return TRUE;
 }
 
-void CDlgMain::Connect()
-{
-    ::OutputDebugStringA("CDlgMain::Connect()");
-    run();
-}
-
-void CDlgMain::Login()
-{
-    ::OutputDebugStringA("CDlgMain::Login()");
-    auto const text = "{\"msgtype\":\"login\",\"shop_no\": \"3062\",\"auth_key\":\"4285\"}";
-    ws_session->write(text);
-}
-
 void CDlgMain::OnClose()
 {
     CDialogEx::OnClose();
@@ -356,11 +378,86 @@ void CDlgMain::OnClose()
 
 void CDlgMain::OnDestroy()
 {
+    ::OutputDebugStringA("void CDlgMain::OnDestroy()");
+    bManager = false;
     CDialogEx::OnDestroy();
 }
 
-/*
-    m_list_main.InsertItem(0, no);
-    m_list_main.SetItemText(0, 1, datetime);
-    m_list_main.SetItemText(0, 2, text);
-*/
+void CDlgMain::HandleMessage(std::string message)
+{
+    ::OutputDebugStringA(message.c_str());
+    std::wstring recv = cbolt::strutil::mbs_to_wcs(message);
+    WriteLog(recv);
+
+    try {
+        json_util util;
+        util.parse(message.c_str());
+        std::string msgtype = util.get_string("msgtype");
+
+        ::OutputDebugStringA(msgtype.c_str());
+
+        if (msgtype == "genpin") {
+            ::OutputDebugStringA(util.get_string("pin").c_str());
+        }
+        else if (msgtype == "order") {
+
+        }
+        else if (msgtype == "login") {
+        }
+        else {
+            ::OutputDebugString(L"Unknown Message Type");
+        }
+    }
+    catch (...) {
+        ::OutputDebugStringA("process_message exception");
+    }
+}
+
+void CDlgMain::HandleStatus(int status)
+{
+    ::OutputDebugStringA("CDlgMain::HandleStatus()");
+    if ((status == ERROR_CONNECTION_ABORTED) ||
+        (status == WSAECONNABORTED) ||
+        (status == WSAECONNRESET))
+    {
+        bConnect = false;
+        ioc.stop();
+
+        long count = ws_session.use_count();
+        std::string strCount = cbolt::strutil::long_to_str(count);
+        ::OutputDebugStringA(strCount.c_str());
+
+        ws_session.reset();
+        count = ws_session.use_count();
+        strCount = cbolt::strutil::long_to_str(count);
+        ::OutputDebugStringA(strCount.c_str());
+
+        //session_thread.join();
+    }
+    else if (status == CONNECTION_SUCCESS) {
+        bConnect = true;
+    }
+}
+
+void CDlgMain::ConnectionManager()
+{
+   ::OutputDebugStringA("CDlgMain::ConnectionManager() in");
+
+    while (bManager) {
+        if (bConnect == false) {
+            ioc.reset();
+            ws_session = std::make_shared<session>(ioc);
+            ws_session->set_message_handler(std::bind(&CDlgMain::HandleMessage, this, placeholders::_1));
+            ws_session->set_status_hanlder(std::bind(&CDlgMain::HandleStatus, this, placeholders::_1));
+            session_thread = boost::thread(boost::bind(&boost::asio::io_service::run, &ioc));
+            ioc.post(boost::bind(&service));
+            //session_thread.join();
+            //ws_session.reset();
+            //ioc.stop();
+        }
+        boost::this_thread::sleep(boost::posix_time::millisec(RECONNECT_TIME));
+        ::OutputDebugStringA("CDlgMain::ConnectionManager() loop");
+    }
+
+    ::OutputDebugStringA("CDlgMain::ConnectionManager() out");
+}
