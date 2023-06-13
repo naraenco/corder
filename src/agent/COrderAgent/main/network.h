@@ -1,5 +1,4 @@
 #pragma once
-//#define _WIN32_WINNT 0x0601
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/websocket.hpp>
@@ -42,14 +41,17 @@ public:
         connect_status = false;
     };
 
-    ~session();
+    ~session()
+    {
+        buffer_.clear();
+    }
+
     void fail(beast::error_code ec, char const* what);
     void set_message_handler(func1 func);
     void set_status_hanlder(func2 func);
 
     void start(char const* host, char const* port);
     void write(char const* text);
-    //void process_message(std::string s);
 
     void on_resolve(beast::error_code ec, tcp::resolver::results_type results);
     void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type ep);

@@ -2,7 +2,7 @@
 #include "MFCUI.h"
 #include "DlgAppInfo.h"
 #include "afxdialogex.h"
-#include "common/ConfigManager.h"
+
 
 IMPLEMENT_DYNAMIC(CDlgAppInfo, CDialog)
 

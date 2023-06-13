@@ -8,6 +8,7 @@ class RedisUtil:
     def __init__(self):
         from common import config
         redisip = config.get('redis_ip')
+        self.expire_time = config.get('pin_expire_time')
         self.redis_pool = redis.ConnectionPool(host=redisip,
                                                port=6379,
                                                db=0,
@@ -15,11 +16,11 @@ class RedisUtil:
                                                socket_connect_timeout=5,
                                                socket_timeout=5)
 
-    def set(self, key, value, timeout=6000):
+    def set(self, key, value):
         try:
             with redis.StrictRedis(connection_pool=self.redis_pool) as conn:
                 conn.set(key, value)
-                conn.expire(key, timeout)
+                conn.expire(key, self.expire_time)
                 logging.getLogger().debug(f"redis.set - {key}: {value}")
         except Exception as e:
             logging.getLogger().error(e)

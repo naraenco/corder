@@ -16,6 +16,7 @@ public:
 public:
     void Resize(CRect& rect);
     void ComponentResize();
+    void WriteLog(std::string value);
     void WriteLog(std::wstring value);
 
     void About();
@@ -24,7 +25,7 @@ public:
 
     void Connect();
     void Login();
-    BOOL GenPin();
+    void GenPin();
 
     void HandleMessage(std::string message);
     void HandleStatus(int status);

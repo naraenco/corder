@@ -21,6 +21,7 @@ async def orderpost(orderdto: OrderDto):
     try:
         error = redis_pool.validate_pin(data['auth_key'], str(data['shop_no']))
         result = await ws_manager.send_order(data)
+        print(f"orderpost result : {result}")
         if result is True:
             success = True
             # o = OrderDao()

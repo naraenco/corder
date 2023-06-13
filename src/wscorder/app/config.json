@@ -1,5 +1,6 @@
 {
-  "redis_ip": "172.23.17.235",
+  "redis_ip": "127.0.0.1",
+  "pin_expire_time": 6000,
   "service_port": 19000,
   "reconnect_timer": 10
 }

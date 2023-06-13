@@ -32,7 +32,7 @@ CMFCUIApp::CMFCUIApp()
 #endif
 
     // CompanyName.ProductName.SubProduct.VersionInformation
-    SetAppID(_T("Archesoft.BoltTextManager.2"));
+    SetAppID(_T("COrderAgent.1"));
 }
 
 CMFCUIApp theApp;
@@ -52,7 +52,7 @@ BOOL CMFCUIApp::InitInstance()
     CWinAppEx::InitInstance();
 
 
-    HANDLE hMutexOneInstance = ::CreateMutex(NULL, TRUE, L"BoltTextManager");
+    HANDLE hMutexOneInstance = ::CreateMutex(NULL, TRUE, L"COrderAgent");
     BOOL bFound = FALSE;
     if (::GetLastError() == ERROR_ALREADY_EXISTS) bFound = TRUE;
     if (hMutexOneInstance) ::ReleaseMutex(hMutexOneInstance);
@@ -81,7 +81,7 @@ BOOL CMFCUIApp::InitInstance()
 
     // AfxInitRichEdit2();
 
-    //SetRegistryKey(_T("BoltTextManager"));
+    //SetRegistryKey(_T("COrderAgent"));
     LoadStdProfileSettings(4);  // MRU를 포함하여 표준 INI 파일 옵션을 로드합니다.
 
     InitContextMenuManager();

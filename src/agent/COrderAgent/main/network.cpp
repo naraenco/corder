@@ -1,24 +1,19 @@
+#define _WIN32_WINNT 0x0601
+
 #include "network.h"
 #include <boost/asio/streambuf.hpp> // ???
 #include <boost/asio/buffer.hpp> // ???
 #include <boost/asio.hpp>
+#include <boost/log/trivial.hpp>
 #include "constant.h"
-//#include "../bolt/json_util.h"
 
-
-session::~session()
-{
-    ::OutputDebugStringA("session::~session()");
-    //ws_.close(websocket::close_code::normal);
-    buffer_.clear();
-}
 
 void session::fail(beast::error_code ec, char const* what)
 {
-    //std::cerr << what << ": " << ec.message() << "\n";
     ::OutputDebugStringA(ec.message().c_str());
     ::OutputDebugStringA(ec.to_string().c_str());
-    //::OutputDebugStringA(what);
+    BOOST_LOG_TRIVIAL(error) << "session::fail - " << ec.to_string();
+    BOOST_LOG_TRIVIAL(error) << "session::fail - " << ec.message();
 
     if (ec.value() == ERROR_CONNECTION_ABORTED) { // 1236
         connect_status = false;
@@ -54,8 +49,6 @@ void session::write(char const* text)
     }
 
     text_ = text;
-    //::OutputDebugStringA(text_.c_str());
-
     ws_.async_write(
         net::buffer(text_),
         beast::bind_front_handler(
@@ -66,8 +59,6 @@ void session::write(char const* text)
 // Start the asynchronous operation
 void session::start(char const* host, char const* port)
 {
-    ::OutputDebugString(L"session::start");
-
     // Save these for later
     host_ = host;
 
@@ -82,8 +73,6 @@ void session::start(char const* host, char const* port)
 
 void session::on_resolve(beast::error_code ec, tcp::resolver::results_type results)
 {
-    ::OutputDebugString(L"session::on_resolve");
-
     if (ec)
         return fail(ec, "resolve");
 
@@ -101,11 +90,10 @@ void session::on_resolve(beast::error_code ec, tcp::resolver::results_type resul
 void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type ep)
 {
     ::OutputDebugString(L"session::on_connect");
+    BOOST_LOG_TRIVIAL(info) << "session::on_connect";
 
     if (ec)
         return fail(ec, "connect");
-
-    status_handler(CONNECTION_SUCCESS);
 
     // Turn off the timeout on the tcp_stream, because
     // the websocket stream has its own timeout system.
@@ -153,9 +141,12 @@ void session::on_connect(beast::error_code ec, tcp::resolver::results_type::endp
 void session::on_handshake(beast::error_code ec)
 {
     ::OutputDebugString(L"session::on_handshake");
+    BOOST_LOG_TRIVIAL(info) << "session::on_handshake";
 
     if (ec)
         return fail(ec, "handshake");
+
+    status_handler(CONNECTION_SUCCESS);
 
     ws_.async_read(
         buffer_,
@@ -184,12 +175,10 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
         return fail(ec, "read");
 
     std::string s(boost::asio::buffer_cast<const char*>(buffer_.data()), buffer_.size());
-    //process_message(s);
+    BOOST_LOG_TRIVIAL(debug) << "session::on_read - " << s;
     message_handler(s);
 
-    //std::cout << beast::make_printable(buffer_.data()) << std::endl;
-
-    buffer_.consume(buffer_.size()); // Clear the buffer
+    buffer_.consume(buffer_.size()); // clear the buffer
 
     ws_.async_read(
         buffer_,
@@ -201,6 +190,7 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
 void session::on_close(beast::error_code ec)
 {
     ::OutputDebugString(L"session::on_close");
+    BOOST_LOG_TRIVIAL(info) << "session::on_close";
 
     if (ec)
         return fail(ec, "close");
@@ -211,31 +201,3 @@ void session::on_close(beast::error_code ec)
     //std::cout << beast::make_printable(buffer_.data()) << std::endl;
 }
 
-//void session::process_message(std::string s)
-//{
-//    ::OutputDebugString(L"process_message");
-//    ::OutputDebugStringA(s.c_str());
-//
-//    try {
-//        json_util util;
-//        util.parse(s.c_str());
-//        std::string msgtype = util.get_string("msgtype");
-//
-//        ::OutputDebugStringA(msgtype.c_str());
-//
-//        if (msgtype == "genpin") {
-//            ::OutputDebugStringA(util.get_string("pin").c_str());
-//        }
-//        else if (msgtype == "order") {
-//
-//        }
-//        else if (msgtype == "login") {
-//        }
-//        else {
-//            ::OutputDebugString(L"Unknown Message Type");
-//        }
-//    }
-//    catch(...) {
-//        ::OutputDebugStringA("process_message exception");
-//    }
-//}

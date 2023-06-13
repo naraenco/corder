@@ -32,7 +32,7 @@ void init_boost_log()
     int pos = (int)path.find_last_of("\\");
     path = path.erase(pos + 1, path.length());
     path += "log\\%Y-%m-%d.log";
-
+    
     auto fsSink = boost::log::add_file_log(
         boost::log::keywords::file_name = path,
         boost::log::keywords::rotation_size = 10 * 1024 * 1024,
