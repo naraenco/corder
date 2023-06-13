@@ -1,6 +1,9 @@
 ﻿#include "json_util.h"
 #include "strutil.h"
 #include <iostream>
+#include "bolt/lib/rapidjson/error/error.h"
+#include <boost/log/trivial.hpp>
+#include <Windows.h>
 
 json_util::json_util()
 {
@@ -11,12 +14,30 @@ json_util::~json_util()
 {
 }
 
-void json_util::parse(const char *json)
+bool json_util::parse(const char* json)
 {
-    doc.Parse(json);
+    try {
+        doc.Parse(json);
+        if (doc.HasParseError()) {
+            BOOST_LOG_TRIVIAL(error) << "json_util::parse - HasParseError : " << json;
+            return false;
+        }
+        else {
+            if (!doc.IsObject()) {
+                BOOST_LOG_TRIVIAL(error) << "json_util::parse - isNotObject : " << json;
+                return false;
+            }
+        }
+    }
+    catch (...) {
+        ::OutputDebugStringA("json_util::parse exception");
+        return false;
+    }
+
+    return true;
 }
 
-void json_util::add(const char *key, const char *value)
+void json_util::add(const char* key, const char* value)
 {
     try {
         rapidjson::Value rjkey(key, strlen(key), allocator);
@@ -27,7 +48,7 @@ void json_util::add(const char *key, const char *value)
     }
 }
 
-void json_util::add(const wchar_t *key, const wchar_t *value)
+void json_util::add(const wchar_t* key, const wchar_t* value)
 {
     try {
         string strkey = cbolt::strutil::wcs_to_utf8(key);
@@ -40,7 +61,7 @@ void json_util::add(const wchar_t *key, const wchar_t *value)
     }
 }
 
-void json_util::addl(const char *key, long value)
+void json_util::addl(const char* key, long value)
 {
     try {
         rapidjson::Value rjkey(key, strlen(key), allocator);
@@ -52,20 +73,20 @@ void json_util::addl(const char *key, long value)
     }
 }
 
-void json_util::addl(const wchar_t *key, long value)
+void json_util::addl(const wchar_t* key, long value)
 {
-	try {
-		string strkey = cbolt::strutil::wcs_to_utf8(key);
-		string strvalue = cbolt::strutil::long_to_str(value);
-		rapidjson::Value rjkey(strkey.c_str(), strkey.size(), allocator);
-		rapidjson::Value rjvalue(strvalue.c_str(), strvalue.size(), allocator);
-		doc.AddMember(rjkey, rjvalue, allocator);
-	}
-	catch (...) {
-	}
+    try {
+        string strkey = cbolt::strutil::wcs_to_utf8(key);
+        string strvalue = cbolt::strutil::long_to_str(value);
+        rapidjson::Value rjkey(strkey.c_str(), strkey.size(), allocator);
+        rapidjson::Value rjvalue(strvalue.c_str(), strvalue.size(), allocator);
+        doc.AddMember(rjkey, rjvalue, allocator);
+    }
+    catch (...) {
+    }
 }
 
-void json_util::addb(const char *key, bool value)
+void json_util::addb(const char* key, bool value)
 {
     try {
         rapidjson::Value rjkey(key, strlen(key), allocator);
@@ -78,7 +99,7 @@ void json_util::addb(const char *key, bool value)
     }
 }
 
-void json_util::add(const char *key, Value &value)
+void json_util::add(const char* key, Value& value)
 {
     try {
         rapidjson::Value rjkey(key, strlen(key), allocator);
@@ -88,39 +109,74 @@ void json_util::add(const char *key, Value &value)
     }
 }
 
-int json_util::get_int(const char *key)
+int json_util::get_int(const char* key)
 {
-    return doc.HasMember(key) ? doc[key].GetInt() : -1;
+    if (!doc.IsObject()) throw;
+    try {
+        return doc.HasMember(key) ? doc[key].GetInt() : -1;
+    }
+    catch (...) {
+        throw;
+    }
 }
 
-int json_util::get_int(const wchar_t *wkey)
+int json_util::get_int(const wchar_t* wkey)
 {
+    if (!doc.IsObject()) throw;
     string key = cbolt::strutil::wcs_to_mbs(wkey);
-    return doc.HasMember(key.c_str()) ? doc[key.c_str()].GetInt() : -1;
+    try {
+        return doc.HasMember(key.c_str()) ? doc[key.c_str()].GetInt() : -1;
+    }
+    catch (...) {
+        throw;
+    }
 }
 
-bool json_util::get_bool(const char *key)
+bool json_util::get_bool(const char* key)
 {
-    return doc.HasMember(key) ? doc[key].GetBool() : false;
+    if (!doc.IsObject()) throw;
+    try {
+        return doc.HasMember(key) ? doc[key].GetBool() : false;
+    }
+    catch (...) {
+        throw;
+    }
 }
 
-bool json_util::get_bool(const wchar_t *wkey)
+bool json_util::get_bool(const wchar_t* wkey)
 {
-    string key = cbolt::strutil::wcs_to_mbs(wkey);
-    return doc.HasMember(key.c_str()) ? doc[key.c_str()].GetBool() : false;
+    if (!doc.IsObject()) throw;
+    try {
+        string key = cbolt::strutil::wcs_to_mbs(wkey);
+        return doc.HasMember(key.c_str()) ? doc[key.c_str()].GetBool() : false;
+    }
+    catch (...) {
+        throw;
+    }
 }
 
-std::string json_util::get_string(const char *key)
+std::string json_util::get_string(const char* key)
 {
-    return doc.HasMember(key) ? string(doc[key].GetString()) : "";
+    if (!doc.IsObject()) throw;
+    try {
+        return doc.HasMember(key) ? string(doc[key].GetString()) : "";
+    }
+    catch (...) {
+        return NULL;
+    }
 }
 
-std::wstring json_util::get_string(const wchar_t *wkey)
+std::wstring json_util::get_string(const wchar_t* wkey)
 {
-    string key = cbolt::strutil::wcs_to_mbs(wkey);
-
-    string result = doc.HasMember(key.c_str()) ? string(doc[key.c_str()].GetString()) : "";
-    return cbolt::strutil::mbs_to_wcs(result);
+    if (!doc.IsObject()) throw;
+    try {
+        string key = cbolt::strutil::wcs_to_mbs(wkey);
+        string result = doc.HasMember(key.c_str()) ? string(doc[key.c_str()].GetString()) : "";
+        return cbolt::strutil::mbs_to_wcs(result);
+    }
+    catch (...) {
+        throw;
+    }
 }
 
 std::string json_util::str()

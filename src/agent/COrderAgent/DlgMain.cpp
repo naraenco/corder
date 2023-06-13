@@ -135,8 +135,8 @@ void CDlgMain::ComponentResize()
 
 void CDlgMain::WriteLog(std::string value)
 {
-    logNo++;
-    wstring no = cbolt::strutil::long_to_wstr(logNo);
+    log_no++;
+    wstring no = cbolt::strutil::long_to_wstr(log_no);
     m_list_main.InsertItem(0, no.c_str());
     m_list_main.SetItemText(0, 1, System::get_datetimew().c_str());
     m_list_main.SetItemText(0, 2, cbolt::strutil::mbs_to_wcs(value).c_str());
@@ -144,8 +144,8 @@ void CDlgMain::WriteLog(std::string value)
 
 void CDlgMain::WriteLog(std::wstring value)
 {
-    logNo++;
-    wstring no = cbolt::strutil::long_to_wstr(logNo);
+    log_no++;
+    wstring no = cbolt::strutil::long_to_wstr(log_no);
     m_list_main.InsertItem(0, no.c_str());
     m_list_main.SetItemText(0, 1, System::get_datetimew().c_str());
     m_list_main.SetItemText(0, 2, value.c_str());
@@ -164,9 +164,7 @@ BOOL CDlgMain::OnInitDialog()
 
     ComponentResize();
     
-    //setlocale(LC_ALL, "");
-
-    logNo = 0;
+    log_no = 0;
     bManager = true;
     bConnect = false;
 
@@ -186,6 +184,8 @@ BOOL CDlgMain::OnInitDialog()
     }
 
     init_boost_log();
+
+    reconnect_time = corder_config::instance()->get_int("reconnect_time") * 1000;
 
     if (corder_config::get_string("log_level") == "debug") {
         boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::debug);
@@ -416,36 +416,39 @@ void CDlgMain::HandleMessage(std::string message)
     BOOST_LOG_TRIVIAL(debug) << "CDlgMain::HandleMessage() : " << message;
 
     std::wstring recv = cbolt::strutil::mbs_to_wcs(message);
-    ::OutputDebugString(recv.c_str());
+    //::OutputDebugString(recv.c_str());
 
     try {
         json_util util;
         util.parse(message.c_str());
-        std::string msgtype = util.get_string("msgtype");
+        if (util.parse(message.c_str()) == true) {
+            std::string msgtype = util.get_string("msgtype");
 
-        ::OutputDebugStringA(msgtype.c_str());
-
-        if (msgtype == "login") {
-            //BOOST_LOG_TRIVIAL(info) << "- 로그인에 성공하였습니다.";
-            string text = "로그인에 성공하였습니다.";
-            BOOST_LOG_TRIVIAL(info) << text;
-            WriteLog(text);
-        }
-        else if (msgtype == "genpin") {
-            //BOOST_LOG_TRIVIAL(info) << "- 핀 번호가 생성되었습니다 : " << util.get_string("pin");
-            string text = "핀 번호가 생성되었습니다 : " + util.get_string("pin");
-            BOOST_LOG_TRIVIAL(info) << text;
-            WriteLog(text);
-        }
-        else if (msgtype == "order") {
-
+            if (msgtype == "login") {
+                string text = "로그인에 성공하였습니다.";
+                BOOST_LOG_TRIVIAL(info) << text;
+                WriteLog(text);
+            }
+            else if (msgtype == "genpin") {
+                string text = "핀 번호가 생성되었습니다 : " + util.get_string("pin");
+                BOOST_LOG_TRIVIAL(info) << text;
+                WriteLog(text);
+            }
+            else if (msgtype == "order") {
+                string text = "주문 요청입니다 : ";
+                BOOST_LOG_TRIVIAL(info) << text;
+                WriteLog(text);
+            }
+            else {
+                ::OutputDebugString(L"Unknown Message Type");
+            }
         }
         else {
-            ::OutputDebugString(L"Unknown Message Type");
+            ::OutputDebugString(L"Parse Error");
         }
     }
     catch (...) {
-        ::OutputDebugStringA("process_message exception");
+        ::OutputDebugStringA("HandleMessage exception");
     }
 }
 
@@ -479,10 +482,11 @@ void CDlgMain::HandleStatus(int status)
 void CDlgMain::ConnectionManager()
 {
     BOOST_LOG_TRIVIAL(debug) << "CDlgMain::ConnectionManager()";
-   ::OutputDebugStringA("CDlgMain::ConnectionManager() in");
+   ::OutputDebugStringA("CDlgMain::ConnectionManager() IN");
 
     while (bManager) {
         if (bConnect == false) {
+            ::OutputDebugStringA("CDlgMain::ConnectionManager() connect");
             ioc.reset();
             ws_session = std::make_shared<session>(ioc);
             ws_session->set_message_handler(std::bind(&CDlgMain::HandleMessage, this, placeholders::_1));
@@ -490,8 +494,8 @@ void CDlgMain::ConnectionManager()
             session_thread = boost::thread(boost::bind(&boost::asio::io_service::run, &ioc));
             ioc.post(boost::bind(&service));
         }
-        boost::this_thread::sleep(boost::posix_time::millisec(RECONNECT_TIME));
+        boost::this_thread::sleep(boost::posix_time::millisec(reconnect_time));
         ::OutputDebugStringA("CDlgMain::ConnectionManager() loop");
     }
-    ::OutputDebugStringA("CDlgMain::ConnectionManager() out");
+    ::OutputDebugStringA("CDlgMain::ConnectionManager() OUT");
 }

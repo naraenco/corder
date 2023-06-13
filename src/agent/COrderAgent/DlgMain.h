@@ -32,23 +32,20 @@ public:
     void ConnectionManager();
     
 private:
-    CMFCUIView* pMFCUIView;
     bool bManager;
     bool bConnect;
+    long log_no;
+    long reconnect_time;
 
+    CMFCUIView* pMFCUIView;
     CListCtrl m_list_main;
     CRect m_WindowRect;
     CImageList* m_pDragImage;
-
     HICON m_hIcon;
-
     UINT nListWidth;
     UINT nListHeight;
     UINT nListX;
     UINT nListY;
-
-    long logNo;
-
     CRect rcIconStart;
     CRect rcIconDocument;
     CRect rcIconFolderDoc;

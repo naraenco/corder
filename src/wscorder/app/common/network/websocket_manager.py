@@ -128,11 +128,12 @@ class WebSocketManager:
 
     async def send_order(self, params):
         result = False
-        message = json.dumps(params['pos_order'])
         try:
             conn = self.connections.get(str(params['shop_no']))
-            ret = await conn.send_text(message)
-            print("send_order : ", ret)
+            response = copy.deepcopy(params)
+            response['msgtype'] = "order"
+            response = str(json.dumps(response))
+            await conn.send_text(response)
             result = True
         except Exception as e:
             logging.getLogger().error(f"send_order : {e}")

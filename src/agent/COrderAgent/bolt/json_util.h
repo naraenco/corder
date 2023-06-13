@@ -14,7 +14,7 @@ public:
     ~json_util();
 
 public:
-    void parse(const char* json);
+    bool parse(const char* json);
     void add(const char* key, const char* value);
     void add(const wchar_t* key, const wchar_t* value);
     void add(const std::string key, const std::string value) { add(key.c_str(), value.c_str()); }

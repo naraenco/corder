@@ -175,6 +175,7 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
         return fail(ec, "read");
 
     std::string s(boost::asio::buffer_cast<const char*>(buffer_.data()), buffer_.size());
+    //::OutputDebugStringA(s.c_str());
     BOOST_LOG_TRIVIAL(debug) << "session::on_read - " << s;
     message_handler(s);
 
