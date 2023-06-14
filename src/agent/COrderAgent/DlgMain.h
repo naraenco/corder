@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <string>
+#include "bolt/json_util.h"
 
 
 class CMFCUIView;
@@ -26,6 +27,8 @@ public:
     void Connect();
     void Login();
     void GenPin();
+    //void Order(std::string message);
+    void Order(json_util& util);
 
     void HandleMessage(std::string message);
     void HandleStatus(int status);

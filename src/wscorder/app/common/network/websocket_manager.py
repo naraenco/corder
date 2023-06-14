@@ -1,3 +1,4 @@
+import asyncio
 import copy
 import json
 import logging
@@ -9,6 +10,8 @@ from fastapi import WebSocket, WebSocketDisconnect
 class WebSocketManager:
     def __init__(self):
         self.connections: dict[str, WebSocket] = {}
+        self.orders: dict[int, dict] = {}
+        self.orderno = 0
 
     async def message_handler(self, websocket: WebSocket):
         logging.getLogger().debug("ConnectionManager.message_handler")
@@ -30,12 +33,10 @@ class WebSocketManager:
                 print("message size = 0")
         except WebSocketDisconnect as e:
             logging.getLogger().error(e)
-            # raise WebSocketDisconnect()
             raise
         except Exception as e:
             logging.getLogger().error(e)
             raise
-            # raise Exception
 
     def disconnect(self, websocket):
         logging.getLogger().debug("ConnectionManager.disconnect")
@@ -46,6 +47,14 @@ class WebSocketManager:
                 break
         del self.connections[shop_no]
         websocket.close()
+
+    def get_socket(self, shop_no):
+        try:
+            conn = self.connections.get(shop_no)
+            return conn
+        except Exception as e:
+            logging.getLogger().error(f"get_socket : {e}")
+        return None
 
     async def send(self, message: str, shop_no):
         logging.getLogger().debug("ConnectionManager.send")
@@ -86,6 +95,7 @@ class WebSocketManager:
         from common import redis_pool
         try:
             shop_no = recvmsg['shop_no']
+
             while True:
                 num = random.randrange(1, 9999)
                 pin = str(num).zfill(4)
@@ -112,9 +122,9 @@ class WebSocketManager:
 
     async def order(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.order")
-        shop_no = None
         try:
-            shop_no = recvmsg['shop_no']
+            order = self.orders.get(recvmsg['orderno'])
+            order['status'] = recvmsg['status']
         except Exception as e:
             logging.getLogger().error(e)
 
@@ -126,15 +136,33 @@ class WebSocketManager:
         except Exception as e:
             logging.getLogger().error(e)
 
-    async def send_order(self, params):
+    async def wait_order(self, orderno):
+        timeout_count = 0
         result = False
+        while True:
+            if timeout_count > 5:
+                break
+            order = self.orders.get(orderno)
+            if order.get('status') == 1:
+                result = True
+                break
+            await asyncio.sleep(2.0)
+            timeout_count = timeout_count + 1
+        return result
+
+    async def send_order(self, params):
+        self.orderno = self.orderno + 1
+        result = 0
         try:
             conn = self.connections.get(str(params['shop_no']))
             response = copy.deepcopy(params)
             response['msgtype'] = "order"
+            response['orderno'] = self.orderno
+            response['status'] = 0                  # 전송 상태 0, 응답 받은 후 1, 1보다 크면 에러
+            self.orders[self.orderno] = response    # API에서 요청 받은 주문을 기록
             response = str(json.dumps(response))
-            await conn.send_text(response)
-            result = True
+            await conn.send_text(response)          # API에서 요청 받은 주문을 전송
+            result = self.orderno
         except Exception as e:
             logging.getLogger().error(f"send_order : {e}")
         return result

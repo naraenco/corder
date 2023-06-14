@@ -19,15 +19,17 @@ async def orderpost(orderdto: OrderDto):
     data = orderdto.dict()
     print(data)
     try:
-        error = redis_pool.validate_pin(data['auth_key'], str(data['shop_no']))
-        result = await ws_manager.send_order(data)
-        print(f"orderpost result : {result}")
-        if result is True:
-            success = True
-            # o = OrderDao()
-            # db = SessionLocal()
-            # db.add(o)
-            # db.commit()
+        shop_no = str(data['shop_no'])
+        error = redis_pool.validate_pin(data['auth_key'], shop_no)
+        orderno = await ws_manager.send_order(data)
+        if orderno > 0:
+            result = await ws_manager.wait_order(orderno)
+            if result is True:
+                success = True
+                # o = OrderDao()
+                # db = SessionLocal()
+                # db.add(o)
+                # db.commit()
     except CorderException as e:
         error = e.value()
     except Exception as e:

@@ -29,6 +29,8 @@ public:
     bool get_bool(const wchar_t* wkey);
     std::string get_string(const char* key);
     std::wstring get_string(const wchar_t* wkey);
+    void set_int(const char* key, int value);
+    void set_string(const char* key, const char* value);
 
     std::string str();
 

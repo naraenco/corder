@@ -17,7 +17,6 @@
 #include "DlgMain.h"
 #include "DlgAppInfo.h"
 #include "common/CommonData.h"
-#include "bolt/json_util.h"
 #include "bolt/strutil.h"
 #include "lib/system.h"
 #include "main/constant.h"
@@ -387,6 +386,24 @@ void CDlgMain::GenPin()
     ws_session->write(text);
 }
 
+void CDlgMain::Order(json_util &util)
+{
+    BOOST_LOG_TRIVIAL(info) << "CDlgMain::Order()";
+    ::OutputDebugStringA("CDlgMain::Order()");
+    util.set_int("status", 1);
+    std::string text = util.str();
+    //auto const text = "{\"msgtype\":\"order\",\"shop_no\": \"3062\"}";
+    ws_session->write(text.c_str());
+}
+
+//void CDlgMain::Order(std::string message)
+//{
+//    BOOST_LOG_TRIVIAL(info) << "CDlgMain::Order()";
+//    ::OutputDebugStringA("CDlgMain::Order()");
+//    auto const text = "{\"msgtype\":\"order\",\"shop_no\": \"3062\"}";
+//    ws_session->write(text);
+//}
+
 void CDlgMain::OnClose()
 {
     CDialogEx::OnClose();
@@ -435,6 +452,7 @@ void CDlgMain::HandleMessage(std::string message)
                 WriteLog(text);
             }
             else if (msgtype == "order") {
+                Order(util);
                 string text = "주문 요청입니다 : ";
                 BOOST_LOG_TRIVIAL(info) << text;
                 WriteLog(text);
@@ -472,6 +490,8 @@ void CDlgMain::HandleStatus(int status)
         count = ws_session.use_count();
         strCount = cbolt::strutil::long_to_str(count);
         ::OutputDebugStringA(strCount.c_str());
+
+        BOOST_LOG_TRIVIAL(info) << "서버와의 접속이 끊어졌습니다.";
     }
     else if (status == CONNECTION_SUCCESS) {
         bConnect = true;
@@ -499,3 +519,5 @@ void CDlgMain::ConnectionManager()
     }
     ::OutputDebugStringA("CDlgMain::ConnectionManager() OUT");
 }
+
+

@@ -179,6 +179,29 @@ std::wstring json_util::get_string(const wchar_t* wkey)
     }
 }
 
+void json_util::set_int(const char* key, int value)
+{
+    if (!doc.IsObject()) throw;
+    try {
+        if (doc.HasMember(key)) doc[key].SetInt(value);
+    }
+    catch (...) {
+        throw;
+    }
+}
+
+void json_util::set_string(const char* key, const char* value)
+{
+    if (!doc.IsObject()) throw;
+    try {
+        if (doc.HasMember(key)) doc[key].SetString(value, doc.GetAllocator());
+    }
+    catch (...) {
+        throw;
+    }
+}
+
+
 std::string json_util::str()
 {
     try {
