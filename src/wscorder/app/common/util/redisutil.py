@@ -54,7 +54,6 @@ class RedisUtil:
                     raise CorderException("1003")
                 data = bytes(conn.get(key)).decode('utf-8')
                 data = json.loads(data)
-                # print(f"data : {data}")
                 if data['shop_no'] != value:
                     raise CorderException("1004")
         except Exception:

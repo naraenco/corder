@@ -8,7 +8,6 @@
 locale loc(locale(""));
 locale loc_utf8(locale(""), new codecvt_utf8<wchar_t>);
 
-namespace cbolt {
 
 void strutil::rtrim(string & value)
 {
@@ -439,5 +438,3 @@ wstring strutil::parse_string(wstring& value, wchar_t* pDeli)
     }
     return strRet;
 }
-
-} // for namespace cbolt

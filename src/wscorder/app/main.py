@@ -6,7 +6,6 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from starlette.middleware.cors import CORSMiddleware
 from domain import root_router
-from domain.auth import router as auth
 from domain.menu import router as menu
 from domain.order import router as order
 from common import ws_manager, logger
@@ -28,7 +27,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(root_router.router, prefix='')
-app.include_router(auth.router, prefix='/api/auth')
 app.include_router(menu.router, prefix='/api/menu')
 app.include_router(order.router, prefix='/api/order')
 

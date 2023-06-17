@@ -9,17 +9,11 @@ namespace cbolt {
 
 json_file::json_file()
 {
-    buffer = NULL;
     document = NULL;
 }
 
 json_file::~json_file()
 {
-    if (buffer)
-    {
-        delete[] buffer;
-        buffer = NULL;
-    }
     if (document)
     {
         delete document;
@@ -29,7 +23,6 @@ json_file::~json_file()
 
 bool json_file::load(const char *path)
 {
-    if (buffer) delete[] buffer;
     if (document) delete[] document;
 
     FILE *fp = fopen(path, "rb");
@@ -37,15 +30,39 @@ bool json_file::load(const char *path)
     long filesize = ftell(fp);
     fseek(fp, 0, 0);
     if (filesize == 0) return false;
-    buffer = new char[filesize + 1];
+    char* buffer = new char[filesize + 1];
     FileReadStream bis(fp, buffer, filesize);
     AutoUTFInputStream<unsigned, FileReadStream> eis(bis);
     document = new Document();
-    document->ParseStream<0, AutoUTF<unsigned> >(eis);
+    //document->ParseStream<0, AutoUTF<unsigned> >(eis);
+    document->ParseStream<0, UTF8<> >(eis);
     fclose(fp);
+    delete[] buffer;
 
     return true;
 }
+
+bool json_file::parse(const char* json)
+{
+    try {
+        document->Parse(json);
+        if (document->HasParseError()) {
+            //BOOST_LOG_TRIVIAL(error) << "json_util::parse - HasParseError : " << json;
+            return false;
+        }
+        else {
+            if (!document->IsObject()) {
+                //BOOST_LOG_TRIVIAL(error) << "json_util::parse - isNotObject : " << json;
+                return false;
+            }
+        }
+    }
+    catch (...) {
+        return false;
+    }
+    return true;
+}
+
 
 int json_file::get_int(const char *key)
 {
@@ -68,4 +85,10 @@ wstring json_file::get_wstring(const char *key)
     return cbolt::strutil::mbs_to_wcs(value);
 }
 
+Value::Object json_file::get_object(const char* key)
+{
+    return (*document)[key].GetObject();
+}
+
 } // namespace cbolt
+

@@ -34,17 +34,14 @@
     <ClCompile Include="bolt\boost_log_wrapper.cpp">
       <Filter>bolt</Filter>
     </ClCompile>
-    <ClCompile Include="bolt\json_file.cpp">
-      <Filter>bolt</Filter>
-    </ClCompile>
-    <ClCompile Include="bolt\json_util.cpp">
-      <Filter>bolt</Filter>
-    </ClCompile>
     <ClCompile Include="bolt\strutil.cpp">
       <Filter>bolt</Filter>
     </ClCompile>
     <ClCompile Include="lib\system.cpp">
       <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="bolt\json_util.cpp">
+      <Filter>bolt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -99,12 +96,6 @@
     <ClInclude Include="bolt\boost_log_wrapper.h">
       <Filter>bolt</Filter>
     </ClInclude>
-    <ClInclude Include="bolt\json_file.h">
-      <Filter>bolt</Filter>
-    </ClInclude>
-    <ClInclude Include="bolt\json_util.h">
-      <Filter>bolt</Filter>
-    </ClInclude>
     <ClInclude Include="bolt\strutil.h">
       <Filter>bolt</Filter>
     </ClInclude>
@@ -113,6 +104,9 @@
     </ClInclude>
     <ClInclude Include="main\constant.h">
       <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="bolt\json_util.h">
+      <Filter>bolt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,50 @@
+{
+   "STORECD" : "B19384",
+   "TOUCHCLASS" : [
+      {
+         "HEIGHT" : "131",
+         "TU_CLS_CD" : "01",
+         "TU_CLS_NM" : "대표메뉴",
+         "TU_PAGE" : "1",
+         "WIDTH" : "193",
+         "X" : "0",
+         "Y" : "0"
+      },
+      {
+         "HEIGHT" : "131",
+         "TU_CLS_CD" : "02",
+         "TU_CLS_NM" : "주류",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "0"
+      },
+      {
+         "HEIGHT" : "63",
+         "TU_CLS_CD" : "03",
+         "TU_CLS_NM" : "포장",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "0"
+      },
+      {
+         "HEIGHT" : "63",
+         "TU_CLS_CD" : "04",
+         "TU_CLS_NM" : "사이드",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "0"
+      },
+      {
+         "HEIGHT" : "63",
+         "TU_CLS_CD" : "05",
+         "TU_CLS_NM" : "오쭈",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "68"
+      }
+   ]
+}

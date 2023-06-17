@@ -1,219 +1,160 @@
-癤�#include "json_util.h"
-#include "strutil.h"
+#include "json_util.h"
 #include <iostream>
-#include "bolt/lib/rapidjson/error/error.h"
-#include <boost/log/trivial.hpp>
-#include <Windows.h>
 
 json_util::json_util()
 {
-    doc.SetObject();
+    opt.allow_invalid_utf8 = true;
 }
 
 json_util::~json_util()
 {
+
 }
 
-bool json_util::parse(const char* json)
+bool json_util::load(std::string path)
 {
-    try {
-        doc.Parse(json);
-        if (doc.HasParseError()) {
-            BOOST_LOG_TRIVIAL(error) << "json_util::parse - HasParseError : " << json;
-            return false;
-        }
-        else {
-            if (!doc.IsObject()) {
-                BOOST_LOG_TRIVIAL(error) << "json_util::parse - isNotObject : " << json;
-                return false;
-            }
-        }
-    }
-    catch (...) {
-        ::OutputDebugStringA("json_util::parse exception");
+    std::ifstream in(path);
+    std::string buffer;
+
+    if (!in.is_open()) {
+        std::cout << "파일을 찾을 수 없습니다!" << std::endl;
         return false;
     }
 
+    in.seekg(0, std::ios::end);
+    int size = (int)in.tellg();
+    buffer.resize(size);
+    in.seekg(0, std::ios::beg);
+    in.read(&buffer[0], size);
+
+    value = boost::json::parse(buffer, boost::json::storage_ptr(), opt);
     return true;
 }
 
-void json_util::add(const char* key, const char* value)
+bool json_util::parse(std::string data)
 {
-    try {
-        rapidjson::Value rjkey(key, strlen(key), allocator);
-        rapidjson::Value rjvalue(value, strlen(value), allocator);
-        doc.AddMember(rjkey, rjvalue, allocator);
-    }
-    catch (...) {
-    }
+    value = boost::json::parse(data, boost::json::storage_ptr(), opt);
+    return true;
 }
 
-void json_util::add(const wchar_t* key, const wchar_t* value)
+bool json_util::write(std::string path, boost::json::value const& jv, bool pretty)
 {
-    try {
-        string strkey = cbolt::strutil::wcs_to_utf8(key);
-        string strvalue = cbolt::strutil::wcs_to_utf8(value);
-        rapidjson::Value rjkey(strkey.c_str(), strkey.size(), allocator);
-        rapidjson::Value rjvalue(strvalue.c_str(), strvalue.size(), allocator);
-        doc.AddMember(rjkey, rjvalue, allocator);
+    std::ofstream os(path);
+    if (pretty) {
+        pretty_print(os, jv);
     }
-    catch (...) {
+    else {
+        std::string text = boost::json::serialize(jv);
+        os.write(text.c_str(), text.length());
     }
+    os.close();
+    return true;
 }
 
-void json_util::addl(const char* key, long value)
+void json_util::pretty_print(std::ostream& os, boost::json::value const& jv, std::string* indent)
 {
-    try {
-        rapidjson::Value rjkey(key, strlen(key), allocator);
-        string strvalue = cbolt::strutil::long_to_str(value);
-        rapidjson::Value rjvalue(strvalue.c_str(), strvalue.size(), allocator);
-        doc.AddMember(rjkey, rjvalue, allocator);
+    std::string indent_;
+    if (!indent)
+        indent = &indent_;
+    switch (jv.kind())
+    {
+    case boost::json::kind::object:
+    {
+        os << "{\n";
+        indent->append(4, ' ');
+        auto const& obj = jv.get_object();
+        if (!obj.empty())
+        {
+            auto it = obj.begin();
+            for (;;)
+            {
+                os << *indent << boost::json::serialize(it->key()) << " : ";
+                pretty_print(os, it->value(), indent);
+                if (++it == obj.end())
+                    break;
+                os << ",\n";
+            }
+        }
+        os << "\n";
+        indent->resize(indent->size() - 4);
+        os << *indent << "}";
+        break;
     }
-    catch (...) {
-    }
-}
 
-void json_util::addl(const wchar_t* key, long value)
-{
-    try {
-        string strkey = cbolt::strutil::wcs_to_utf8(key);
-        string strvalue = cbolt::strutil::long_to_str(value);
-        rapidjson::Value rjkey(strkey.c_str(), strkey.size(), allocator);
-        rapidjson::Value rjvalue(strvalue.c_str(), strvalue.size(), allocator);
-        doc.AddMember(rjkey, rjvalue, allocator);
+    case boost::json::kind::array:
+    {
+        os << "[\n";
+        indent->append(4, ' ');
+        auto const& arr = jv.get_array();
+        if (!arr.empty())
+        {
+            auto it = arr.begin();
+            for (;;)
+            {
+                os << *indent;
+                pretty_print(os, *it, indent);
+                if (++it == arr.end())
+                    break;
+                os << ",\n";
+            }
+        }
+        os << "\n";
+        indent->resize(indent->size() - 4);
+        os << *indent << "]";
+        break;
     }
-    catch (...) {
-    }
-}
 
-void json_util::addb(const char* key, bool value)
-{
-    try {
-        rapidjson::Value rjkey(key, strlen(key), allocator);
-        string strvalue = "true";
-        if (value == false) strvalue = "false";
-        rapidjson::Value rjvalue(strvalue.c_str(), strvalue.size(), allocator);
-        doc.AddMember(rjkey, rjvalue, allocator);
+    case boost::json::kind::string:
+    {
+        os << boost::json::serialize(jv.get_string());
+        break;
     }
-    catch (...) {
-    }
-}
 
-void json_util::add(const char* key, Value& value)
-{
-    try {
-        rapidjson::Value rjkey(key, strlen(key), allocator);
-        doc.AddMember(rjkey, value, allocator);
+    case boost::json::kind::uint64:
+        os << jv.get_uint64();
+        break;
+
+    case boost::json::kind::int64:
+        os << jv.get_int64();
+        break;
+
+    case boost::json::kind::double_:
+        os << jv.get_double();
+        break;
+
+    case boost::json::kind::bool_:
+        if (jv.get_bool())
+            os << "true";
+        else
+            os << "false";
+        break;
+
+    case boost::json::kind::null:
+        os << "null";
+        break;
     }
-    catch (...) {
-    }
+
+    if (indent->empty())
+        os << "\n";
 }
 
 int json_util::get_int(const char* key)
 {
-    if (!doc.IsObject()) throw;
-    try {
-        return doc.HasMember(key) ? doc[key].GetInt() : -1;
-    }
-    catch (...) {
-        throw;
-    }
-}
-
-int json_util::get_int(const wchar_t* wkey)
-{
-    if (!doc.IsObject()) throw;
-    string key = cbolt::strutil::wcs_to_mbs(wkey);
-    try {
-        return doc.HasMember(key.c_str()) ? doc[key.c_str()].GetInt() : -1;
-    }
-    catch (...) {
-        throw;
-    }
+    return boost::json::value_to<int>(value.at(key));
 }
 
 bool json_util::get_bool(const char* key)
 {
-    if (!doc.IsObject()) throw;
-    try {
-        return doc.HasMember(key) ? doc[key].GetBool() : false;
-    }
-    catch (...) {
-        throw;
-    }
-}
-
-bool json_util::get_bool(const wchar_t* wkey)
-{
-    if (!doc.IsObject()) throw;
-    try {
-        string key = cbolt::strutil::wcs_to_mbs(wkey);
-        return doc.HasMember(key.c_str()) ? doc[key.c_str()].GetBool() : false;
-    }
-    catch (...) {
-        throw;
-    }
+    return boost::json::value_to<bool>(value.at(key));
 }
 
 std::string json_util::get_string(const char* key)
 {
-    if (!doc.IsObject()) throw;
-    try {
-        return doc.HasMember(key) ? string(doc[key].GetString()) : "";
-    }
-    catch (...) {
-        return NULL;
-    }
+    return boost::json::value_to<std::string>(value.at(key));
 }
-
-std::wstring json_util::get_string(const wchar_t* wkey)
-{
-    if (!doc.IsObject()) throw;
-    try {
-        string key = cbolt::strutil::wcs_to_mbs(wkey);
-        string result = doc.HasMember(key.c_str()) ? string(doc[key.c_str()].GetString()) : "";
-        return cbolt::strutil::mbs_to_wcs(result);
-    }
-    catch (...) {
-        throw;
-    }
-}
-
-void json_util::set_int(const char* key, int value)
-{
-    if (!doc.IsObject()) throw;
-    try {
-        if (doc.HasMember(key)) doc[key].SetInt(value);
-    }
-    catch (...) {
-        throw;
-    }
-}
-
-void json_util::set_string(const char* key, const char* value)
-{
-    if (!doc.IsObject()) throw;
-    try {
-        if (doc.HasMember(key)) doc[key].SetString(value, doc.GetAllocator());
-    }
-    catch (...) {
-        throw;
-    }
-}
-
 
 std::string json_util::str()
 {
-    try {
-        StringBuffer strbuf;
-        strbuf.Clear();
-        Writer<StringBuffer> writer(strbuf);
-        doc.Accept(writer);
-        std::string result = strbuf.GetString();
-        return result;
-    }
-    catch (...) {
-        return "";
-    }
+    return boost::json::serialize(value);
 }
 

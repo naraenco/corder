@@ -9,9 +9,6 @@
 
 using namespace std;
 
-namespace cbolt
-{
-
 class strutil {
 public:
     strutil() {}
@@ -87,5 +84,3 @@ public:
         }
     }
 };
-
-}

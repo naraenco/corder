@@ -1,0 +1,1015 @@
+{
+   "STORECD" : "B19384",
+   "TOUCHKEY" : [
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000007",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "047",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000059",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "048",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000057",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "049",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000070",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "045",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000011",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "024",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000062",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "040",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000063",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "041",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000003",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "035",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000005",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "038",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000012",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "011",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000013",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "012",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000042",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "023",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000041",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "022",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000001",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "007",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000002",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "006",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000004",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "036",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000061",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "039",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000040",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "025",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000016",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "013",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000017",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "014",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000018",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "015",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000060",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "037",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000014",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "016",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000015",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "017",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000030",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "021",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000056",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "046",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000049",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "042",
+         "TU_PAGE" : "2",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000050",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "043",
+         "TU_PAGE" : "2",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000051",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "044",
+         "TU_PAGE" : "2",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000052",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "031",
+         "TU_PAGE" : "2",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000097",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "050",
+         "TU_PAGE" : "2",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000098",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "051",
+         "TU_PAGE" : "2",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000099",
+         "TU_CLS_CD" : "01",
+         "TU_KEY_CD" : "052",
+         "TU_PAGE" : "2",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000020",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "006",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000032",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "008",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000033",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "010",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000074",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "028",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000008",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "020",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000031",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "007",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000034",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "009",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000024",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "003",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000023",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "004",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000019",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "005",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000021",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "001",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000035",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "011",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000100",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "030",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000022",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "002",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000038",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "014",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000039",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "015",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000075",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "025",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000053",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "019",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000076",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "026",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000077",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "027",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000045",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "017",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000066",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "021",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000067",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "022",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000068",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "023",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000069",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "024",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000046",
+         "TU_CLS_CD" : "02",
+         "TU_KEY_CD" : "029",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000025",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "005",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000006",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "008",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000058",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "007",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000044",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "006",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000094",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "009",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000095",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "010",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000096",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "011",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000027",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "002",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000029",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "004",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000026",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "001",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000018",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "017",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000017",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "018",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000049",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "012",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000050",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "013",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000051",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "014",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000052",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "015",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000093",
+         "TU_CLS_CD" : "03",
+         "TU_KEY_CD" : "016",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000047",
+         "TU_CLS_CD" : "04",
+         "TU_KEY_CD" : "001",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000048",
+         "TU_CLS_CD" : "04",
+         "TU_KEY_CD" : "002",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000064",
+         "TU_CLS_CD" : "04",
+         "TU_KEY_CD" : "003",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000065",
+         "TU_CLS_CD" : "04",
+         "TU_KEY_CD" : "004",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000078",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "001",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000079",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "002",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000080",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "003",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "136"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000081",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "004",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000082",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "005",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000083",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "006",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000084",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "007",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "204"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000085",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "008",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000086",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "009",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000087",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "010",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "272"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000088",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "011",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000089",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "012",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000090",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "013",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000091",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "014",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000092",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "015",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "340"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000093",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "021",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "408"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000049",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "016",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "0",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000050",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "017",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "99",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000051",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "018",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "198",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000052",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "019",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "297",
+         "Y" : "476"
+      },
+      {
+         "HEIGHT" : "63",
+         "PROD_CD" : "000054",
+         "TU_CLS_CD" : "05",
+         "TU_KEY_CD" : "020",
+         "TU_PAGE" : "1",
+         "WIDTH" : "94",
+         "X" : "396",
+         "Y" : "476"
+      }
+   ]
+}

@@ -1,0 +1,21 @@
+{
+   "SCDPRTMS" : [
+      {
+         "FLOOR_FG" : "",
+         "FLOOR_NO" : "",
+         "INS_DT" : "20230110162117",
+         "POS_NO" : "01",
+         "PRT_NM" : "аж╧Ф1",
+         "PRT_NO" : "01",
+         "PRT_PAPER_QTY" : "1",
+         "PRT_PORT" : "03",
+         "PRT_SPEED" : "2",
+         "PRT_TCP_IP" : "",
+         "PRT_TCP_PORT" : "",
+         "PRT_TYPE_FG" : "01",
+         "UPD_DT" : "20230110162117",
+         "USE_YN" : "Y"
+      }
+   ],
+   "STORECD" : "B19384"
+}

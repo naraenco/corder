@@ -27,16 +27,17 @@ public:
     void Connect();
     void Login();
     void GenPin();
-    //void Order(std::string message);
     void Order(json_util& util);
 
     void HandleMessage(std::string message);
     void HandleStatus(int status);
     void ConnectionManager();
+    void Release();
     
 private:
     bool bManager;
     bool bConnect;
+    bool bRelease;
     long log_no;
     long reconnect_time;
 

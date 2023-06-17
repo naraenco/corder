@@ -135,16 +135,16 @@ void CDlgMain::ComponentResize()
 void CDlgMain::WriteLog(std::string value)
 {
     log_no++;
-    wstring no = cbolt::strutil::long_to_wstr(log_no);
+    wstring no = strutil::long_to_wstr(log_no);
     m_list_main.InsertItem(0, no.c_str());
     m_list_main.SetItemText(0, 1, System::get_datetimew().c_str());
-    m_list_main.SetItemText(0, 2, cbolt::strutil::mbs_to_wcs(value).c_str());
+    m_list_main.SetItemText(0, 2, strutil::mbs_to_wcs(value).c_str());
 }
 
 void CDlgMain::WriteLog(std::wstring value)
 {
     log_no++;
-    wstring no = cbolt::strutil::long_to_wstr(log_no);
+    wstring no = strutil::long_to_wstr(log_no);
     m_list_main.InsertItem(0, no.c_str());
     m_list_main.SetItemText(0, 1, System::get_datetimew().c_str());
     m_list_main.SetItemText(0, 2, value.c_str());
@@ -164,6 +164,7 @@ BOOL CDlgMain::OnInitDialog()
     ComponentResize();
     
     log_no = 0;
+    bRelease = false;
     bManager = true;
     bConnect = false;
 
@@ -374,38 +375,70 @@ void CDlgMain::Login()
 {
     BOOST_LOG_TRIVIAL(info) << "CDlgMain::Login()";
     ::OutputDebugStringA("CDlgMain::Login()");
-    auto const text = "{\"msgtype\":\"login\",\"shop_no\": \"3062\",\"auth_key\":\"4285\"}";
-    ws_session->write(text);
+    auto const message = "{\"msgtype\":\"login\",\"shop_no\": \"3062\",\"auth_key\":\"4285\"}";
+    ws_session->write(message);
 }
 
 void CDlgMain::GenPin()
 {
     BOOST_LOG_TRIVIAL(info) << "CDlgMain::GenPin()";
     ::OutputDebugStringA("CDlgMain::GenPin()");
-    auto const text = "{\"msgtype\":\"genpin\",\"shop_no\": \"3062\"}";
-    ws_session->write(text);
+    auto const message = "{\"msgtype\":\"genpin\",\"shop_no\": \"3062\"}";
+    ws_session->write(message);
 }
 
 void CDlgMain::Order(json_util &util)
 {
     BOOST_LOG_TRIVIAL(info) << "CDlgMain::Order()";
     ::OutputDebugStringA("CDlgMain::Order()");
-    util.set_int("status", 1);
-    std::string text = util.str();
-    //auto const text = "{\"msgtype\":\"order\",\"shop_no\": \"3062\"}";
-    ws_session->write(text.c_str());
+
+    boost::json::value &value = util.get();
+    value.at("status") = 1;
+    //util.get().at("status") = 2;
+
+    //std::string message = boost::json::serialize(value);
+    std::string message = util.str();
+    ws_session->write(message.c_str());
+
+    boost::json::value orderList = value.at("pos_order").at("orderList");
+    for (auto& item : orderList.as_array()) {
+        cout << item << endl;
+        //item.as_object()["qty"] = 2;
+        BOOST_LOG_TRIVIAL(info) << item.at("productCode").as_string() << " : " << item.at("qty").as_int64() << endl;
+    }
+
+    string text = "주문 요청입니다 : 테이블 (" + util.get_string("table_cd") + ") 에서 " + strutil::long_to_str(orderList.as_array().size()) + "개 주문";
+    BOOST_LOG_TRIVIAL(info) << text;
+    WriteLog(text);
 }
 
-//void CDlgMain::Order(std::string message)
-//{
-//    BOOST_LOG_TRIVIAL(info) << "CDlgMain::Order()";
-//    ::OutputDebugStringA("CDlgMain::Order()");
-//    auto const text = "{\"msgtype\":\"order\",\"shop_no\": \"3062\"}";
-//    ws_session->write(text);
-//}
+void CDlgMain::Release()
+{
+    BOOST_LOG_TRIVIAL(info) << "CDlgMain::Release()";
+    ::OutputDebugStringA("void CDlgMain::Release()");
+
+    if (bRelease == false) {
+        bManager = false;
+
+        corder_config::release();
+        ioc.stop();
+        session_thread.interrupt();
+        connect_thread.interrupt();
+        session_thread.join();
+        connect_thread.join();
+
+        BOOST_LOG_TRIVIAL(info) << "COrder Agent End";
+        bRelease = true;
+    }
+}
 
 void CDlgMain::OnClose()
 {
+    BOOST_LOG_TRIVIAL(info) << "CDlgMain::OnClose()";
+    ::OutputDebugStringA("void CDlgMain::OnClose()");
+
+    Release();
+
     CDialogEx::OnClose();
 }
 
@@ -414,61 +447,11 @@ void CDlgMain::OnDestroy()
     BOOST_LOG_TRIVIAL(info) << "CDlgMain::OnDestroy()";
     ::OutputDebugStringA("void CDlgMain::OnDestroy()");
 
-    bManager = false;
-
-    corder_config::release();
-    ioc.stop();
-    session_thread.interrupt();
-    connect_thread.interrupt();
-    session_thread.join();
-    connect_thread.join();
-
-    BOOST_LOG_TRIVIAL(info) << "COrder Agent End";
+    Release();
 
     CDialogEx::OnDestroy();
 }
 
-void CDlgMain::HandleMessage(std::string message)
-{
-    BOOST_LOG_TRIVIAL(debug) << "CDlgMain::HandleMessage() : " << message;
-
-    std::wstring recv = cbolt::strutil::mbs_to_wcs(message);
-    //::OutputDebugString(recv.c_str());
-
-    try {
-        json_util util;
-        util.parse(message.c_str());
-        if (util.parse(message.c_str()) == true) {
-            std::string msgtype = util.get_string("msgtype");
-
-            if (msgtype == "login") {
-                string text = "로그인에 성공하였습니다.";
-                BOOST_LOG_TRIVIAL(info) << text;
-                WriteLog(text);
-            }
-            else if (msgtype == "genpin") {
-                string text = "핀 번호가 생성되었습니다 : " + util.get_string("pin");
-                BOOST_LOG_TRIVIAL(info) << text;
-                WriteLog(text);
-            }
-            else if (msgtype == "order") {
-                Order(util);
-                string text = "주문 요청입니다 : ";
-                BOOST_LOG_TRIVIAL(info) << text;
-                WriteLog(text);
-            }
-            else {
-                ::OutputDebugString(L"Unknown Message Type");
-            }
-        }
-        else {
-            ::OutputDebugString(L"Parse Error");
-        }
-    }
-    catch (...) {
-        ::OutputDebugStringA("HandleMessage exception");
-    }
-}
 
 void CDlgMain::HandleStatus(int status)
 {
@@ -483,12 +466,12 @@ void CDlgMain::HandleStatus(int status)
         ioc.stop();
 
         long count = ws_session.use_count();
-        std::string strCount = cbolt::strutil::long_to_str(count);
+        std::string strCount = strutil::long_to_str(count);
         ::OutputDebugStringA(strCount.c_str());
 
         ws_session.reset();
         count = ws_session.use_count();
-        strCount = cbolt::strutil::long_to_str(count);
+        strCount = strutil::long_to_str(count);
         ::OutputDebugStringA(strCount.c_str());
 
         BOOST_LOG_TRIVIAL(info) << "서버와의 접속이 끊어졌습니다.";
@@ -520,4 +503,41 @@ void CDlgMain::ConnectionManager()
     ::OutputDebugStringA("CDlgMain::ConnectionManager() OUT");
 }
 
+void CDlgMain::HandleMessage(std::string message)
+{
+    BOOST_LOG_TRIVIAL(debug) << "CDlgMain::HandleMessage() : " << message;
+
+    //std::wstring recv = strutil::mbs_to_wcs(message);
+    //::OutputDebugString(recv.c_str());
+
+    try {
+        json_util util;
+        if (util.parse(message.c_str()) == true) {
+            std::string msgtype = util.get_string("msgtype");
+
+            if (msgtype == "login") {
+                string text = "로그인에 성공하였습니다.";
+                BOOST_LOG_TRIVIAL(info) << text;
+                WriteLog(text);
+            }
+            else if (msgtype == "genpin") {
+                string text = "핀 번호가 생성되었습니다 : " + util.get_string("pin");
+                BOOST_LOG_TRIVIAL(info) << text;
+                WriteLog(text);
+            }
+            else if (msgtype == "order") {
+                Order(util);
+            }
+            else {
+                ::OutputDebugString(L"Unknown Message Type");
+            }
+        }
+        else {
+            ::OutputDebugString(L"Parse Error");
+        }
+    }
+    catch (...) {
+        ::OutputDebugStringA("HandleMessage exception");
+    }
+}
 

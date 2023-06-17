@@ -12,8 +12,6 @@ ASCII 형식을 사용할 경우, 영문자, 숫자 외의 문자 (한글 등)�
 using namespace std;
 using namespace rapidjson;
 
-//typedef GenericDocument<UTF16<> > Document;
-
 namespace cbolt {
 
 class json_file
@@ -24,15 +22,16 @@ public:
     Document& operator()() { return *document; }
 
     bool load(const char *path);
+    bool parse(const char* json);
     int get_int(const char *key);
     bool get_bool(const char *key);
     string get_string(const char *key);
     wstring get_wstring(const char *key);
+    Value::Object get_object(const char* key);
     Document* doc() { return document; }
 
 private:
     Document *document;
-    char *buffer;
 };
 
 }

@@ -7,7 +7,7 @@ class OrderDao(Base):
 
     order_no = Column(Integer, primary_key=True)
     shop_no = Column(Integer, nullable=False)
-    table_no = Column(Integer, nullable=False)
-    auth_key = Column(String, nullable=False)
+    table_cd = Column(String, nullable=False)
+    otp_pin = Column(String, nullable=False)
     regdate = Column(String, nullable=False)
     pos_order = Column(String, nullable=True)

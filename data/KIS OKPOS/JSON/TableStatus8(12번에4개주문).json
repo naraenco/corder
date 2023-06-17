@@ -1,0 +1,199 @@
+{
+   "CUSTTYPE" : [
+      {
+         "CUST_CD" : "01",
+         "CUST_NM" : "³²"
+      },
+      {
+         "CUST_CD" : "02",
+         "CUST_NM" : "¿©"
+      }
+   ],
+   "tableList" : [
+      {
+         "tableNo" : "001",
+         "tableStatus" : "0"
+      },
+      {
+         "orderList" : [
+            {
+               "productCode" : "000070",
+               "qty" : 1
+            },
+            {
+               "productCode" : "000003",
+               "qty" : 1
+            },
+            {
+               "productCode" : "000013",
+               "qty" : 1
+            }
+         ],
+         "orderSeq" : "0001",
+         "tableNo" : "002",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "003",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "004",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "005",
+         "tableStatus" : "0"
+      },
+      {
+         "orderList" : [
+            {
+               "productCode" : "000002",
+               "qty" : 1
+            },
+            {
+               "productCode" : "000017",
+               "qty" : 1
+            },
+            {
+               "productCode" : "000004",
+               "qty" : 1
+            },
+            {
+               "productCode" : "000057",
+               "qty" : 1
+            },
+            {
+               "productCode" : "000059",
+               "qty" : 1
+            },
+            {
+               "productCode" : "000007",
+               "qty" : 1
+            }
+         ],
+         "orderSeq" : "0002",
+         "tableNo" : "006",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "007",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "008",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "009",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "010",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "011",
+         "tableStatus" : "0"
+      },
+      {
+         "orderList" : [
+            {
+               "productCode" : "000007",
+               "qty" : 1
+            },
+            {
+               "productCode" : "000011",
+               "qty" : 1
+            },
+            {
+               "productCode" : "000012",
+               "qty" : 1
+            },
+            {
+               "productCode" : "000001",
+               "qty" : 1
+            }
+         ],
+         "orderSeq" : "0001",
+         "tableNo" : "012",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "013",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "014",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "015",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "016",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "017",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "018",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "019",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "020",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "021",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "022",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "023",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "024",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "025",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "026",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "027",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "028",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "029",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "030",
+         "tableStatus" : "0"
+      },
+      {
+         "tableNo" : "031",
+         "tableStatus" : "0"
+      }
+   ]
+}
