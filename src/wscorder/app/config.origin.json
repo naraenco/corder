@@ -1,5 +1,7 @@
 {
-  "redis_ip": "192.168.240.175",
-  "sync_server_port": 19001,
+  "db_ip": "127.0.0.1",
+  "redis_ip": "127.0.0.1",
+  "pin_expire_time": 6000,
+  "service_port": 19000,
   "reconnect_timer": 10
 }
