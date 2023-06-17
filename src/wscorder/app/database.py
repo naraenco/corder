@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from common import config
 
-SQLALCHEMY_DATABASE_URL = "mysql+mysqldb://corder:dhejwnqns%211231@127.0.0.1:3306/corder"
+dbip = config.get('db_ip')
+SQLALCHEMY_DATABASE_URL = f"mysql+mysqldb://corder:dhejwnqns%211231@{dbip}:3306/corder"
 # SQLALCHEMY_DATABASE_URL = "mysql+mysqldb://corder:dhejwnqns%211231@127.0.0.1:3306/corder?" \
 #                           "allowPublicKeyRetrieval=true"
 engine = create_engine(

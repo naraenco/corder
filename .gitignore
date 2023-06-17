@@ -2,6 +2,7 @@
 log/
 *.log
 *.bak
+config.json
 
 # VS Code files for those working on multiple tools
 .vscode/*

@@ -21,7 +21,8 @@ async def orderpost(orderdto: OrderDto):
     print(f"orderpost : {data}")
     print(f"orderdto : {orderdto}")
     dao = OrderDao(**orderdto.dict())
-    dao.regdate = time.time()
+    now = time
+    dao.regdate = now.strftime('%Y%m%d%H%M%S')
     db = SessionLocal()
     db.add(dao)
     db.commit()
@@ -41,7 +42,6 @@ async def orderpost(orderdto: OrderDto):
     #             dao = OrderDao(**orderdto.dict())
     #             now = time
     #             dao.regdate = now.strftime('%Y%m%d%H%M%S')
-    #             dao.regdate = time.time()
     #             db = SessionLocal()
     #             db.add(dao)
     #             db.commit()
