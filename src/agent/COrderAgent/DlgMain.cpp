@@ -154,6 +154,8 @@ BOOL CDlgMain::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
 
+    setlocale(LC_ALL, "");;
+
     MoveWindow(m_WindowRect.left, m_WindowRect.top, m_WindowRect.right - m_WindowRect.left, m_WindowRect.bottom - m_WindowRect.top, TRUE);
 
     m_list_main.InsertColumn(0, _T("No"), LVCFMT_LEFT, 0);
@@ -177,6 +179,8 @@ BOOL CDlgMain::OnInitDialog()
 
     if (boost::filesystem::exists(path)) {
         corder_config::instance()->get_config()->load(path.c_str());
+        pos_extra = corder_config::get_string("pos_extra") + ".json";
+        path_order = corder_config::get_string("path_order") + "Order_";
         //::OutputDebugStringA(corder_config::get_string("db_port").c_str());
     }
     else {
@@ -185,7 +189,7 @@ BOOL CDlgMain::OnInitDialog()
 
     init_boost_log();
 
-    reconnect_time = corder_config::instance()->get_int("reconnect_time") * 1000;
+    reconnect_time = corder_config::instance()->get_int("timer_connect_retry") * 1000;
 
     if (corder_config::get_string("log_level") == "debug") {
         boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::debug);
@@ -392,24 +396,42 @@ void CDlgMain::Order(json_util &util)
     BOOST_LOG_TRIVIAL(info) << "CDlgMain::Order()";
     ::OutputDebugStringA("CDlgMain::Order()");
 
-    boost::json::value &value = util.get();
-    value.at("status") = 1;
-    //util.get().at("status") = 2;
+    try {
+        boost::json::value &value = util.get();
+        value.at("status") = 1;
+        //util.get().at("status") = 2;
 
-    //std::string message = boost::json::serialize(value);
-    std::string message = util.str();
-    ws_session->write(message.c_str());
+        //std::string message = boost::json::serialize(value);
+        std::string message = util.str();
+        ws_session->write(message.c_str());
 
-    boost::json::value orderList = value.at("pos_order").at("orderList");
-    for (auto& item : orderList.as_array()) {
-        cout << item << endl;
-        //item.as_object()["qty"] = 2;
-        BOOST_LOG_TRIVIAL(info) << item.at("productCode").as_string() << " : " << item.at("qty").as_int64() << endl;
+        boost::json::value orderList = value.at("pos_order").at("orderList");
+        for (auto& item : orderList.as_array()) {
+            cout << item << endl;
+            //item.as_object()["qty"] = 2;
+            BOOST_LOG_TRIVIAL(info) << item.at("productCode").as_string() << " : " << item.at("qty").as_int64() << endl;
+        }
+
+        boost::json::object record;
+        record["tableNo"] = value.at("table_cd");
+
+        std::string order_seq = strutil::long_to_str(value.at("order_seq").as_int64());
+        record["orderSeq"] = order_seq;
+        //record["orderSeq"] = value.at("order_seq");
+        //record["orderSeq"] = strutil::long_to_str(boost::json::value_to<int>(value.at("order_seq")));
+        record["orderList"] = orderList;
+
+        string regdate = boost::json::value_to<string>(value.at("regdate"));
+        string path = path_order + regdate + pos_extra;
+        util.write(path, record, false);
+
+        string text = "주문 요청입니다 : 테이블 (" + util.get_string("table_cd") + ") 에서 " + strutil::long_to_str(orderList.as_array().size()) + "개 주문";
+        BOOST_LOG_TRIVIAL(info) << text;
+        WriteLog(text);
     }
-
-    string text = "주문 요청입니다 : 테이블 (" + util.get_string("table_cd") + ") 에서 " + strutil::long_to_str(orderList.as_array().size()) + "개 주문";
-    BOOST_LOG_TRIVIAL(info) << text;
-    WriteLog(text);
+    catch (std::exception const& e) {
+        BOOST_LOG_TRIVIAL(error) << e.what() << endl;
+    }
 }
 
 void CDlgMain::Release()

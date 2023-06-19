@@ -51,11 +51,13 @@ class RedisUtil:
         try:
             with redis.StrictRedis(connection_pool=self.redis_pool) as conn:
                 if conn.exists(key) == 0:
-                    raise CorderException("1003")
+                    return "1003"
                 data = bytes(conn.get(key)).decode('utf-8')
                 data = json.loads(data)
                 if data['shop_no'] != value:
-                    raise CorderException("1004")
-        except Exception:
-            raise CorderException("1002")
+                    return "1004"
+        except Exception as e:
+            logging.getLogger().error(e)
+            # raise CorderException("1002")
+            return "1002"
         return "0000"

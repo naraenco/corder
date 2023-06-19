@@ -11,7 +11,7 @@ class WebSocketManager:
     def __init__(self):
         self.connections: dict[str, WebSocket] = {}
         self.orders: dict[int, dict] = {}
-        self.orderno = 0
+        self.order_seq = 0
 
     async def message_handler(self, websocket: WebSocket):
         logging.getLogger().debug("ConnectionManager.message_handler")
@@ -123,7 +123,7 @@ class WebSocketManager:
     async def order(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.order")
         try:
-            order = self.orders.get(recvmsg['orderno'])
+            order = self.orders.get(recvmsg['order_seq'])
             order['status'] = recvmsg['status']
         except Exception as e:
             logging.getLogger().error(e)
@@ -136,13 +136,13 @@ class WebSocketManager:
         except Exception as e:
             logging.getLogger().error(e)
 
-    async def wait_order(self, orderno):
+    async def wait_order(self, order_seq):
         timeout_count = 0
         result = False
         while True:
             if timeout_count > 5:
                 break
-            order = self.orders.get(orderno)
+            order = self.orders.get(order_seq)
             if order.get('status') == 1:
                 result = True
                 break
@@ -151,18 +151,18 @@ class WebSocketManager:
         return result
 
     async def send_order(self, params):
-        self.orderno = self.orderno + 1
+        self.order_seq = self.order_seq + 1
         result = 0
         try:
             conn = self.connections.get(str(params['shop_no']))
             response = copy.deepcopy(params)
             response['msgtype'] = "order"
-            response['orderno'] = self.orderno
-            response['status'] = 0                  # 전송 상태 0, 응답 받은 후 1, 1보다 크면 에러
-            self.orders[self.orderno] = response    # API에서 요청 받은 주문을 기록
+            response['order_seq'] = self.order_seq
+            response['status'] = 0                      # 전송 상태 0, 응답 받은 후 1, 1보다 크면 에러
+            self.orders[self.order_seq] = response      # API에서 요청 받은 주문을 기록
             response = str(json.dumps(response))
-            await conn.send_text(response)          # API에서 요청 받은 주문을 전송
-            result = self.orderno
+            await conn.send_text(response)              # API에서 요청 받은 주문을 전송
+            result = self.order_seq
         except Exception as e:
             logging.getLogger().error(f"send_order : {e}")
         return result

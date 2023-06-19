@@ -1,8 +1,9 @@
 {
     "pos_type" : "KIS",
-    "path_match" : "",
-    "path_status" : "",
-    "path_order" : "",
+    "pos_extra" : "01",
+    "path_match" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\USE_TABLE.json",
+    "path_status" : "C:\\_OKPOS\\OKPOSIF\\KOD\\SEND\\TableStatus.json",
+    "path_order" : "C:\\_OKPOS\\OKPOSIF\\KOD\\RECV\\",
     "timer_status_query" : "",
     "timer_connect_retry" : 10,
     "server_address" : "127.0.0.1",

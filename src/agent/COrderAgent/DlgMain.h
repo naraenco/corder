@@ -41,6 +41,9 @@ private:
     long log_no;
     long reconnect_time;
 
+    std::string pos_extra;
+    std::string path_order;
+
     CMFCUIView* pMFCUIView;
     CListCtrl m_list_main;
     CRect m_WindowRect;

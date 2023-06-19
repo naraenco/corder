@@ -40,6 +40,7 @@ bool json_util::parse(std::string data)
 bool json_util::write(std::string path, boost::json::value const& jv, bool pretty)
 {
     std::ofstream os(path);
+
     if (pretty) {
         pretty_print(os, jv);
     }
