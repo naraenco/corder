@@ -1,4 +1,5 @@
 ﻿#pragma once
+#pragma warning(disable:4244)
 #include <string>
 #include "bolt/json_util.h"
 
@@ -29,6 +30,7 @@ public:
     void Login();
     void GenPin();
     void Order(json_util& util);
+    void Menu(json_util& util);
 
     void HandleMessage(std::string message);
     void HandleStatus(int status);

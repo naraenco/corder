@@ -397,34 +397,24 @@ void CDlgMain::Order(json_util &util)
 
     try {
         boost::json::value &value = util.get();
-        value.at("status") = 1;
-        //util.get().at("status") = 2;
 
-        //std::string message = boost::json::serialize(value);
-        std::string message = util.str();
-        ws_session->write(message.c_str());
-
+        std::string order_seq = strutil::long_to_str(value.at("order_seq").as_int64());
         boost::json::value orderList = value.at("pos_order").at("orderList");
-        for (auto& item : orderList.as_array()) {
-            cout << item << endl;
-            //item.as_object()["qty"] = 2;
-            BOOST_LOG_TRIVIAL(info) << item.at("productCode").as_string() << " : " << item.at("qty").as_int64() << endl;
-        }
 
         boost::json::object record;
         record["tableNo"] = value.at("table_cd");
-
-        std::string order_seq = strutil::long_to_str(value.at("order_seq").as_int64());
         record["orderSeq"] = order_seq;
-        //record["orderSeq"] = value.at("order_seq");
-        //record["orderSeq"] = strutil::long_to_str(boost::json::value_to<int>(value.at("order_seq")));
         record["orderList"] = orderList;
-
         string regdate = boost::json::value_to<string>(value.at("regdate"));
         string path = path_order + regdate + pos_extra;
         util.write(path, record, false);
 
-        string text = "주문 요청입니다 : 테이블 (" + util.get_string("table_cd") + ") 에서 " + strutil::long_to_str(orderList.as_array().size()) + "개 주문";
+        value.at("status") = 1;
+        std::string message = util.str();
+        ws_session->write(message.c_str());
+
+        string text = "주문 요청입니다 : 테이블 (" + util.get_string("table_cd") + ") 에서 "
+            + strutil::long_to_str(orderList.as_array().size()) + "개 주문 [" + order_seq + "]";
         BOOST_LOG_TRIVIAL(info) << text;
         WriteLog(text);
     }
@@ -432,6 +422,48 @@ void CDlgMain::Order(json_util &util)
         BOOST_LOG_TRIVIAL(error) << e.what() << endl;
     }
 }
+
+void CDlgMain::Menu(json_util& util)
+{
+    BOOST_LOG_TRIVIAL(info) << "CDlgMain::Menu()";
+    ::OutputDebugStringA("CDlgMain::Menu()");
+
+    try {
+        std::string filename = corder_config::get_string("path_status");
+        json_util jsonfile;
+        jsonfile.load(filename);
+
+        boost::json::value& value = jsonfile.get();
+
+        std::string table_cd = util.get_string("table_cd");
+        std::string order_seq = strutil::long_to_str(util.get_int("order_seq"));
+        boost::json::value orderList;
+
+        boost::json::array tableList = value.at("tableList").as_array();
+        for (auto& table : tableList) {
+            if (table.at("tableNo").as_string() == table_cd) {
+                orderList = table.at("orderList");
+                break;
+            }
+        }
+
+        boost::json::object object;
+        object["msgtype"] = "menu";
+        object["shop_no"] = util.get_int("shop_no");
+        object["table_cd"] = table_cd;
+        object["order_seq"] = order_seq;
+        object["orderList"] = orderList;
+
+        std::string message = boost::json::serialize(object);
+        ::OutputDebugStringA(message.c_str());
+        ws_session->write(message.c_str());
+    }
+    catch (std::exception const& e) {
+        BOOST_LOG_TRIVIAL(error) << e.what() << endl;
+    }
+
+}
+
 
 void CDlgMain::Release()
 {
@@ -499,7 +531,6 @@ void CDlgMain::HandleStatus(int status)
     else if (status == WSAECONNREFUSED) {
         ioc.stop();
         ws_session.reset();
-
         bConnect = false;
 
         string text = "서버에 접속할 수 없습니다.";
@@ -509,6 +540,15 @@ void CDlgMain::HandleStatus(int status)
     else if (status == CONNECTION_SUCCESS) {
         bConnect = true;
         Login();
+    }
+    else {
+        ioc.stop();
+        ws_session.reset();
+        bConnect = false;
+
+        string text = "서버와의 접속이 끊어졌습니다.";
+        BOOST_LOG_TRIVIAL(info) << text;
+        WriteLog(text);
     }
 }
 
@@ -564,6 +604,9 @@ void CDlgMain::HandleMessage(std::string message)
             else if (msgtype == "order") {
                 Order(util);
             }
+            else if (msgtype == "menu") {
+                Menu(util);
+            }
             else {
                 ::OutputDebugString(L"Unknown Message Type");
             }
@@ -574,23 +617,5 @@ void CDlgMain::HandleMessage(std::string message)
     }
     catch (...) {
         ::OutputDebugStringA("HandleMessage exception");
-    }
-}
-
-void CDlgMain::TableStatus()
-{
-    std::string filename = corder_config::get_string("path_status");
-    json_util util;
-    util.load(filename);
-
-    boost::json::value& value = util.get();
-
-    std::string table_cd = "";
-
-    boost::json::array tableList = value.at("tableList").as_array();
-    for (auto& table : tableList) {
-        if (table.at("tableNo").as_string() == table_cd) {
-
-        }
     }
 }

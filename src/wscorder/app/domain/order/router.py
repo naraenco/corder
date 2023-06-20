@@ -11,7 +11,10 @@ router = APIRouter()
 
 @router.get("/")
 async def orderget():
-    return "order"
+    success = True
+    error = "0000"
+    response = {"success": success, "error": error}
+    return response
 
 
 @router.post("/")
@@ -28,14 +31,13 @@ async def orderpost(orderdto: OrderDto):
         if error == "0000":
             orderno = await ws_manager.send_order(data)
             if orderno > 0:
-                result = await ws_manager.wait_order(orderno)
-                if result is True:
-                    success = True
-                    print(f"orderdto : {orderdto}")
-                    dao = OrderDao(**orderdto.dict())
-                    db = SessionLocal()
-                    db.add(dao)
-                    db.commit()
+                # result = await ws_manager.wait_order(orderno)
+                # if result is True:
+                success = True
+                dao = OrderDao(**orderdto.dict())
+                db = SessionLocal()
+                db.add(dao)
+                db.commit()
     except CorderException as e:
         error = e.value()
     except Exception as e:

@@ -1,4 +1,6 @@
 #pragma warning(push)
+#pragma warning(pop)
+#pragma warning(disable:4503)
 #pragma warning(disable:4819)
 #include <string>
 #include "boost_log_wrapper.h"
@@ -10,8 +12,6 @@
 #include <boost/log/support/date_time.hpp>
 #include <Windows.h>
 
-#pragma warning(pop)
-#pragma warning(disable:4503)
 
 void init_boost_log()
 {

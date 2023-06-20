@@ -31,6 +31,12 @@ void session::fail(beast::error_code ec, char const* what)
         connect_status = false;
         status_handler(WSAECONNREFUSED);
     }
+    else {
+        connect_status = false; // 6?
+        status_handler(ERROR_INVALID_HANDLE);
+    }
+    // WSAECONNRESET
+    // WSAESHUTDOWN
 }
 
 void session::set_message_handler(func1 func)

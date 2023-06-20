@@ -4,7 +4,7 @@
     "path_match" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\USE_TABLE.json",
     "path_status" : "C:\\_OKPOS\\OKPOSIF\\KOD\\SEND\\TableStatus.json",
     "path_order" : "C:\\_OKPOS\\OKPOSIF\\KOD\\RECV\\",
-    "timer_status_query" : "",
+    "timer_status_query" : 60,
     "timer_connect_retry" : 10,
     "server_address" : "127.0.0.1",
     "server_port" : "19000",
