@@ -24,6 +24,7 @@ public:
     void Exit();
     void Config();
 
+    void Release();
     void Connect();
     void Login();
     void GenPin();
@@ -32,8 +33,8 @@ public:
     void HandleMessage(std::string message);
     void HandleStatus(int status);
     void ConnectionManager();
-    void Release();
-    
+    void TableStatus();
+
 private:
     bool bManager;
     bool bConnect;

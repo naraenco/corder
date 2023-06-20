@@ -1,9 +1,11 @@
 #include "json_util.h"
 #include <iostream>
+#include <Windows.h>
 
 json_util::json_util()
 {
     opt.allow_invalid_utf8 = true;
+    opt.allow_trailing_commas = true;
 }
 
 json_util::~json_util()
@@ -13,7 +15,7 @@ json_util::~json_util()
 
 bool json_util::load(std::string path)
 {
-    std::ifstream in(path);
+    std::ifstream in(path, std::ios_base::binary);
     std::string buffer;
 
     if (!in.is_open()) {
@@ -21,25 +23,48 @@ bool json_util::load(std::string path)
         return false;
     }
 
+    //char buf[1024];
+    //while (in) {
+    //    in.getline(buf, 1024);
+    //    buffer += buf;
+    //}
+
     in.seekg(0, std::ios::end);
     int size = (int)in.tellg();
     buffer.resize(size);
     in.seekg(0, std::ios::beg);
     in.read(&buffer[0], size);
+    in.close();
 
-    value = boost::json::parse(buffer, boost::json::storage_ptr(), opt);
+    boost::json::error_code ec;
+    try {
+        value = boost::json::parse(buffer, ec, boost::json::storage_ptr(), opt);
+        //std::string tmp = boost::json::serialize(value);
+        //::OutputDebugStringA(tmp.c_str());
+    }
+    catch (std::exception const& e) {
+        std::cout << e.what() << std::endl;
+        return false;
+    }
+
     return true;
 }
 
 bool json_util::parse(std::string data)
 {
-    value = boost::json::parse(data, boost::json::storage_ptr(), opt);
+    try {
+        value = boost::json::parse(data, boost::json::storage_ptr(), opt);
+    }
+    catch (std::exception const& e) {
+        ::OutputDebugStringA(e.what());
+        return false;
+    }
     return true;
 }
 
 bool json_util::write(std::string path, boost::json::value const& jv, bool pretty)
 {
-    std::ofstream os(path);
+    std::ofstream os(path, std::ios_base::binary);
 
     if (pretty) {
         pretty_print(os, jv);

@@ -43,12 +43,12 @@ static void service()
     }
 }
 
-void run()
-{
-    ws_session = std::make_shared<session>(ioc);
-    session_thread = boost::thread(boost::bind(&boost::asio::io_service::run, &ioc));
-    ioc.post(boost::bind(&service));
-}
+//void run()
+//{
+//    ws_session = std::make_shared<session>(ioc);
+//    session_thread = boost::thread(boost::bind(&boost::asio::io_service::run, &ioc));
+//    ioc.post(boost::bind(&service));
+//}
 
 
 IMPLEMENT_DYNAMIC(CDlgMain, CDialogEx)
@@ -154,7 +154,7 @@ BOOL CDlgMain::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
 
-    setlocale(LC_ALL, "");;
+    //setlocale(LC_ALL, "");;
 
     MoveWindow(m_WindowRect.left, m_WindowRect.top, m_WindowRect.right - m_WindowRect.left, m_WindowRect.bottom - m_WindowRect.top, TRUE);
 
@@ -181,7 +181,6 @@ BOOL CDlgMain::OnInitDialog()
         corder_config::instance()->get_config()->load(path.c_str());
         pos_extra = corder_config::get_string("pos_extra") + ".json";
         path_order = corder_config::get_string("path_order") + "Order_";
-        //::OutputDebugStringA(corder_config::get_string("db_port").c_str());
     }
     else {
         ::OutputDebugString(L"<config.json> file not found");
@@ -477,26 +476,35 @@ void CDlgMain::OnDestroy()
 
 void CDlgMain::HandleStatus(int status)
 {
-    BOOST_LOG_TRIVIAL(info) << "CDlgMain::HandleStatus()";
+    BOOST_LOG_TRIVIAL(info) << "CDlgMain::HandleStatus() : " << status;
     ::OutputDebugStringA("CDlgMain::HandleStatus()");
 
     if ((status == ERROR_CONNECTION_ABORTED) ||
         (status == WSAECONNABORTED) ||
         (status == WSAECONNRESET))
     {
-        bConnect = false;
         ioc.stop();
-
-        long count = ws_session.use_count();
-        std::string strCount = strutil::long_to_str(count);
-        ::OutputDebugStringA(strCount.c_str());
-
         ws_session.reset();
-        count = ws_session.use_count();
-        strCount = strutil::long_to_str(count);
-        ::OutputDebugStringA(strCount.c_str());
 
-        BOOST_LOG_TRIVIAL(info) << "서버와의 접속이 끊어졌습니다.";
+        //long count = ws_session.use_count();
+        //std::string strCount = strutil::long_to_str(count);
+        //::OutputDebugStringA(strCount.c_str());
+
+        bConnect = false;
+
+        string text = "서버와의 접속이 끊어졌습니다.";
+        BOOST_LOG_TRIVIAL(info) << text;
+        WriteLog(text);
+    }
+    else if (status == WSAECONNREFUSED) {
+        ioc.stop();
+        ws_session.reset();
+
+        bConnect = false;
+
+        string text = "서버에 접속할 수 없습니다.";
+        BOOST_LOG_TRIVIAL(info) << text;
+        WriteLog(text);
     }
     else if (status == CONNECTION_SUCCESS) {
         bConnect = true;
@@ -512,11 +520,17 @@ void CDlgMain::ConnectionManager()
     while (bManager) {
         if (bConnect == false) {
             ::OutputDebugStringA("CDlgMain::ConnectionManager() connect");
+            string text = "서버에 접속 시도중입니다.";
+            BOOST_LOG_TRIVIAL(info) << text;
+            WriteLog(text);
+
             ioc.reset();
-            ws_session = std::make_shared<session>(ioc);
-            ws_session->set_message_handler(std::bind(&CDlgMain::HandleMessage, this, placeholders::_1));
-            ws_session->set_status_hanlder(std::bind(&CDlgMain::HandleStatus, this, placeholders::_1));
-            session_thread = boost::thread(boost::bind(&boost::asio::io_service::run, &ioc));
+            if (ws_session.use_count() == 0) {
+                ws_session = std::make_shared<session>(ioc);
+                ws_session->set_message_handler(std::bind(&CDlgMain::HandleMessage, this, placeholders::_1));
+                ws_session->set_status_hanlder(std::bind(&CDlgMain::HandleStatus, this, placeholders::_1));
+                session_thread = boost::thread(boost::bind(&boost::asio::io_service::run, &ioc));
+            }
             ioc.post(boost::bind(&service));
         }
         boost::this_thread::sleep(boost::posix_time::millisec(reconnect_time));
@@ -563,3 +577,20 @@ void CDlgMain::HandleMessage(std::string message)
     }
 }
 
+void CDlgMain::TableStatus()
+{
+    std::string filename = corder_config::get_string("path_status");
+    json_util util;
+    util.load(filename);
+
+    boost::json::value& value = util.get();
+
+    std::string table_cd = "";
+
+    boost::json::array tableList = value.at("tableList").as_array();
+    for (auto& table : tableList) {
+        if (table.at("tableNo").as_string() == table_cd) {
+
+        }
+    }
+}

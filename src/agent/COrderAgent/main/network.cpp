@@ -10,9 +10,9 @@
 
 void session::fail(beast::error_code ec, char const* what)
 {
+    //::OutputDebugStringA(ec.to_string().c_str());
     ::OutputDebugStringA(ec.message().c_str());
-    ::OutputDebugStringA(ec.to_string().c_str());
-    BOOST_LOG_TRIVIAL(error) << "session::fail - " << ec.to_string();
+    //BOOST_LOG_TRIVIAL(error) << "session::fail - " << ec.to_string();
     BOOST_LOG_TRIVIAL(error) << "session::fail - " << ec.message();
 
     if (ec.value() == ERROR_CONNECTION_ABORTED) { // 1236
@@ -26,6 +26,10 @@ void session::fail(beast::error_code ec, char const* what)
     else if (ec.value() == WSAECONNRESET) { // 10054
         connect_status = false;
         status_handler(WSAECONNRESET);
+    }
+    else if (ec.value() == WSAECONNREFUSED) { // 10061
+        connect_status = false;
+        status_handler(WSAECONNREFUSED);
     }
 }
 
