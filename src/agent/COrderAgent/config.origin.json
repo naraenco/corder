@@ -6,7 +6,9 @@
     "path_order" : "C:\\_OKPOS\\OKPOSIF\\KOD\\RECV\\",
     "timer_status_query" : 60,
     "timer_connect_retry" : 10,
-    "server_address" : "127.0.0.1",
+    "server_address" : "corder.co.kr",
     "server_port" : "19000",
+    "shop_no" : "3062",
+    "auth_key" : "C.ORDER",
     "log_level" : "debug"
 }

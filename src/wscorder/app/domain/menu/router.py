@@ -32,7 +32,7 @@ async def menupost(menudto: MenuDto):
         error = redis_pool.validate_pin(data['otp_pin'], shop_no)
         if error != "0000":
             return error
-        result = await ws_manager.query_menu(data)
+        result = await ws_manager.api_menu(data)
         if result is not True:
             return "2001"
     except CorderException as e:

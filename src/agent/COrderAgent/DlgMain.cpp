@@ -271,18 +271,18 @@ void CDlgMain::OnPaint()
     int nServiceY = rcWindow.bottom - 190;
     int nServiceSpace = 20;
 
-    commonData.m_icon_sh_start.Load(IDB_PNG_PINGEN, _T("PNG"), AfxGetApp()->m_hInstance);
-    CommonData::draw(graphics, commonData.m_icon_sh_start, nServiceX, nServiceY, nServiceSpace, rcIconStart);
+    commonData.m_icon_genpin.Load(IDB_PNG_PINGEN, _T("PNG"), AfxGetApp()->m_hInstance);
+    CommonData::draw(graphics, commonData.m_icon_genpin, nServiceX, nServiceY, nServiceSpace, rcIconGenPin);
 
     // function
     int nFunctionX = nListX + nListWidth - (32 * 4) - 60;
     int nFunctionY = nListY + nListHeight + 10;
     int nFunctionSpace = 20;
 
-    CommonData::draw(graphics, commonData.m_icon_document, nFunctionX, nFunctionY, nFunctionSpace, rcIconDocument);
-    CommonData::draw(graphics, commonData.m_icon_folderdoc, nFunctionX, nFunctionY, nFunctionSpace, rcIconFolderDoc);
-    CommonData::draw(graphics, commonData.m_icon_trash, nFunctionX, nFunctionY, nFunctionSpace, rcIconTrash);
-    CommonData::draw(graphics, commonData.m_icon_refresh, nFunctionX, nFunctionY, nFunctionSpace, rcRefresh);
+    //CommonData::draw(graphics, commonData.m_icon_document, nFunctionX, nFunctionY, nFunctionSpace, rcIconDocument);
+    //CommonData::draw(graphics, commonData.m_icon_folderdoc, nFunctionX, nFunctionY, nFunctionSpace, rcIconFolderDoc);
+    //CommonData::draw(graphics, commonData.m_icon_trash, nFunctionX, nFunctionY, nFunctionSpace, rcIconTrash);
+    //CommonData::draw(graphics, commonData.m_icon_refresh, nFunctionX, nFunctionY, nFunctionSpace, rcRefresh);
 
     // etc
     commonData.m_image_body.Load(IDB_PNG_TEXT, _T("PNG"), AfxGetApp()->m_hInstance);
@@ -294,7 +294,7 @@ void CDlgMain::OnPaint()
 
 void CDlgMain::OnLButtonDown(UINT nFlags, CPoint point)
 {
-    if (IsPosition(rcIconStart, point))
+    if (IsPosition(rcIconGenPin, point))
     {
         GenPin();
     }
@@ -306,11 +306,11 @@ void CDlgMain::OnLButtonDown(UINT nFlags, CPoint point)
     }
     else if (IsPosition(rcIconTrash, point))
     {
-        if (m_list_main.GetItemCount() == 0) return;
-        if (MessageBox(_T("All lists are deleting.\nWould you like to process?"), _T("Bolt Text Manager"), MB_YESNO) == IDYES)
-        {
-            m_list_main.DeleteAllItems();
-        }
+        //if (m_list_main.GetItemCount() == 0) return;
+        //if (MessageBox(_T("All lists are deleting.\nWould you like to process?"), _T("Bolt Text Manager"), MB_YESNO) == IDYES)
+        //{
+        //    m_list_main.DeleteAllItems();
+        //}
     }
     else if (IsPosition(rcRefresh, point))
     {
@@ -331,10 +331,10 @@ void CDlgMain::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CDlgMain::OnMouseMove(UINT nFlags, CPoint point)
 {
-    //if (IsPosition(rcIconStart, point))
-    //{
-    //    SetCursor(LoadCursor(NULL, IDC_HAND));
-    //}
+    if (IsPosition(rcIconGenPin, point))
+    {
+        SetCursor(LoadCursor(NULL, IDC_HAND));
+    }
     //else if (IsPosition(rcIconDocument, point))
     //{
     //    SetCursor(LoadCursor(NULL, IDC_HAND));
@@ -351,10 +351,10 @@ void CDlgMain::OnMouseMove(UINT nFlags, CPoint point)
     //{
     //    SetCursor(LoadCursor(NULL, IDC_HAND));
     //}
-    //else
-    //{
-    //    SetCursor(LoadCursor(NULL, IDC_ARROW));
-    //}
+    else
+    {
+        SetCursor(LoadCursor(NULL, IDC_ARROW));
+    }
     CDialogEx::OnMouseMove(nFlags, point);
 }
 
@@ -382,7 +382,6 @@ void CDlgMain::Login()
 {
     BOOST_LOG_TRIVIAL(info) << "CDlgMain::Login()";
     ::OutputDebugStringA("CDlgMain::Login()");
-    //auto const message = "{\"msgtype\":\"login\",\"shop_no\": \"3062\",\"auth_key\":\"4285\"}";
     std::string message = "{\"msgtype\":\"login\",\"shop_no\": \"" 
         + shop_no + "\",\"auth_key\":\"" 
         + auth_key + "\"}";
@@ -406,22 +405,22 @@ void CDlgMain::Order(json_util &util)
         boost::json::value &value = util.get();
 
         std::string order_seq = strutil::long_to_str(value.at("order_seq").as_int64());
+        string regdate = boost::json::value_to<string>(value.at("regdate"));
+        string path = path_order + regdate + pos_extra;
         boost::json::value orderList = value.at("pos_order").at("orderList");
 
         boost::json::object record;
         record["tableNo"] = value.at("table_cd");
         record["orderSeq"] = order_seq;
         record["orderList"] = orderList;
-        string regdate = boost::json::value_to<string>(value.at("regdate"));
-        string path = path_order + regdate + pos_extra;
         util.write(path, record, false);
 
-        value.at("status") = 1;
+        value.at("status").as_int64() = 1;
         std::string message = util.str();
         ws_session->write(message.c_str());
 
         string text = "주문 요청입니다 : 테이블 (" + util.get_string("table_cd") + ") 에서 "
-            + strutil::long_to_str(orderList.as_array().size()) + "개 주문 [" + order_seq + "]";
+            + strutil::long_to_str(orderList.as_array().size()) + "개 주문 [#" + order_seq + "]";
         BOOST_LOG_TRIVIAL(info) << text;
         WriteLog(text);
     }

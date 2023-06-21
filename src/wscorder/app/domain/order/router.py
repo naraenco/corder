@@ -42,8 +42,7 @@ async def orderpost(orderdto: OrderDto):
         db.add(dao)
         db.commit()
         data['order_no'] = dao.order_no
-        result = await ws_manager.send_order(data)
-        if result is not True:
+        if await ws_manager.api_order(data) is not True:
             return "2002"
     except CorderException as e:
         error = e.value()

@@ -20,7 +20,7 @@ public:
         m_menu_encoding.Load(IDB_PNG_ENCODING_SEL, _T("PNG"), AfxGetApp()->m_hInstance);
         m_icon_config.Load(IDB_ICON_CONFIG, _T("PNG"), AfxGetApp()->m_hInstance);
         m_icon_info.Load(IDB_ICON_INFO, _T("PNG"), AfxGetApp()->m_hInstance);
-        m_icon_sh_start.Load(IDB_PNG_PINGEN, _T("PNG"), AfxGetApp()->m_hInstance);
+        m_icon_genpin.Load(IDB_PNG_PINGEN, _T("PNG"), AfxGetApp()->m_hInstance);
 
         m_icon_document.Load(IDB_ICON_DOC, _T("PNG"), AfxGetApp()->m_hInstance);
         m_icon_folderdoc.Load(IDB_ICON_FOLDER_DOC, _T("PNG"), AfxGetApp()->m_hInstance);
@@ -46,7 +46,7 @@ public:
     CGdiPlusBitmapResource m_menu_encoding;
     CGdiPlusBitmapResource m_icon_config;
     CGdiPlusBitmapResource m_icon_info;
-    CGdiPlusBitmapResource m_icon_sh_start;
+    CGdiPlusBitmapResource m_icon_genpin;
     CGdiPlusBitmapResource m_icon_document;
     CGdiPlusBitmapResource m_icon_folderdoc;
     CGdiPlusBitmapResource m_icon_trash;

@@ -124,7 +124,6 @@ class WebSocketManager:
             data = str(json.dumps(data))
             logging.getLogger().debug(f"생성된 핀 데이터 : {data}")
             self.redis.set(pin, data)
-
             conn = self.connections.get(shop_no)
             await conn.send_text(response)
         except Exception as e:
@@ -132,8 +131,9 @@ class WebSocketManager:
 
     async def order(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.order")
+        print(f"recvmsg : {recvmsg}")
         try:
-            key = "order_" + str(recvmsg['order_seq'])
+            key = "order_" + str(recvmsg['order_no'])
             if self.redis.exists(key):
                 self.redis.set(key, 1)
         except Exception as e:
@@ -142,47 +142,38 @@ class WebSocketManager:
     async def menu(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.menu")
         try:
-            key = "order_" + str(recvmsg['order_seq'])
+            key = "order_" + str(recvmsg['table_no'])
             # data = json.dumps(recvmsg['orderList'])
             data = json.dumps(recvmsg)
             self.redis.set(key, data)
         except Exception as e:
             logging.getLogger().error(e)
 
-    # async def wait_order(self, order_seq):
-    #     order_wait_count = 0
-    #     result = False
-    #     while True:
-    #         if order_wait_count > 10:
-    #             break
-    #         key = "order_" + str(order_seq)
-    #         value = self.redis.get(key)
-    #         if value == "1":
-    #             result = True
-    #             break
-    #         await asyncio.sleep(1.0)
-    #         order_wait_count = order_wait_count + 1
-    #     return result
-
-    async def send_order(self, params):
+    async def api_order(self, params):
         result = False
         try:
             conn = self.connections.get(str(params['shop_no']))
             if conn is None:
-                return result
+                logging.getLogger().error("api_order - get connection failure")
+                return False
             response = copy.deepcopy(params)
             response['msgtype'] = "order"
-            response['order_seq'] = 1
-            response = str(json.dumps(response))
+            response['status'] = 0
+            error, seq = self.redis.update_pin(str(params['otp_pin']), params['table_cd'])
+            if error != "0000":
+                logging.getLogger().error(f"api_order - update_pin failure code ({error})")
+                return False
+            response['order_seq'] = seq
             key = "order_" + str(params['order_no'])
             self.redis.set(key, 0)                      # API에서 요청 받은 주문의 상태 redis에 기록
+            response = str(json.dumps(response))
             await conn.send_text(response)              # API에서 요청 받은 주문을 agent에 전송
             result = True
         except Exception as e:
-            logging.getLogger().error(f"send_order : {e}")
+            logging.getLogger().error(f"api_order : {e}")
         return result
 
-    async def query_menu(self, params):
+    async def api_menu(self, params):
         result = False
         try:
             conn = self.connections.get(str(params['shop_no']))
@@ -194,5 +185,5 @@ class WebSocketManager:
             await conn.send_text(response)
             result = True
         except Exception as e:
-            logging.getLogger().error(f"send_order : {e}")
+            logging.getLogger().error(f"api_menu : {e}")
         return result

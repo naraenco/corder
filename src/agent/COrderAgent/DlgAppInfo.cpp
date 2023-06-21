@@ -45,7 +45,7 @@ BOOL CDlgAppInfo::OnInitDialog()
     m_static_info.MoveWindow(rcWindow.left + 50, rcWindow.top + 55, rcWindow.right - 85, rcWindow.bottom - 140);
     m_static_info.SetFont(&m_fedit);
 
-    CString desc = _T("C.Order Agent 1.0\n\n");
+    CString desc = _T("C.Order Agent 1.0\n\nbuild 2023.06.22 #1");
 
     m_static_info.SetWindowText(desc);
 

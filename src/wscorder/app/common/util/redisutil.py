@@ -58,6 +58,32 @@ class RedisUtil:
                     return "1004"
         except Exception as e:
             logging.getLogger().error(e)
-            # raise CorderException("1002")
             return "1002"
         return "0000"
+
+    def update_pin(self, key, value):
+        try:
+            with redis.StrictRedis(connection_pool=self.redis) as conn:
+                data = bytes(conn.get(key)).decode('utf-8')
+                data = json.loads(data)
+                print(f"update_pin #2 : {data}")
+                if data.get('table_cd') is None:
+                    data['table_cd'] = value
+                elif data.get('table_cd') != value:
+                    # 기존 사용한 TABLE 번호랑 PIN 번호가 다르다.
+                    return "1006", 0
+                seq = data.get('order_seq')
+                if seq is None:
+                    data['order_seq'] = 1
+                else:
+                    seq = seq + 1
+                    data['order_seq'] = seq
+                print(f"update_pin #3 : {data}")
+                data = str(json.dumps(data))
+                ttl = conn.ttl(key)
+                conn.set(key, data)
+                conn.expire(key, ttl)
+        except Exception as e:
+            logging.getLogger().error(e)
+            return "1005", 0
+        return "0000", seq

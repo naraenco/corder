@@ -57,7 +57,7 @@ private:
     UINT nListHeight;
     UINT nListX;
     UINT nListY;
-    CRect rcIconStart;
+    CRect rcIconGenPin;
     CRect rcIconDocument;
     CRect rcIconFolderDoc;
     CRect rcIconTrash;
