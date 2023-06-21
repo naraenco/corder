@@ -1,0 +1,2 @@
+gunicorn --bind 0:19000 main:app --worker-class uvicorn.workers.UvicornWorker
+
