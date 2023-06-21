@@ -35,7 +35,6 @@ public:
     void HandleMessage(std::string message);
     void HandleStatus(int status);
     void ConnectionManager();
-    void TableStatus();
 
 private:
     bool bManager;
@@ -46,6 +45,8 @@ private:
 
     std::string pos_extra;
     std::string path_order;
+    std::string shop_no;
+    std::string auth_key;
 
     CMFCUIView* pMFCUIView;
     CListCtrl m_list_main;

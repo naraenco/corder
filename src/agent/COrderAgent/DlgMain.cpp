@@ -29,14 +29,13 @@ std::shared_ptr<session> ws_session;
 boost::thread session_thread;
 boost::thread connect_thread;
 
+static std::string server_address = "127.0.0.1";
+static std::string server_port = "19000";
+
 static void service()
 {
-    auto const host = "127.0.0.1";
-    auto const port = "19000";
-    auto const text = "";
-
     try {
-        ws_session->start(host, port);
+        ws_session->start(server_address.c_str(), server_port.c_str());
     }
     catch (...) {
 
@@ -181,6 +180,11 @@ BOOL CDlgMain::OnInitDialog()
         corder_config::instance()->get_config()->load(path.c_str());
         pos_extra = corder_config::get_string("pos_extra") + ".json";
         path_order = corder_config::get_string("path_order") + "Order_";
+        shop_no = corder_config::get_string("shop_no");
+        auth_key = corder_config::get_string("auth_key");
+
+        server_address = corder_config::get_string("server_address");
+        server_port = corder_config::get_string("server_port");
     }
     else {
         ::OutputDebugString(L"<config.json> file not found");
@@ -378,16 +382,19 @@ void CDlgMain::Login()
 {
     BOOST_LOG_TRIVIAL(info) << "CDlgMain::Login()";
     ::OutputDebugStringA("CDlgMain::Login()");
-    auto const message = "{\"msgtype\":\"login\",\"shop_no\": \"3062\",\"auth_key\":\"4285\"}";
-    ws_session->write(message);
+    //auto const message = "{\"msgtype\":\"login\",\"shop_no\": \"3062\",\"auth_key\":\"4285\"}";
+    std::string message = "{\"msgtype\":\"login\",\"shop_no\": \"" 
+        + shop_no + "\",\"auth_key\":\"" 
+        + auth_key + "\"}";
+    ws_session->write(message.c_str());
 }
 
 void CDlgMain::GenPin()
 {
     BOOST_LOG_TRIVIAL(info) << "CDlgMain::GenPin()";
     ::OutputDebugStringA("CDlgMain::GenPin()");
-    auto const message = "{\"msgtype\":\"genpin\",\"shop_no\": \"3062\"}";
-    ws_session->write(message);
+    std::string message = "{\"msgtype\":\"genpin\",\"shop_no\": \"" + shop_no + "\"}";
+    ws_session->write(message.c_str());
 }
 
 void CDlgMain::Order(json_util &util)
