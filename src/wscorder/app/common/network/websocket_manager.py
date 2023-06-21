@@ -1,4 +1,3 @@
-# import asyncio
 import copy
 import json
 import logging
@@ -10,9 +9,16 @@ from fastapi import WebSocket, WebSocketDisconnect
 class WebSocketManager:
     def __init__(self):
         self.connections: dict[str, WebSocket] = {}
-        self.order_seq = 0
         from common import redis_pool
         self.redis = redis_pool
+
+    def check_connection(self, shop_no):
+        if type(shop_no) == int:
+            shop_no = str(shop_no)
+        conn = self.connections.get(shop_no)
+        if conn is None:
+            return False
+        return True
 
     async def message_handler(self, websocket: WebSocket):
         logging.getLogger().debug("ConnectionManager.message_handler")
@@ -21,8 +27,7 @@ class WebSocketManager:
             print("Receive: ", message)
             if len(message) > 0:
                 json_object = json.loads(message)
-
-                msgtype = json_object.get("msgtype")     # json_object['msgtype']
+                msgtype = json_object.get("msgtype")
                 if msgtype == "login":      # 상점 로그인 (실패시 소켓 끊김)
                     await self.login(json_object, websocket)
                 elif msgtype == "genpin":   # PIN 번호 생성 요청
@@ -31,8 +36,6 @@ class WebSocketManager:
                     await self.order(json_object)
                 elif msgtype == "menu":    # 메뉴 요청 결과
                     await self.menu(json_object)
-                elif msgtype == "notify":   # Notification
-                    await self.notify(json_object)
             elif len(message) == 0:
                 print("message size = 0")
         except WebSocketDisconnect as e:
@@ -54,6 +57,8 @@ class WebSocketManager:
 
     def get_socket(self, shop_no):
         try:
+            if type(shop_no) == int:
+                shop_no = str(shop_no)
             conn = self.connections.get(shop_no)
             return conn
         except Exception as e:
@@ -63,6 +68,8 @@ class WebSocketManager:
     async def send(self, message: str, shop_no):
         logging.getLogger().debug("ConnectionManager.send")
         try:
+            if type(shop_no) == int:
+                shop_no = str(shop_no)
             conn = self.connections.get(shop_no)
             await conn.send_text(message)
         except Exception as e:
@@ -72,6 +79,8 @@ class WebSocketManager:
         logging.getLogger().debug("ConnectionManager.write")
         result = None
         try:
+            if type(shop_no) == int:
+                shop_no = str(shop_no)
             conn = self.connections.get(shop_no)
             await conn.send_text(message)
         except Exception as e:
@@ -97,14 +106,12 @@ class WebSocketManager:
     async def genpin(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.genpin")
         try:
-            shop_no = recvmsg['shop_no']
-
+            shop_no = str(recvmsg['shop_no'])
             while True:
                 num = random.randrange(1, 9999)
                 pin = str(num).zfill(4)
                 if self.redis.exists(pin) == 0:     # 중복 확인
                     break
-
             now = time
             data = {
                 "pin": pin,
@@ -118,7 +125,7 @@ class WebSocketManager:
             logging.getLogger().debug(f"생성된 핀 데이터 : {data}")
             self.redis.set(pin, data)
 
-            conn = self.connections.get(str(shop_no))
+            conn = self.connections.get(shop_no)
             await conn.send_text(response)
         except Exception as e:
             logging.getLogger().error(e)
@@ -142,14 +149,6 @@ class WebSocketManager:
         except Exception as e:
             logging.getLogger().error(e)
 
-    async def notify(self, recvmsg):
-        logging.getLogger().debug("ConnectionManager.notify")
-        try:
-            shop_no = recvmsg['shop_no']
-            table_no = recvmsg['table_no']
-        except Exception as e:
-            logging.getLogger().error(e)
-
     # async def wait_order(self, order_seq):
     #     order_wait_count = 0
     #     result = False
@@ -165,34 +164,20 @@ class WebSocketManager:
     #         order_wait_count = order_wait_count + 1
     #     return result
 
-    # async def wait_menu(self, order_seq):
-    #     menu_wait_count = 0
-    #     result = False
-    #     while True:
-    #         if menu_wait_count > 10:
-    #             break
-    #         key = "menu_" + str(order_seq)
-    #         if self.redis.exist(key):
-    #             result = self.redis.get(key)
-    #             break
-    #         await asyncio.sleep(1.0)
-    #         menu_wait_count = menu_wait_count + 1
-    #     return result
-
     async def send_order(self, params):
-        self.order_seq = self.order_seq + 1
-        result = 0
+        result = False
         try:
             conn = self.connections.get(str(params['shop_no']))
+            if conn is None:
+                return result
             response = copy.deepcopy(params)
             response['msgtype'] = "order"
-            response['order_seq'] = self.order_seq
-            response['status'] = 0                      # 전송 상태 0, 응답 받은 후 1, 1보다 크면 에러
+            response['order_seq'] = 1
             response = str(json.dumps(response))
-            key = "order_" + str(self.order_seq)
-            self.redis.set(key, 0)                      # API에서 요청 받은 주문의 상태 기록
-            await conn.send_text(response)              # API에서 요청 받은 주문을 전송
-            result = self.order_seq
+            key = "order_" + str(params['order_no'])
+            self.redis.set(key, 0)                      # API에서 요청 받은 주문의 상태 redis에 기록
+            await conn.send_text(response)              # API에서 요청 받은 주문을 agent에 전송
+            result = True
         except Exception as e:
             logging.getLogger().error(f"send_order : {e}")
         return result
@@ -201,10 +186,12 @@ class WebSocketManager:
         result = False
         try:
             conn = self.connections.get(str(params['shop_no']))
+            if conn is None:
+                return result
             response = copy.deepcopy(params)
             response['msgtype'] = "menu"
             response = str(json.dumps(response))
-            await conn.send_text(response)              # API에서 요청 받은 메뉴 확인 전송
+            await conn.send_text(response)
             result = True
         except Exception as e:
             logging.getLogger().error(f"send_order : {e}")

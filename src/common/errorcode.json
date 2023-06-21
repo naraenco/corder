@@ -12,6 +12,7 @@
     "1003": "존재하지 않는 PIN 번호 입니다",
     "1004": "PIN 번호와 shop_no가 일치하지 않습니다",
     "2000": "AGENT ERROR",
+    "2001": "Agent가 응답하지 않습니다."
     "3000": "WEB SERVICE ERROR",
     "9999": "ERROR CODE"
 }

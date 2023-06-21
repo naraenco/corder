@@ -109,6 +109,7 @@ CREATE TABLE `shop_order` (
     `table_cd`                  varchar(20) NOT NULL,
     `otp_pin`                   char(4) NOT NULL COMMENT '4자리숫자',
     `regdate`                   varchar(14) NOT NULL,
+    `status`                    int NOT NULL DEFAULT 0 COMMENT '0:주문 요청, 1:주문 성공',
     `pos_order`                 text NULL
 );
 

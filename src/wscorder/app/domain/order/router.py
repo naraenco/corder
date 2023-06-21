@@ -5,11 +5,13 @@ from .dto import OrderDto
 from .dao import OrderDao
 from common import redis_pool, ws_manager, logger
 from common.util.corder_exception import CorderException
+from common.util.response_entity import response_entity
 
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("")
+@router.get("", include_in_schema=False)
 async def orderget():
     success = True
     error = "0000"
@@ -18,8 +20,9 @@ async def orderget():
 
 
 @router.post("/")
+@router.post("", include_in_schema=False)
+@response_entity
 async def orderpost(orderdto: OrderDto):
-    success = False
     now = time
     orderdto.regdate = now.strftime('%Y%m%d%H%M%S')
     data = orderdto.dict()
@@ -27,24 +30,23 @@ async def orderpost(orderdto: OrderDto):
 
     try:
         shop_no = str(data['shop_no'])
+        if ws_manager.check_connection(shop_no) is not True:
+            return "2001"
         error = redis_pool.validate_pin(data['otp_pin'], shop_no)
-        if error == "0000":
-            orderno = await ws_manager.send_order(data)
-            if orderno > 0:
-                # result = await ws_manager.wait_order(orderno)
-                # if result is True:
-                success = True
-                dao = OrderDao(**orderdto.dict())
-                db = SessionLocal()
-                db.add(dao)
-                db.commit()
+        if error != "0000":
+            return error
+
+        dao = OrderDao(**orderdto.dict())
+        db = SessionLocal()
+        db.add(dao)
+        db.commit()
+        data['order_no'] = dao.order_no
+        result = ws_manager.send_order(data)
+        if result is not True:
+            return "2001"
     except CorderException as e:
         error = e.value()
     except Exception as e:
         logger.error(f"orderpost : {e}")
-        success = False
         error = "1001"
-
-    response = {"success": success, "error": error}
-    print(f"response : {response}")
-    return response
+    return error

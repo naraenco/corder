@@ -19,6 +19,7 @@ logger.info("------------------------------------------------------------")
 logger.info("API Server starting...")
 
 app = FastAPI()
+app.router.redirect_slashes = False
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
