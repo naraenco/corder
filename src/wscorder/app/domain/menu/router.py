@@ -1,3 +1,4 @@
+import logging
 from fastapi import APIRouter
 from .dto import MenuDto
 from common import redis_pool, ws_manager, logger
@@ -22,6 +23,7 @@ async def menuget():
 async def menupost(menudto: MenuDto):
     data = menudto.dict()
     print(f"menudto : {menudto}")
+    logging.getLogger().debug(f"orderdto : {menudto}")
 
     try:
         shop_no = str(data['shop_no'])

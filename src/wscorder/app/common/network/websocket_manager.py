@@ -24,7 +24,7 @@ class WebSocketManager:
         logging.getLogger().debug("ConnectionManager.message_handler")
         try:
             message = await websocket.receive_text()
-            print("Receive: ", message)
+            logging.getLogger().debug(f"Receive: {message}")
             if len(message) > 0:
                 json_object = json.loads(message)
                 msgtype = json_object.get("msgtype")

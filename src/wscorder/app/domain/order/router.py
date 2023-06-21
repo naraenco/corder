@@ -1,3 +1,4 @@
+import logging
 import time
 from fastapi import APIRouter
 from database import SessionLocal
@@ -26,7 +27,7 @@ async def orderpost(orderdto: OrderDto):
     now = time
     orderdto.regdate = now.strftime('%Y%m%d%H%M%S')
     data = orderdto.dict()
-    print(f"orderdto : {orderdto}")
+    logging.getLogger().debug(f"orderdto : {orderdto}")
 
     try:
         shop_no = str(data['shop_no'])
