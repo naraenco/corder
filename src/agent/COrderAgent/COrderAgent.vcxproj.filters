@@ -43,6 +43,9 @@
     <ClCompile Include="bolt\json_util.cpp">
       <Filter>bolt</Filter>
     </ClCompile>
+    <ClCompile Include="main\thermal_print.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DlgMain.h">
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="bolt\json_util.h">
       <Filter>bolt</Filter>
+    </ClInclude>
+    <ClInclude Include="main\thermal_print.h">
+      <Filter>main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,7 @@
 #include "main/corder_config.h"
 #include "main/network.h"
 
+
 corder_config* corder_config::instance_ = nullptr;
 net::io_context ioc;
 std::shared_ptr<session> ws_session;
@@ -57,6 +58,11 @@ CDlgMain::CDlgMain(CWnd* pParent /*=NULL*/)
 {
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
     pMFCUIView = (CMFCUIView*)pParent;
+
+    bRelease = false;
+    bManager = true;
+    bConnect = false;
+    log_no = 0;
 }
 
 CDlgMain::~CDlgMain()
@@ -153,8 +159,6 @@ BOOL CDlgMain::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
 
-    //setlocale(LC_ALL, "");;
-
     MoveWindow(m_WindowRect.left, m_WindowRect.top, m_WindowRect.right - m_WindowRect.left, m_WindowRect.bottom - m_WindowRect.top, TRUE);
 
     m_list_main.InsertColumn(0, _T("No"), LVCFMT_LEFT, 0);
@@ -164,11 +168,6 @@ BOOL CDlgMain::OnInitDialog()
 
     ComponentResize();
     
-    log_no = 0;
-    bRelease = false;
-    bManager = true;
-    bConnect = false;
-
     char module[_MAX_PATH] = { 0, };
     GetModuleFileNameA(NULL, module, _MAX_PATH);
     string path = module;
@@ -182,6 +181,9 @@ BOOL CDlgMain::OnInitDialog()
         path_order = corder_config::get_string("path_order") + "Order_";
         shop_no = corder_config::get_string("shop_no");
         auth_key = corder_config::get_string("auth_key");
+        print_port = corder_config::get_string("print_port");
+        print_font_width = corder_config::get_int("print_font_width");
+        print_font_height = corder_config::get_int("print_font_height");
 
         server_address = corder_config::get_string("server_address");
         server_port = corder_config::get_string("server_port");
@@ -605,6 +607,7 @@ void CDlgMain::HandleMessage(std::string message)
             else if (msgtype == "genpin") {
                 string text = "핀 번호가 생성되었습니다 : " + util.get_string("pin");
                 BOOST_LOG_TRIVIAL(info) << text;
+                thermal.print_pin(print_port.c_str(), util.get_string("pin").c_str(), 3, 3);
                 WriteLog(text);
             }
             else if (msgtype == "order") {

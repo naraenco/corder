@@ -2,6 +2,7 @@
 #pragma warning(disable:4244)
 #include <string>
 #include "bolt/json_util.h"
+#include "main/thermal_print.h"
 
 
 class CMFCUIView;
@@ -43,6 +44,10 @@ private:
     long log_no;
     long reconnect_time;
 
+    thermal_print thermal;
+    std::string print_port;
+    int print_font_width;
+    int print_font_height;
     std::string pos_extra;
     std::string path_order;
     std::string shop_no;

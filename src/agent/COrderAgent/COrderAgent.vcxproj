@@ -104,6 +104,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <StringPooling>false</StringPooling>
       <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -158,6 +159,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -251,6 +253,7 @@
     <ClInclude Include="main\constant.h" />
     <ClInclude Include="main\corder_config.h" />
     <ClInclude Include="main\network.h" />
+    <ClInclude Include="main\thermal_print.h" />
     <ClInclude Include="MFCUI.h" />
     <ClInclude Include="MFCUIDoc.h" />
     <ClInclude Include="MFCUIView.h" />
@@ -269,6 +272,7 @@
     <ClCompile Include="lib\system.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="main\network.cpp" />
+    <ClCompile Include="main\thermal_print.cpp" />
     <ClCompile Include="MFCUI.cpp" />
     <ClCompile Include="MFCUIDoc.cpp" />
     <ClCompile Include="MFCUIView.cpp" />
