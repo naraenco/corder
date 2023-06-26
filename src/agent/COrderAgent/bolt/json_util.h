@@ -9,7 +9,7 @@ public:
     json_util();
     ~json_util();
 
-    bool load(std::string path);
+    std::string load(std::string path);
     bool parse(std::string data);
     bool write(std::string path, boost::json::value const& jv, bool pretty = false);
     void pretty_print(std::ostream& os, boost::json::value const& jv, std::string* indent = nullptr);

@@ -10,10 +10,8 @@
 
 void session::fail(beast::error_code ec, char const* what)
 {
-    //::OutputDebugStringA(ec.to_string().c_str());
     ::OutputDebugStringA(ec.message().c_str());
-    //BOOST_LOG_TRIVIAL(error) << "session::fail - " << ec.to_string();
-    BOOST_LOG_TRIVIAL(error) << "session::fail - " << ec.message();
+    BOOST_LOG_TRIVIAL(error) << "session::fail (" << ec.value() << ") " << ec.message();
 
     if (ec.value() == ERROR_CONNECTION_ABORTED) { // 1236
         connect_status = false;
@@ -49,7 +47,8 @@ void session::set_status_hanlder(func2 func)
     status_handler = func;
 }
 
-void session::write(char const* text)
+//void session::write(char const* text)
+void session::write(std::string text)
 {
     ::OutputDebugString(L"session::write");
 
@@ -57,10 +56,13 @@ void session::write(char const* text)
         ::OutputDebugString(L"session::on_write - Not Connected");
         return;
     }
+    
+    //text_ = text;
+    //ws_.write_some(boost::asio::buffer(text, text.length()));
 
-    text_ = text;
     ws_.async_write(
-        net::buffer(text_),
+        //net::buffer(text),
+        boost::asio::buffer(text),
         beast::bind_front_handler(
             &session::on_write,
             shared_from_this()));
@@ -168,24 +170,31 @@ void session::on_handshake(beast::error_code ec)
 void session::on_write(beast::error_code ec, std::size_t bytes_transferred)
 {
     ::OutputDebugString(L"session::on_write");
-
+    //BOOST_LOG_TRIVIAL(info) << "session::on_write";
+    BOOST_LOG_TRIVIAL(debug) << "session::on_write - size : " << bytes_transferred;
+        
     boost::ignore_unused(bytes_transferred);
 
-    if (ec)
+    if (ec) {
+        BOOST_LOG_TRIVIAL(error) << "session::on_write - error : " << ec.message();
         return fail(ec, "write");
+    }
 }
 
 void session::on_read(beast::error_code ec, std::size_t bytes_transferred)
 {
     ::OutputDebugString(L"session::on_read");
+    //BOOST_LOG_TRIVIAL(info) << "session::on_read";
+    BOOST_LOG_TRIVIAL(debug) << "session::on_read - size : " << bytes_transferred;
 
     boost::ignore_unused(bytes_transferred);
 
-    if (ec)
+    if (ec) {
+        BOOST_LOG_TRIVIAL(error) << "session::on_read - error : " << ec.value();
         return fail(ec, "read");
-
+    }
+    
     std::string s(boost::asio::buffer_cast<const char*>(buffer_.data()), buffer_.size());
-    //::OutputDebugStringA(s.c_str());
     BOOST_LOG_TRIVIAL(debug) << "session::on_read - " << s;
     message_handler(s);
 

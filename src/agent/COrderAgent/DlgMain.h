@@ -31,11 +31,16 @@ public:
     void Login();
     void GenPin();
     void Order(json_util& util);
-    void Menu(json_util& util);
+    void MyList(json_util& util);
+
+    void LoadJsonData();
+    void LoadTableStatus();
 
     void HandleMessage(std::string message);
     void HandleStatus(int status);
     void ConnectionManager();
+
+    void SendBootupData();
 
 private:
     bool bManager;
@@ -48,10 +53,15 @@ private:
     std::string print_port;
     int print_font_width;
     int print_font_height;
+    std::string path_status;
     std::string pos_extra;
     std::string path_order;
     std::string shop_no;
     std::string auth_key;
+
+    std::string data_tablemap;
+    std::string data_menu;
+    std::string data_status;
 
     CMFCUIView* pMFCUIView;
     CListCtrl m_list_main;

@@ -1,7 +1,6 @@
 #include <boost/log/trivial.hpp>
 #include <stdio.h>
 #include <tchar.h>
-#include <string>
 #include "thermal_print.h"
 
 
@@ -29,13 +28,13 @@ void thermal_print::print_com_state(DCB dcb)
         << ", StopBits = " << dcb.StopBits;
 }
 
-bool thermal_print::print_pin(const char* comport, const char* pin, int width, int height)
+bool thermal_print::print_pin(string comport, string pin, string created_at, int width,  int height)
 {
     DCB dcb = { 0 };
     BOOL fSuccess;
 
     //  Open a handle to the specified com port.
-    HANDLE hCom = CreateFileA(comport,
+    HANDLE hCom = CreateFileA(comport.c_str(),
         GENERIC_READ | GENERIC_WRITE,
         0,              //  must be opened with exclusive-access
         NULL,           //  default security attributes
@@ -103,7 +102,7 @@ bool thermal_print::print_pin(const char* comport, const char* pin, int width, i
     }
 
     //char data[] = "PIN : 3062\n\n\n\n\n\n\n\n\n\n";
-    string data = "PIN : " + string(pin) + "\n\n\n\n\n\n\n\n\n\n";
+    string data = created_at + "\nPIN : " + pin + "\n\n\n\n\n\n\n\n\n\n";
     if (!WriteFile(hCom, data.c_str(), data.length(), &bytesWritten, NULL)) {
         BOOST_LOG_TRIVIAL(error) << "pin print error : " << GetLastError();
         CloseHandle(hCom);

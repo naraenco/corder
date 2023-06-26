@@ -176,7 +176,9 @@ BOOL CDlgMain::OnInitDialog()
     path += "config.json";
 
     if (boost::filesystem::exists(path)) {
-        corder_config::instance()->get_config()->load(path.c_str());
+        std::string config_data = corder_config::instance()->get_config()->load(path.c_str());
+        corder_config::instance()->get()->parse(config_data);
+        path_status = corder_config::get_string("path_status");
         pos_extra = corder_config::get_string("pos_extra") + ".json";
         path_order = corder_config::get_string("path_order") + "Order_";
         shop_no = corder_config::get_string("shop_no");
@@ -187,6 +189,8 @@ BOOL CDlgMain::OnInitDialog()
 
         server_address = corder_config::get_string("server_address");
         server_port = corder_config::get_string("server_port");
+
+        LoadJsonData();
     }
     else {
         ::OutputDebugString(L"<config.json> file not found");
@@ -298,7 +302,9 @@ void CDlgMain::OnLButtonDown(UINT nFlags, CPoint point)
 {
     if (IsPosition(rcIconGenPin, point))
     {
-        GenPin();
+        SendBootupData();
+
+        //GenPin();
     }
     else if (IsPosition(rcIconDocument, point))
     {
@@ -387,7 +393,8 @@ void CDlgMain::Login()
     std::string message = "{\"msgtype\":\"login\",\"shop_no\": \"" 
         + shop_no + "\",\"auth_key\":\"" 
         + auth_key + "\"}";
-    ws_session->write(message.c_str());
+    ws_session->write(message);
+    //ws_session->write(message.c_str());
 }
 
 void CDlgMain::GenPin()
@@ -395,7 +402,8 @@ void CDlgMain::GenPin()
     BOOST_LOG_TRIVIAL(info) << "CDlgMain::GenPin()";
     ::OutputDebugStringA("CDlgMain::GenPin()");
     std::string message = "{\"msgtype\":\"genpin\",\"shop_no\": \"" + shop_no + "\"}";
-    ws_session->write(message.c_str());
+    ws_session->write(message);
+    //ws_session->write(message.c_str());
 }
 
 void CDlgMain::Order(json_util &util)
@@ -419,10 +427,13 @@ void CDlgMain::Order(json_util &util)
 
         value.at("status").as_int64() = 1;
         std::string message = util.str();
-        ws_session->write(message.c_str());
+        ws_session->write(message);
+        //ws_session->write(message.c_str());
 
-        string text = "주문 요청입니다 : 테이블 (" + util.get_string("table_cd") + ") 에서 "
-            + strutil::long_to_str(orderList.as_array().size()) + "개 주문 [#" + order_seq + "]";
+        string text = "주문 요청입니다 : 테이블 (" 
+            + util.get_string("table_cd") + ") 에서 "
+            + strutil::long_to_str(orderList.as_array().size()) 
+            + "개 주문 [#" + order_seq + "]";
         BOOST_LOG_TRIVIAL(info) << text;
         WriteLog(text);
     }
@@ -431,15 +442,16 @@ void CDlgMain::Order(json_util &util)
     }
 }
 
-void CDlgMain::Menu(json_util& util)
+void CDlgMain::MyList(json_util& util)
 {
-    BOOST_LOG_TRIVIAL(info) << "CDlgMain::Menu()";
-    ::OutputDebugStringA("CDlgMain::Menu()");
+    BOOST_LOG_TRIVIAL(info) << "CDlgMain::MyList()";
+    ::OutputDebugStringA("CDlgMain::MyList()");
 
     try {
         std::string filename = corder_config::get_string("path_status");
         json_util jsonfile;
-        jsonfile.load(filename);
+        std::string jsondata = jsonfile.load(filename);
+        jsonfile.parse(jsondata);
 
         boost::json::value& value = jsonfile.get();
 
@@ -456,7 +468,7 @@ void CDlgMain::Menu(json_util& util)
         }
 
         boost::json::object object;
-        object["msgtype"] = "menu";
+        object["msgtype"] = "mylist";
         object["shop_no"] = util.get_int("shop_no");
         object["table_cd"] = table_cd;
         object["order_seq"] = order_seq;
@@ -464,7 +476,8 @@ void CDlgMain::Menu(json_util& util)
 
         std::string message = boost::json::serialize(object);
         ::OutputDebugStringA(message.c_str());
-        ws_session->write(message.c_str());
+        ws_session->write(message);
+        //ws_session->write(message.c_str());
     }
     catch (std::exception const& e) {
         BOOST_LOG_TRIVIAL(error) << e.what() << endl;
@@ -575,9 +588,12 @@ void CDlgMain::ConnectionManager()
             ioc.reset();
             if (ws_session.use_count() == 0) {
                 ws_session = std::make_shared<session>(ioc);
-                ws_session->set_message_handler(std::bind(&CDlgMain::HandleMessage, this, placeholders::_1));
-                ws_session->set_status_hanlder(std::bind(&CDlgMain::HandleStatus, this, placeholders::_1));
-                session_thread = boost::thread(boost::bind(&boost::asio::io_service::run, &ioc));
+                ws_session->set_message_handler(std::bind(
+                    &CDlgMain::HandleMessage, this, placeholders::_1));
+                ws_session->set_status_hanlder(std::bind(
+                    &CDlgMain::HandleStatus, this, placeholders::_1));
+                session_thread = boost::thread(boost::bind(
+                    &boost::asio::io_service::run, &ioc));
             }
             ioc.post(boost::bind(&service));
         }
@@ -603,18 +619,20 @@ void CDlgMain::HandleMessage(std::string message)
                 string text = "로그인에 성공하였습니다.";
                 BOOST_LOG_TRIVIAL(info) << text;
                 WriteLog(text);
+                //SendBootupData();
             }
             else if (msgtype == "genpin") {
                 string text = "핀 번호가 생성되었습니다 : " + util.get_string("pin");
                 BOOST_LOG_TRIVIAL(info) << text;
-                thermal.print_pin(print_port.c_str(), util.get_string("pin").c_str(), 3, 3);
+                thermal.print_pin(print_port, util.get_string("pin"), 
+                    util.get_string("created_at"),  3, 3);
                 WriteLog(text);
             }
             else if (msgtype == "order") {
                 Order(util);
             }
-            else if (msgtype == "menu") {
-                Menu(util);
+            else if (msgtype == "mylist") {
+                MyList(util);
             }
             else {
                 ::OutputDebugString(L"Unknown Message Type");
@@ -627,4 +645,54 @@ void CDlgMain::HandleMessage(std::string message)
     catch (...) {
         ::OutputDebugStringA("HandleMessage exception");
     }
+}
+
+void CDlgMain::LoadJsonData()
+{
+    json_util tablemap;
+    data_tablemap = tablemap.load(corder_config::get_string("path_tablemap"));
+    tablemap.parse(data_tablemap);
+    boost::json::value& value_tablemap = tablemap.get();
+
+    boost::json::object object;
+    object["msgtype"] = "tablemap";
+    object["shop_no"] = shop_no.c_str();
+    object["status"] =value_tablemap;
+
+    data_tablemap = boost::json::serialize(object);
+    ::OutputDebugStringA(data_tablemap.c_str());
+
+    BOOST_LOG_TRIVIAL(debug) << "data_tablemap : " << data_tablemap;
+    BOOST_LOG_TRIVIAL(debug) << "data_tablemap size : " << data_tablemap.length();
+
+    //::OutputDebugStringA(data_tablemap.c_str());
+
+    //json_util posmenu;
+    //data_menu = posmenu.load(corder_config::get_string("path_menu"));
+    //::OutputDebugStringA(data_menu.c_str());
+}
+
+void CDlgMain::LoadTableStatus()
+{
+    json_util tablestatus;
+    data_status = tablestatus.load(corder_config::get_string("path_status"));
+    ::OutputDebugStringA(data_status.c_str());
+}
+
+void CDlgMain::SendBootupData()
+{
+    BOOST_LOG_TRIVIAL(info) << "CDlgMain::SendBootupData()";
+    ::OutputDebugStringA("CDlgMain::SendBootupData()");
+
+    //data_tablemap = "";
+    //std::string msg_tablemap = "{\"msgtype\":\"tablemap\",\"shop_no\": \"" + shop_no 
+    //    + "\",\"status\":\""+ data_tablemap + "\"}";
+    //::OutputDebugStringA(msg_tablemap.c_str());
+    ws_session->write(data_tablemap);
+    //ws_session->write(data_tablemap.c_str());
+
+    //std::string msg_menu = "{\"msgtype\":\"menu\",\"shop_no\": \"" + shop_no
+    //    + "\",\"status\":\"" + data_menu + "\"}";
+    //::OutputDebugStringA(msg_menu.c_str());
+    //ws_session->write(msg_menu.c_str());
 }

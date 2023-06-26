@@ -160,3 +160,21 @@ CREATE TABLE `shop_board` (
     `shop_no`                   bigint NOT NULL,
     `module_srl`                bigint NOT NULL
 );
+
+CREATE TABLE `data_table_status` (
+    `shop_no`                   bigint NOT NULL PRIMARY KEY,
+    `regdate`                   varchar(14) NOT NULL,
+    `status`                    text NULL
+);
+
+CREATE TABLE `data_table_map` (
+    `shop_no`                   bigint NOT NULL PRIMARY KEY,
+    `regdate`                   varchar(14) NOT NULL,
+    `tables`                    text NULL
+);
+
+CREATE TABLE `data_menu` (
+    `shop_no`                   bigint NOT NULL PRIMARY KEY,
+    `regdate`                   varchar(14) NOT NULL,
+    `menu`                      text NULL
+);

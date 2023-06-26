@@ -34,7 +34,11 @@ class WebSocketManager:
                     await self.genpin(json_object)
                 elif msgtype == "order":    # 주문 처리 결과
                     await self.order(json_object)
-                elif msgtype == "menu":    # 메뉴 요청 결과
+                elif msgtype == "mylist":    # 메뉴 요청 결과
+                    await self.mylist(json_object)
+                elif msgtype == "tablemap":
+                    await self.tablemap(json_object)
+                elif msgtype == "menu":
                     await self.menu(json_object)
             elif len(message) == 0:
                 print("message size = 0")
@@ -139,13 +143,30 @@ class WebSocketManager:
         except Exception as e:
             logging.getLogger().error(e)
 
-    async def menu(self, recvmsg):
-        logging.getLogger().debug("ConnectionManager.menu")
+    async def mylist(self, recvmsg):
+        logging.getLogger().debug("ConnectionManager.mylist")
         try:
             key = "order_" + str(recvmsg['table_no'])
             # data = json.dumps(recvmsg['orderList'])
             data = json.dumps(recvmsg)
             self.redis.set(key, data)
+        except Exception as e:
+            logging.getLogger().error(e)
+
+    async def tablemap(self, recvmsg):
+        logging.getLogger().debug("ConnectionManager.tablemap")
+        try:
+            print(recvmsg)
+            # data = json.dumps(recvmsg)
+            # print(data)
+        except Exception as e:
+            logging.getLogger().error(e)
+
+    async def menu(self, recvmsg):
+        logging.getLogger().debug("ConnectionManager.menu")
+        try:
+            data = json.dumps(recvmsg)
+            print(data)
         except Exception as e:
             logging.getLogger().error(e)
 

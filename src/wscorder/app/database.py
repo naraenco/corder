@@ -13,7 +13,7 @@ url_object = URL.create(
     port=config.get('db_port'),
     database=config.get('db_name')
 )
-print(url_object)
+# print(url_object)
 engine = create_engine(url_object, pool_recycle=3600, connect_args={})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

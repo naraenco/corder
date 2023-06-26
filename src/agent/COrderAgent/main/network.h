@@ -38,6 +38,7 @@ public:
         ws_(net::make_strand(ioc))
     {
         ::OutputDebugStringA("session::session()");
+        //ws_.write_buffer_bytes(8192);
         connect_status = false;
     };
 
@@ -51,7 +52,8 @@ public:
     void set_status_hanlder(func2 func);
 
     void start(char const* host, char const* port);
-    void write(char const* text);
+    //void write(char const* text);
+    void write(std::string text);
 
     void on_resolve(beast::error_code ec, tcp::resolver::results_type results);
     void on_connect(beast::error_code ec, tcp::resolver::results_type::endpoint_type ep);

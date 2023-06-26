@@ -13,7 +13,7 @@ json_util::~json_util()
 
 }
 
-bool json_util::load(std::string path)
+std::string json_util::load(std::string path)
 {
     std::ifstream in(path, std::ios_base::binary);
     std::string buffer;
@@ -36,18 +36,19 @@ bool json_util::load(std::string path)
     in.read(&buffer[0], size);
     in.close();
 
-    boost::json::error_code ec;
-    try {
-        value = boost::json::parse(buffer, ec, boost::json::storage_ptr(), opt);
-        //std::string tmp = boost::json::serialize(value);
-        //::OutputDebugStringA(tmp.c_str());
-    }
-    catch (std::exception const& e) {
-        std::cout << e.what() << std::endl;
-        return false;
-    }
+    return buffer;
 
-    return true;
+    //boost::json::error_code ec;
+    //try {
+    //    value = boost::json::parse(buffer, ec, boost::json::storage_ptr(), opt);
+    //    //std::string tmp = boost::json::serialize(value);
+    //}
+    //catch (std::exception const& e) {
+    //    std::cout << e.what() << std::endl;
+    //    return false;
+    //}
+
+    //return true;
 }
 
 bool json_util::parse(std::string data)
