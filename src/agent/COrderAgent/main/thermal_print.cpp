@@ -28,7 +28,11 @@ void thermal_print::print_com_state(DCB dcb)
         << ", StopBits = " << dcb.StopBits;
 }
 
-bool thermal_print::print_pin(string comport, string pin, string created_at, int width,  int height)
+bool thermal_print::print_pin(std::string comport,
+    std::string pin,
+    std::string created_at,
+    int width,
+    int height)
 {
     DCB dcb = { 0 };
     BOOL fSuccess;
@@ -102,7 +106,7 @@ bool thermal_print::print_pin(string comport, string pin, string created_at, int
     }
 
     //char data[] = "PIN : 3062\n\n\n\n\n\n\n\n\n\n";
-    string data = created_at + "\nPIN : " + pin + "\n\n\n\n\n\n\n\n\n\n";
+    std::string data = created_at + "\nPIN : " + pin + "\n\n\n\n\n\n\n\n\n\n";
     if (!WriteFile(hCom, data.c_str(), data.length(), &bytesWritten, NULL)) {
         BOOST_LOG_TRIVIAL(error) << "pin print error : " << GetLastError();
         CloseHandle(hCom);

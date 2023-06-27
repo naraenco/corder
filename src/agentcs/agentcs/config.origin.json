@@ -1,0 +1,18 @@
+{
+    "pos_type" : "KIS",
+    "pos_extra" : "01",
+    "path_tablemap" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\USE_TABLE.json",
+    "path_menu" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\SCD_PRODM.json",
+    "path_status" : "C:\\_OKPOS\\OKPOSIF\\KOD\\SEND\\TableStatus.json",
+    "path_order" : "C:\\_OKPOS\\OKPOSIF\\KOD\\RECV\\",
+    "print_port" : "COM6",
+    "print_font_width" : 3,
+    "print_font_height" : 3,
+    "timer_status_query" : 60,
+    "timer_connect_retry" : 10,
+    "server_address" : "corder.co.kr",
+    "server_port" : "19000",
+    "shop_no" : "3062",
+    "auth_key" : "C.ORDER",
+    "log_level" : "debug"
+}

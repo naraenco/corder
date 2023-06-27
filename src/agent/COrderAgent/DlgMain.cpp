@@ -303,9 +303,7 @@ void CDlgMain::OnLButtonDown(UINT nFlags, CPoint point)
 {
     if (IsPosition(rcIconGenPin, point))
     {
-        SendBootupData();
-
-        //GenPin();
+        GenPin();
     }
     else if (IsPosition(rcIconDocument, point))
     {
@@ -620,7 +618,7 @@ void CDlgMain::HandleMessage(std::string message)
                 string text = "로그인에 성공하였습니다.";
                 BOOST_LOG_TRIVIAL(info) << text;
                 WriteLog(text);
-                //SendBootupData();
+                SendBootupData();
             }
             else if (msgtype == "genpin") {
                 string text = "핀 번호가 생성되었습니다 : " + util.get_string("pin");
@@ -692,4 +690,3 @@ void CDlgMain::SendBootupData()
     ws_session->write(data_tablemap);
     ws_session->write(data_menu);
 }
-
