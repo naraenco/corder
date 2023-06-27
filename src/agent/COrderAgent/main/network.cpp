@@ -5,6 +5,8 @@
 #include <boost/asio/buffer.hpp> // ???
 #include <boost/asio.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/locale.hpp>
+#include "../bolt/strutil.h"
 #include "constant.h"
 
 
@@ -47,7 +49,6 @@ void session::set_status_hanlder(func2 func)
     status_handler = func;
 }
 
-//void session::write(char const* text)
 void session::write(std::string text)
 {
     ::OutputDebugString(L"session::write");
@@ -57,12 +58,12 @@ void session::write(std::string text)
         return;
     }
     
-    //text_ = text;
-    //ws_.write_some(boost::asio::buffer(text, text.length()));
+    //string str_to_utf8 = boost::locale::conv::to_utf<char>(text, "EUC-KR");
+    //text_ = str_to_utf8;
+    text_ = strutil::ansi_to_utf8(text);
 
     ws_.async_write(
-        //net::buffer(text),
-        boost::asio::buffer(text),
+        boost::asio::buffer(text_),
         beast::bind_front_handler(
             &session::on_write,
             shared_from_this()));

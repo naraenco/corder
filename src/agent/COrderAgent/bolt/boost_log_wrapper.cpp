@@ -10,13 +10,12 @@
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/support/date_time.hpp>
+#include <boost/locale.hpp>
 #include <Windows.h>
 
 
 void init_boost_log()
 {
-    boost::log::add_common_attributes();
-
     auto fmtTimeStamp = boost::log::expressions::
         format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y.%m.%d %H:%M:%S");
     boost::log::formatter logFmt =
@@ -41,5 +40,10 @@ void init_boost_log()
         boost::log::keywords::auto_flush = true,
         boost::log::keywords::open_mode = std::ios_base::app);
     fsSink->set_formatter(logFmt);
+
+    std::locale loc = boost::locale::generator()("ko_KR.UTF-8");
+    fsSink->imbue(loc);
+    boost::log::add_common_attributes();
+
     //fsSink->locked_backend()->auto_flush(true);
 }

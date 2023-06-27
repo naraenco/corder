@@ -101,7 +101,7 @@ class WebSocketManager:
         try:
             shop_no = str(recvmsg['shop_no'])
             self.connections[shop_no] = websocket
-            data = json.dumps(recvmsg)
+            data = json.dumps(recvmsg, ensure_ascii=False)
             await websocket.send_text(data)
         except Exception as e:
             await websocket.close()
@@ -124,8 +124,8 @@ class WebSocketManager:
             }
             response = copy.deepcopy(data)
             response['msgtype'] = "genpin"
-            response = str(json.dumps(response))
-            data = str(json.dumps(data))
+            response = str(json.dumps(response, ensure_ascii=False))
+            data = str(json.dumps(data, ensure_ascii=False))
             logging.getLogger().debug(f"생성된 핀 데이터 : {data}")
             self.redis.set(pin, data)
             conn = self.connections.get(shop_no)
@@ -147,8 +147,7 @@ class WebSocketManager:
         logging.getLogger().debug("ConnectionManager.mylist")
         try:
             key = "order_" + str(recvmsg['table_no'])
-            # data = json.dumps(recvmsg['orderList'])
-            data = json.dumps(recvmsg)
+            data = json.dumps(recvmsg, ensure_ascii=False)
             self.redis.set(key, data)
         except Exception as e:
             logging.getLogger().error(e)
@@ -157,7 +156,7 @@ class WebSocketManager:
         logging.getLogger().debug("ConnectionManager.tablemap")
         try:
             print(recvmsg)
-            # data = json.dumps(recvmsg)
+            # data = json.dumps(recvmsg, ensure_ascii=False)
             # print(data)
         except Exception as e:
             logging.getLogger().error(e)
@@ -165,8 +164,8 @@ class WebSocketManager:
     async def menu(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.menu")
         try:
-            data = json.dumps(recvmsg)
-            print(data)
+            data = json.dumps(recvmsg, ensure_ascii=False)
+            # logging.getLogger().debug(f"메뉴: {data}")
         except Exception as e:
             logging.getLogger().error(e)
 
@@ -187,7 +186,7 @@ class WebSocketManager:
             response['order_seq'] = seq
             key = "order_" + str(params['order_no'])
             self.redis.set(key, 0)                      # API에서 요청 받은 주문의 상태 redis에 기록
-            response = str(json.dumps(response))
+            response = str(json.dumps(response, ensure_ascii=False))
             await conn.send_text(response)              # API에서 요청 받은 주문을 agent에 전송
             result = True
         except Exception as e:
@@ -202,7 +201,7 @@ class WebSocketManager:
                 return result
             response = copy.deepcopy(params)
             response['msgtype'] = "menu"
-            response = str(json.dumps(response))
+            response = str(json.dumps(response, ensure_ascii=False))
             await conn.send_text(response)
             result = True
         except Exception as e:

@@ -24,6 +24,7 @@ private:
     tcp::resolver resolver_;
     websocket::stream<beast::tcp_stream> ws_;
     beast::flat_buffer buffer_;
+    beast::flat_buffer sendbuffer_;
     std::string host_;
     std::string text_;
     typedef std::function<void(std::string)> func1;

@@ -189,8 +189,6 @@ BOOL CDlgMain::OnInitDialog()
 
         server_address = corder_config::get_string("server_address");
         server_port = corder_config::get_string("server_port");
-
-        LoadJsonData();
     }
     else {
         ::OutputDebugString(L"<config.json> file not found");
@@ -207,7 +205,10 @@ BOOL CDlgMain::OnInitDialog()
         boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
     }
 
-    BOOST_LOG_TRIVIAL(info) << "========================== COrder Agent Start ==========================";
+    BOOST_LOG_TRIVIAL(info) << "--------------------------------------------------------------------------------";
+    BOOST_LOG_TRIVIAL(info) << "COrder Agent 시작";
+
+    LoadJsonData();
 
     connect_thread = boost::thread(&CDlgMain::ConnectionManager, this);
 
@@ -654,22 +655,26 @@ void CDlgMain::LoadJsonData()
     tablemap.parse(data_tablemap);
     boost::json::value& value_tablemap = tablemap.get();
 
-    boost::json::object object;
-    object["msgtype"] = "tablemap";
-    object["shop_no"] = shop_no.c_str();
-    object["status"] =value_tablemap;
+    boost::json::object object1;
+    object1["msgtype"] = "tablemap";
+    object1["shop_no"] = shop_no.c_str();
+    object1["status"] =value_tablemap;
 
-    data_tablemap = boost::json::serialize(object);
-    ::OutputDebugStringA(data_tablemap.c_str());
+    data_tablemap = boost::json::serialize(object1);
 
-    BOOST_LOG_TRIVIAL(debug) << "data_tablemap : " << data_tablemap;
-    BOOST_LOG_TRIVIAL(debug) << "data_tablemap size : " << data_tablemap.length();
 
-    //::OutputDebugStringA(data_tablemap.c_str());
+    json_util posmenu;
+    data_menu = posmenu.load(corder_config::get_string("path_menu"));
+    //data_menu = posmenu.load(corder_config::get_string("path_status"));
+    posmenu.parse(data_menu);
+    boost::json::value& value_menu = posmenu.get();
 
-    //json_util posmenu;
-    //data_menu = posmenu.load(corder_config::get_string("path_menu"));
-    //::OutputDebugStringA(data_menu.c_str());
+    boost::json::object object2;
+    object2["msgtype"] = "menu";
+    object2["shop_no"] = shop_no.c_str();
+    object2["menu"] = value_menu;
+
+    data_menu = boost::json::serialize(object2);
 }
 
 void CDlgMain::LoadTableStatus()
@@ -684,15 +689,7 @@ void CDlgMain::SendBootupData()
     BOOST_LOG_TRIVIAL(info) << "CDlgMain::SendBootupData()";
     ::OutputDebugStringA("CDlgMain::SendBootupData()");
 
-    //data_tablemap = "";
-    //std::string msg_tablemap = "{\"msgtype\":\"tablemap\",\"shop_no\": \"" + shop_no 
-    //    + "\",\"status\":\""+ data_tablemap + "\"}";
-    //::OutputDebugStringA(msg_tablemap.c_str());
     ws_session->write(data_tablemap);
-    //ws_session->write(data_tablemap.c_str());
-
-    //std::string msg_menu = "{\"msgtype\":\"menu\",\"shop_no\": \"" + shop_no
-    //    + "\",\"status\":\"" + data_menu + "\"}";
-    //::OutputDebugStringA(msg_menu.c_str());
-    //ws_session->write(msg_menu.c_str());
+    ws_session->write(data_menu);
 }
+

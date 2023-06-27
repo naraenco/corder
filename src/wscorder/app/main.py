@@ -16,8 +16,8 @@ origins = [
     # "http://127.0.0.1:5173",
 ]
 
-logger.info("------------------------------------------------------------")
-logger.info("API Server starting...")
+logger.info("--------------------------------------------------------------------------------")
+logger.info("API Server 시작")
 
 app = FastAPI()
 app.router.redirect_slashes = False
