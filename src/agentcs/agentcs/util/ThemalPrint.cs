@@ -5,17 +5,18 @@ namespace agentcs
 {
     internal class ThemalPrint
     {
-        private System.IO.Ports.SerialPort serialPort = null;
+        private System.IO.Ports.SerialPort? serialPort = null;
 
         public void PrintPin(string portName, string pin, string createdAt, int width = 3, int height = 3)
         {
-            serialPort = new System.IO.Ports.SerialPort();
-
-            serialPort.PortName = portName;
-            serialPort.BaudRate = 9600;
-            serialPort.DataBits = 8;
-            serialPort.Parity = System.IO.Ports.Parity.None;
-            serialPort.StopBits = System.IO.Ports.StopBits.One;
+            serialPort = new System.IO.Ports.SerialPort
+            {
+                PortName = portName,
+                BaudRate = 9600,
+                DataBits = 8,
+                Parity = System.IO.Ports.Parity.None,
+                StopBits = System.IO.Ports.StopBits.One
+            };
 
             try
             {
@@ -28,7 +29,8 @@ namespace agentcs
                 serialPort.Write(data, 0, data.Length);
 
                 // 폰트 크기 변경
-                command = "\x1B!%c";
+                //command = "\x1B!%c";
+                command = String.Format("\x1B!%c", ((width - 1) << 4) | (height - 1));
                 data = Encoding.ASCII.GetBytes(command);
                 serialPort.Write(data, 0, data.Length);
 

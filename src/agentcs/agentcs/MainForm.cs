@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace agentcs
 {
     public partial class MainForm : Form
@@ -12,10 +10,13 @@ namespace agentcs
         private void MainForm_Load(object sender, EventArgs e)
         {
             Config config = Config.Instance;
-            config.load();
+            config.Load();
 
-            Console.WriteLine(config.getString("server_address"));
-            Console.WriteLine(config.getInt("timer_connect_retry"));
+            //Console.WriteLine(config.GetString("server_address"));
+            //Console.WriteLine(config.GetInt("timer_connect_retry"));
+
+            PosData pos = new();
+            pos.LoadJsonFiles();
         }
     }
 }

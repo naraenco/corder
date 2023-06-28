@@ -1,8 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+﻿using System.Text.Json.Nodes;
+
 
 namespace agentcs
 {
@@ -15,17 +12,17 @@ namespace agentcs
         }
 
         private static readonly Lazy<Config> _instance = new Lazy<Config>(() => new Config());
-        public static Config Instance { get { return  _instance.Value; } }
+        public static Config Instance { get { return _instance.Value; } }
 
-        public void load()
+        public void Load()
         {
             string json = File.ReadAllText("config.json");
             JsonNode document = JsonNode.Parse(json)!;
             root = document.Root;
-            Console.WriteLine(root);
+            //Console.WriteLine(root);
         }
 
-        public string getString(string key)
+        public string GetString(string key)
         {
             string result = "";
             if (root != null)
@@ -35,7 +32,7 @@ namespace agentcs
             return result;
         }
 
-        public int getInt(string key)
+        public int GetInt(string key)
         {
             int result = -1;
             if (root != null)
