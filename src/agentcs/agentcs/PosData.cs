@@ -2,7 +2,7 @@
 {
     internal class PosData
     {
-        public void LoadJsonFiles()
+        public static void LoadJsonFiles()
         {
             Config config = Config.Instance;
 
@@ -18,7 +18,7 @@
             {
                 jsonMenu.SetOptions(false);
                 jsonMenu.Parse();
-                //jsonMenu.Save(@"c:\temp\test.json", indent: true, codepage: 51949);
+                jsonMenu.Save(@"c:\temp\test.json", indent: true, codepage: 51949);
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.IO;
+using System.Text;
+using System.Text.Json.Nodes;
 
 
 namespace agentcs
@@ -14,12 +16,22 @@ namespace agentcs
         private static readonly Lazy<Config> _instance = new Lazy<Config>(() => new Config());
         public static Config Instance { get { return _instance.Value; } }
 
-        public void Load()
+        public bool Load()
         {
-            string json = File.ReadAllText("config.json");
-            JsonNode document = JsonNode.Parse(json)!;
-            root = document.Root;
-            //Console.WriteLine(root);
+            if (!File.Exists("config.json")) return false;
+
+            try
+            {
+                string json = File.ReadAllText("config.json");
+                JsonNode document = JsonNode.Parse(json)!;
+                root = document.Root;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+            return true;
         }
 
         public string GetString(string key)

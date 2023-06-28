@@ -28,13 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
+            buttonGenPin = new Button();
             SuspendLayout();
+            // 
+            // buttonGenPin
+            // 
+            buttonGenPin.Location = new Point(392, 274);
+            buttonGenPin.Name = "buttonGenPin";
+            buttonGenPin.Size = new Size(100, 50);
+            buttonGenPin.TabIndex = 0;
+            buttonGenPin.Text = "PIN 발급";
+            buttonGenPin.UseVisualStyleBackColor = true;
+            buttonGenPin.Click += buttonGenPin_Click;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 561);
+            Controls.Add(buttonGenPin);
             Name = "MainForm";
             Text = "C.Order";
             Load += MainForm_Load;
@@ -42,5 +54,7 @@
         }
 
         #endregion
+
+        private Button buttonGenPin;
     }
 }
