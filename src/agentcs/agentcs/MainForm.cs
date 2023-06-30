@@ -1,3 +1,13 @@
+using agentcs.util;
+using System;
+using System.DirectoryServices;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Unicode;
+using System.Windows.Forms;
+
 namespace agentcs
 {
     public partial class MainForm : Form
@@ -36,10 +46,6 @@ namespace agentcs
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
-            //PosData.LoadJsonFiles();
-            //PosData pos = new();
-            //pos.LoadJsonFiles();
-
             string address = "ws://" + config.GetString("server_address") + ":19000/ws";
             Uri serverUri = new(address);
 
@@ -71,48 +77,58 @@ namespace agentcs
 
         public void MessageHandler(string message)
         {
-            Console.WriteLine("Received message: " + message);
+            Console.WriteLine("MessageHandler : " + message);
 
-            JsonWrapper json = new();
-            json.Parse(message);
-            string msgtype = json.GetString("msgtype");
-
-            switch (msgtype)
+            try
             {
-                case "login":
-                    Console.WriteLine("MessageHandler.login");
-                    // 로그인에 성공하면 POS 데이터 전송
-                    //SendPosData();
-                    break;
+                var json = JsonNode.Parse(message);
+                json = json?.Root;
+                if (json == null) return;
+            
+                string msgtype = json["msgtype"]!.ToString();
 
-                case "genpin":
-                    Console.WriteLine("MessageHandler.genpin");
-                    // 핀 생성 성공하면 감열식 프린터로 인쇄
-                    //string pin = "";
-                    //string createdAt = "";
-                    //ThemalPrint print = new();
-                    //print.PrintPin(print_port, 
-                    //    pin, 
-                    //    createdAt, 
-                    //    print_font_width, 
-                    //    print_font_height);
-                    break;
+                switch (msgtype)
+                {
+                    case "login":
+                        Console.WriteLine("MessageHandler.login");
+                        // 로그인에 성공하면 POS 데이터 전송
+                        //SendPosData();
+                        break;
 
-                case "order":
-                    Console.WriteLine("MessageHandler.order");
-                    break;
+                    case "genpin":
+                        Console.WriteLine("MessageHandler.genpin");
+                        // 핀 생성 성공하면 감열식 프린터로 인쇄
+                        //string pin = "";
+                        //string createdAt = "";
+                        //ThemalPrint print = new();
+                        //print.PrintPin(print_port, 
+                        //    pin, 
+                        //    createdAt, 
+                        //    print_font_width, 
+                        //    print_font_height);
+                        break;
 
-                case "mylist":
-                    Console.WriteLine("MessageHandler.mylist");
-                    break;
+                    case "order":
+                        Console.WriteLine("MessageHandler.order");
+                        Order(json);
+                        break;
 
-                case "tablemap":
-                    Console.WriteLine("MessageHandler.tablemap");
-                    break;
+                    case "mylist":
+                        Console.WriteLine("MessageHandler.mylist");
+                        break;
 
-                case "menu":
-                    Console.WriteLine("MessageHandler.menu");
-                    break;
+                    case "tablemap":
+                        Console.WriteLine("MessageHandler.tablemap");
+                        break;
+
+                    case "menu":
+                        Console.WriteLine("MessageHandler.menu");
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("MessageHandler : {0}", ex.Message);
             }
         }
 
@@ -130,7 +146,6 @@ namespace agentcs
             {
                 jsonMenu.SetOptions(false);
                 jsonMenu.Parse();
-                jsonMenu.Save(@"c:\temp\test.json", indent: true, codepage: 51949);
             }
 
             string message = "{\"msgtype\":\"tablemap\",\"shop_no\": \"" 
@@ -146,8 +161,31 @@ namespace agentcs
                 + jsonTableMap.ToString()
                 + "}";
             await client.SendAsync(message);
+        }
 
-            //Console.WriteLine("SendPosData:\n" + message);
+        public void Order(JsonNode node)
+        {
+            Console.WriteLine("Order()");
+
+            try
+            {
+                string regdate = node["regdate"]!.ToString();
+                string path = path_order + regdate + pos_extra;
+                JsonNode orderList = node["pos_order"]!["orderList"]!;
+
+                node["status"] = 1;
+                Console.WriteLine(node.ToJsonString());
+
+                JsonObject obj = new();
+                obj.Add("tableNo", node["table_cd"]?.ToString());
+                obj.Add("orderList", JsonNode.Parse(orderList.ToJsonString()));
+
+                JsonUtil.WriteFile(path, obj, indent: true, codepage: 51949);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

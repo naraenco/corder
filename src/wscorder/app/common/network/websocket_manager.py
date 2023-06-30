@@ -176,7 +176,7 @@ class WebSocketManager:
             if conn is None:
                 logging.getLogger().error("api_order - get connection failure")
                 return False
-            response = copy.deepcopy(params)
+            response = copy.deepcyopy(params)
             response['msgtype'] = "order"
             response['status'] = 0
             error, seq = self.redis.update_pin(str(params['otp_pin']), params['table_cd'])

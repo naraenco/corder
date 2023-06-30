@@ -7,10 +7,10 @@ using System.Text.Unicode;
 
 namespace agentcs
 {
-    internal class JsonWrapper
+    public class JsonWrapper
     {
         private JsonNode? root = null;
-        private string? json = null;
+        private string? str = null;
         private JsonSerializerOptions options;
         private TextEncoderSettings encoderSettings;
 
@@ -41,19 +41,18 @@ namespace agentcs
             {
                 if (codepage == 0)
                 {
-                    json = File.ReadAllText(path);
+                    str = File.ReadAllText(path);
                 }
                 else
                 {
                     Encoding encode = Encoding.GetEncoding(codepage);
                     var bytes = File.ReadAllBytes(path);
-                    json = encode.GetString(bytes);
+                    str = encode.GetString(bytes);
                 }
-                //Console.WriteLine(json);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("JsonWrapper.Load : {0}", ex.Message);
                 return false;
             }
             return true;
@@ -61,19 +60,17 @@ namespace agentcs
 
         public bool Parse()
         {
-            if (json == null) return false;
+            if (str == null) return false;
 
             try
             {
-                var document = JsonNode.Parse(json);
-                root = document?.Root;
-                //Console.WriteLine(root.ToJsonString(options));
-                //Console.WriteLine(root["PRODUCT"][0]["PROD_NM"]);
+                var data = JsonNode.Parse(str);
+                root = data?.Root;
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("JsonWrapper.Parse : {0}", ex.Message);
             }
             return false;
         }
@@ -81,7 +78,7 @@ namespace agentcs
         public bool Parse(string data)
         {
             if (String.IsNullOrEmpty(data)) return false;
-            json = data;
+            str = data;
             return Parse();
         }
 
@@ -108,6 +105,11 @@ namespace agentcs
             return true;
         }
 
+        public JsonNode Get()
+        {
+            return root!;
+        }
+
         public string GetString(string key)
         {
             if (root == null) return "";
@@ -118,6 +120,11 @@ namespace agentcs
         {
             if (root == null) return -1;
             return (int)root[key]!;
+        }
+
+        public JsonNode GetNode(string key)
+        {
+            return root![key]!;
         }
 
         public override string? ToString()
