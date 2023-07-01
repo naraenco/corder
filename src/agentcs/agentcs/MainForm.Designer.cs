@@ -49,6 +49,8 @@
             Controls.Add(buttonGenPin);
             Name = "MainForm";
             Text = "C.Order";
+            FormClosing += MainForm_FormClosing;
+            FormClosed += MainForm_FormClosed;
             Load += MainForm_Load;
             ResumeLayout(false);
         }

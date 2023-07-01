@@ -4,6 +4,7 @@ import logging
 import random
 import time
 from fastapi import WebSocket, WebSocketDisconnect
+from sqlalchemy import text
 
 
 class WebSocketManager:
@@ -24,7 +25,8 @@ class WebSocketManager:
         logging.getLogger().debug("ConnectionManager.message_handler")
         try:
             message = await websocket.receive_text()
-            logging.getLogger().debug(f"Receive: {message}")
+            # ToDo: 메시지 디버깅
+            # logging.getLogger().debug(f"Receive: {message}")
             if len(message) > 0:
                 json_object = json.loads(message)
                 msgtype = json_object.get("msgtype")
@@ -36,6 +38,8 @@ class WebSocketManager:
                     await self.order(json_object)
                 elif msgtype == "mylist":    # 메뉴 요청 결과
                     await self.mylist(json_object)
+                elif msgtype == "tablestatus":
+                    await self.tablestatus(json_object)
                 elif msgtype == "tablemap":
                     await self.tablemap(json_object)
                 elif msgtype == "menu":
@@ -152,20 +156,83 @@ class WebSocketManager:
         except Exception as e:
             logging.getLogger().error(e)
 
+    async def tablestatus(self, recvmsg):
+        logging.getLogger().debug("ConnectionManager.tablestatus")
+        # print(recvmsg)
+
+        # try:
+        #     from database import engine
+        #     sql = "SELECT COUNT(*) FROM data_table_status WHERE shop_no=" + recvmsg['shop_no'] + ";"
+        #     db = engine.connect()
+        #     result = db.execute(text(sql)).fetchone()
+        #     now = time
+        #     regdate = now.strftime('%Y%m%d%H%M%S')
+        #     data = json.dumps(recvmsg["data"]["TABLEUSE"], ensure_ascii=False)
+        #     if result[0] == 0:
+        #         sql = f"INSERT INTO data_table_map (shop_no, regdate, data) VALUES (" \
+        #               f"{recvmsg['shop_no']}," \
+        #               f"'{regdate}'," \
+        #               f"'{data}')"
+        #         db.execute(text(sql))
+        #         db.commit()
+        #     else:
+        #         sql = f"UPDATE data_table_map " \
+        #               f"SET regdate='{regdate}',data='{data}'" \
+        #               f"WHERE shop_no={recvmsg['shop_no']};"
+        #         db.execute(text(sql))
+        #         db.commit()
+        # except Exception as e:
+        #     logging.getLogger().error(e)
+
     async def tablemap(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.tablemap")
         try:
-            print(recvmsg)
-            # data = json.dumps(recvmsg, ensure_ascii=False)
-            # print(data)
+            from database import engine
+            sql = "SELECT COUNT(*) FROM data_table_map WHERE shop_no=" + recvmsg['shop_no'] + ";"
+            db = engine.connect()
+            result = db.execute(text(sql)).fetchone()
+            now = time
+            regdate = now.strftime('%Y%m%d%H%M%S')
+            data = json.dumps(recvmsg["data"]["TABLEUSE"], ensure_ascii=False)
+            if result[0] == 0:
+                sql = f"INSERT INTO data_table_map (shop_no, regdate, data) VALUES (" \
+                      f"{recvmsg['shop_no']}," \
+                      f"'{regdate}'," \
+                      f"'{data}')"
+                db.execute(text(sql))
+                db.commit()
+            else:
+                sql = f"UPDATE data_table_map " \
+                      f"SET regdate='{regdate}',data='{data}'" \
+                      f"WHERE shop_no={recvmsg['shop_no']};"
+                db.execute(text(sql))
+                db.commit()
         except Exception as e:
             logging.getLogger().error(e)
 
     async def menu(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.menu")
         try:
-            data = json.dumps(recvmsg, ensure_ascii=False)
-            # logging.getLogger().debug(f"메뉴: {data}")
+            from database import engine
+            sql = "SELECT COUNT(*) FROM data_menu WHERE shop_no=" + recvmsg['shop_no'] + ";"
+            db = engine.connect()
+            result = db.execute(text(sql)).fetchone()
+            now = time
+            regdate = now.strftime('%Y%m%d%H%M%S')
+            data = json.dumps(recvmsg["data"]["PRODUCT"], ensure_ascii=False)
+            if result[0] == 0:
+                sql = f"INSERT INTO data_menu (shop_no, regdate, data) VALUES (" \
+                      f"{recvmsg['shop_no']}," \
+                      f"'{regdate}'," \
+                      f"'{data}')"
+                db.execute(text(sql))
+                db.commit()
+            else:
+                sql = f"UPDATE data_menu " \
+                      f"SET regdate='{regdate}',data='{data}'" \
+                      f"WHERE shop_no={recvmsg['shop_no']};"
+                db.execute(text(sql))
+                db.commit()
         except Exception as e:
             logging.getLogger().error(e)
 

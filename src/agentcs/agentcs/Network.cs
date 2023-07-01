@@ -1,70 +1,85 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
+using Serilog;
+using Serilog.Core;
 
 
 namespace agentcs
 {
     public class Network 
     {
-        public delegate void Delegate(string message);
-        Delegate MessageHandler;
+        public delegate void Delegate1(string message);
+        public delegate void Delegate2(WebSocketError error);
+        Delegate1 MessageHandler;
+        Delegate2 StatusHandler;
         bool connect_status = false;
         bool service_status = true;
-        
+        int timer_connect_retry;
+        readonly Config config = Config.Instance;
+
         private ClientWebSocket clientWebSocket;
 
-        public Network(Delegate func)
+        public Network(Delegate1 func1, Delegate2 func2)
         {
-            MessageHandler = func;
+            MessageHandler = func1;
+            StatusHandler = func2;
             clientWebSocket = null!;
+            timer_connect_retry = config.GetInt("timer_connect_retry") * 1000;
+        }
+
+        ~Network()
+        {
+            service_status = false;
         }
 
         public async Task ConnectAsync(Uri uri)
         {
-            Console.WriteLine("Network.ConnectAsync()");
+            Log.Information("Network.ConnectAsync()");
+
             while (service_status == true)
             {
                 if (connect_status == false)
                 {
+                    //if (clientWebSocket != null)
+                    //    clientWebSocket.Abort();
+
                     try
                     {
                         clientWebSocket = new ClientWebSocket();
                         await clientWebSocket.ConnectAsync(uri, CancellationToken.None);
                         connect_status = true;
                         StartReceiving();
+                        StatusHandler(WebSocketError.Success);
                     }
                     catch (WebSocketException ex)
                     {
                         connect_status = false;
+                        StatusHandler(ex.WebSocketErrorCode);
                         Console.WriteLine("ConnectAsync.WebSocketException : {0}", ex.WebSocketErrorCode);
-                        if (ex.WebSocketErrorCode == WebSocketError.Faulted)
-                        {
-                            Console.WriteLine("접속 안되거나 끊김 -_-");
-                        }
                     }
                 }
-                await Task.Delay(10000);
+                await Task.Delay(timer_connect_retry);
             }
         }
 
         private void StartReceiving()
         {
-            Console.WriteLine("Network.StartReceiving()");
+            Log.Information("Network.StartReceiving()");
             try
             {
                 _ = Task.Run(ReceiveAsync);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("StartReceiving.Exception : {0}", ex.Message);
+                Log.Error("StartReceiving.Exception : {0}", ex.Message);
             }
         }
 
         private async Task ReceiveAsync()
         {
-            Console.WriteLine("Network.ReceiveAsync()");
+            Log.Information("Network.ReceiveAsync()");
 
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[8192];
             while (clientWebSocket.State == WebSocketState.Open)
             {
                 if (connect_status == false) return;
@@ -74,33 +89,32 @@ namespace agentcs
 
                     if (result.MessageType == WebSocketMessageType.Close)
                     {
-                        Console.WriteLine("WebSocketMessageType.Close");
-                        await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                        //Console.WriteLine("WebSocketMessageType.Close");
+                        //await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                        connect_status = false;
                         break;
                     }
 
                     string receivedMessage = System.Text.Encoding.UTF8.GetString(buffer, 0, result.Count);
-                    //Console.WriteLine("Received message: " + receivedMessage);
+                    Console.WriteLine("Received message: " + receivedMessage);
                     MessageHandler(receivedMessage);
                 }
                 catch (WebSocketException ex)
                 {
-                    Console.WriteLine("ReceiveAsync.WebSocketException : {0}", ex.WebSocketErrorCode);
-                    if (ex.WebSocketErrorCode == WebSocketError.Faulted)
-                    {
-                        Console.WriteLine("접속이 끊긴거야?");
-                    }
+                    connect_status = false;
+                    StatusHandler(ex.WebSocketErrorCode);
+                    Log.Error("ReceiveAsync.WebSocketException : {0}", ex.WebSocketErrorCode);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("ReceiveAsync.Exception : {0}", ex.Message);
+                    Log.Error("ReceiveAsync.Exception : {0}", ex.Message);
                 }
             }
         }
 
         public async Task SendAsync(string message)
         {
-            Console.WriteLine("Network.SendAsync()");
+            Log.Information("Network.SendAsync()");
 
             if (connect_status == false) return;
             try
@@ -110,12 +124,13 @@ namespace agentcs
             }
             catch (Exception ex)
             {
-                Console.WriteLine("SendAsync.Exception : {0}", ex.Message);
+                Log.Error("SendAsync.Exception : {0}", ex.Message);
             }
         }
 
         public async Task CloseAsync()
         {
+            Log.Information("Network.CloseAsync()");
             await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
         }
     }

@@ -1,18 +1,18 @@
-using agentcs.util;
 using System;
-using System.DirectoryServices;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Unicode;
+using System.Net.WebSockets;
 using System.Windows.Forms;
+using System.Threading;
+using Serilog;
+using Serilog.Core;
 
 namespace agentcs
 {
     public partial class MainForm : Form
     {
         private Network client;
+        Thread? tsThread;
         private string shop_no = "";
         private string auth_key = "C.ORDER";
         private string path_status = "";
@@ -21,13 +21,15 @@ namespace agentcs
         private string print_port = "COM6";
         private int print_font_width = 0;
         private int print_font_height = 0;
+        private int timer_status_query = 30;
+        bool table_status = true;
         readonly Config config = Config.Instance;
 
         public MainForm()
         {
             InitializeComponent();
-            client = new Network(MessageHandler);
             InitData();
+            client = new Network(MessageHandler, StatusHandler);
         }
 
         public void InitData()
@@ -42,62 +44,90 @@ namespace agentcs
             print_port = config.GetString("print_port");
             print_font_width = config.GetInt("print_font_width");
             print_font_height = config.GetInt("print_font_height");
+            timer_status_query = config.GetInt("timer_status_query") * 1000;
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.Console()
+                .WriteTo.File("log/log_.txt", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)
+            .CreateLogger();
         }
 
-        private async void MainForm_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
-            string address = "ws://" + config.GetString("server_address") + ":19000/ws";
-            Uri serverUri = new(address);
+            Log.Debug("MainForm_Load");
+            Connect();
+        }
 
-            try
-            {
-                await client.ConnectAsync(serverUri);
+        private async void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Log.Verbose("MainForm_FormClosing");
+            table_status = false;
+            tsThread?.Join();
+            await client.CloseAsync();
+            Log.CloseAndFlush();
+        }
 
-                string auth_key = "C.오더";
-                string message = "{\"msgtype\":\"login\",\"shop_no\": \""
-                    + shop_no + "\",\"auth_key\":\""
-                    + auth_key + "\"}";
-                await client.SendAsync(message);
-                Console.WriteLine("Sent message: " + message);
-
-                //await client.CloseAsync();      // 연결 종료
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error occurred: " + ex.Message);
-            }
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Log.Verbose("MainForm_FormClosed");
         }
 
         private async void buttonGenPin_Click(object sender, EventArgs e)
         {
             string message = "{\"msgtype\":\"genpin\",\"shop_no\": \"" + shop_no + "\"}";
             await client.SendAsync(message);
-            Console.WriteLine("Sent message: " + message);
+            Log.Information("buttonGenPin_Click : " + message);
+        }
+
+        public void StatusHandler(WebSocketError error)
+        {
+            switch (error)
+            {
+                case WebSocketError.Success:
+                    Log.Information("StatusHandler : CONNECTED");
+                    LoginReq();
+                    break;
+
+                case WebSocketError.Faulted:
+                    Log.Information("StatusHandler : FAULTED");
+                    break;
+
+                //case WebSocketError.InvalidState:
+                //    break;
+
+                default:
+                    Log.Information("StatusHandler : DISCONNECTED");
+                    break;
+            }
         }
 
         public void MessageHandler(string message)
         {
-            Console.WriteLine("MessageHandler : " + message);
+            Log.Debug("MessageHandler : " + message);
 
             try
             {
                 var json = JsonNode.Parse(message);
                 json = json?.Root;
                 if (json == null) return;
-            
+
                 string msgtype = json["msgtype"]!.ToString();
 
                 switch (msgtype)
                 {
                     case "login":
-                        Console.WriteLine("MessageHandler.login");
-                        // 로그인에 성공하면 POS 데이터 전송
+                        Log.Verbose("MessageHandler.login");
+                        // ToDo: 로그인에 성공하면 POS 데이터 전송
                         //SendPosData();
+                        //QueryTableStatus()
+                        tsThread = new(QueryTableStatus);
+                        tsThread.Start();
                         break;
 
                     case "genpin":
-                        Console.WriteLine("MessageHandler.genpin");
-                        // 핀 생성 성공하면 감열식 프린터로 인쇄
+                        Log.Verbose("MessageHandler.genpin");
+                        // ToDo: 핀 생성 성공하면 감열식 프린터로 인쇄
                         //string pin = "";
                         //string createdAt = "";
                         //ThemalPrint print = new();
@@ -109,31 +139,29 @@ namespace agentcs
                         break;
 
                     case "order":
-                        Console.WriteLine("MessageHandler.order");
-                        Order(json);
+                        Log.Verbose("MessageHandler.order");
+                        OrderAns(json);
                         break;
 
                     case "mylist":
-                        Console.WriteLine("MessageHandler.mylist");
+                        Log.Verbose("MessageHandler.mylist");
                         break;
 
-                    case "tablemap":
-                        Console.WriteLine("MessageHandler.tablemap");
-                        break;
-
-                    case "menu":
-                        Console.WriteLine("MessageHandler.menu");
+                    default:
+                        Log.Warning("Unknown Message Type");
                         break;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("MessageHandler : {0}", ex.Message);
+                Log.Error("MessageHandler : {0}", ex.Message);
             }
         }
 
         public async void SendPosData()
         {
+            Log.Information("SendPosData()");
+
             JsonWrapper jsonTableMap = new();
             if (jsonTableMap.Load(config.GetString("path_tablemap"), codepage: 51949) == true)
             {
@@ -148,8 +176,8 @@ namespace agentcs
                 jsonMenu.Parse();
             }
 
-            string message = "{\"msgtype\":\"tablemap\",\"shop_no\": \"" 
-                + shop_no 
+            string message = "{\"msgtype\":\"tablemap\",\"shop_no\": \""
+                + shop_no
                 + "\", \"data\":"
                 + jsonTableMap.ToString()
                 + "}";
@@ -158,14 +186,42 @@ namespace agentcs
             message = "{\"msgtype\":\"menu\",\"shop_no\": \""
                 + shop_no
                 + "\", \"data\":"
-                + jsonTableMap.ToString()
+                + jsonMenu.ToString()
                 + "}";
             await client.SendAsync(message);
         }
 
-        public void Order(JsonNode node)
+        public async void Connect()
         {
-            Console.WriteLine("Order()");
+            string address = "ws://" + config.GetString("server_address") 
+                + ":" + config.GetString("server_port") + "/ws";
+            Uri serverUri = new(address);
+            Log.Information("Server Address : " + address);
+            await client.ConnectAsync(serverUri);
+        }
+
+        public async void LoginReq()
+        {
+            Log.Information("LoginReq()");
+
+            try
+            {
+                string auth_key = "C.오더";
+                string message = "{\"msgtype\":\"login\",\"shop_no\": \""
+                    + shop_no + "\",\"auth_key\":\""
+                    + auth_key + "\"}";
+                await client.SendAsync(message);
+                Log.Debug("LoginReq : " + message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("LoginReq : {0}", ex.Message);
+            }
+        }
+
+        public void OrderAns(JsonNode node)
+        {
+            Log.Information("OrderAns()");
 
             try
             {
@@ -185,6 +241,30 @@ namespace agentcs
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        public async void QueryTableStatus()
+        {
+            while (table_status == true)
+            {
+                Log.Information("QueryTableStatus()");
+
+                JsonWrapper jsonTableStatus = new();
+                if (jsonTableStatus.Load(config.GetString("path_status"), codepage: 51949) == true)
+                {
+                    jsonTableStatus.SetOptions(false);
+                    jsonTableStatus.Parse();
+                }
+
+                string message = "{\"msgtype\":\"tablestatus\",\"shop_no\": \""
+                    + shop_no
+                    + "\", \"data\":"
+                    + jsonTableStatus.ToString()
+                    + "}";
+                await client.SendAsync(message);
+
+                await Task.Delay(timer_status_query);
             }
         }
     }
