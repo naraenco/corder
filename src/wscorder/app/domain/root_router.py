@@ -10,4 +10,4 @@ def root():
 
 @router.get("/version")
 def version():
-    return {"version": "0.1"}
+    return {"version": "2023.07.03"}

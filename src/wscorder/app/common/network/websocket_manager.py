@@ -138,8 +138,7 @@ class WebSocketManager:
             logging.getLogger().error(e)
 
     async def order(self, recvmsg):
-        logging.getLogger().debug("ConnectionManager.order")
-        print(f"recvmsg : {recvmsg}")
+        logging.getLogger().debug(f"ConnectionManager.order : {recvmsg}")
         try:
             key = "order_" + str(recvmsg['order_no'])
             if self.redis.exists(key):
@@ -243,7 +242,7 @@ class WebSocketManager:
             if conn is None:
                 logging.getLogger().error("api_order - get connection failure")
                 return False
-            response = copy.deepcyopy(params)
+            response = copy.deepcopy(params)
             response['msgtype'] = "order"
             response['status'] = 0
             error, seq = self.redis.update_pin(str(params['otp_pin']), params['table_cd'])

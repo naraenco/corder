@@ -210,8 +210,7 @@ namespace agentcs
                     case "login":
                         Log.Verbose("MessageHandler.login");
                         // ToDo: 로그인에 성공하면 POS 데이터 전송
-                        //SendPosData();
-                        //QueryTableStatus()
+                        SendPosData();
                         tsThread = new(QueryTableStatus);
                         tsThread.Start();
                         break;
@@ -219,14 +218,14 @@ namespace agentcs
                     case "genpin":
                         Log.Verbose("MessageHandler.genpin");
                         // ToDo: 핀 생성 성공하면 감열식 프린터로 인쇄
-                        //string pin = "";
-                        //string createdAt = "";
-                        //ThemalPrint print = new();
-                        //print.PrintPin(print_port, 
-                        //    pin, 
-                        //    createdAt, 
-                        //    print_font_width, 
-                        //    print_font_height);
+                        string pin = "";
+                        string createdAt = "";
+                        ThemalPrint print = new();
+                        print.PrintPin(print_port,
+                            pin,
+                            createdAt,
+                            print_font_width,
+                            print_font_height);
                         break;
 
                     case "order":
@@ -284,7 +283,7 @@ namespace agentcs
 
         public async void Connect()
         {
-            string address = "ws://" + config.GetString("server_address") 
+            string address = "ws://" + config.GetString("server_address")
                 + ":" + config.GetString("server_port") + "/ws";
             Uri serverUri = new(address);
             Log.Information("Server Address : " + address);

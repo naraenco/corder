@@ -33,7 +33,7 @@
             // 
             // buttonGenPin
             // 
-            buttonGenPin.Location = new Point(392, 274);
+            buttonGenPin.Location = new Point(82, 66);
             buttonGenPin.Name = "buttonGenPin";
             buttonGenPin.Size = new Size(100, 50);
             buttonGenPin.TabIndex = 0;
