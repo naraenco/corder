@@ -6,11 +6,45 @@ using System.Windows.Forms;
 using System.Threading;
 using Serilog;
 using Serilog.Core;
+using System.Runtime.InteropServices;
+using System.Reflection.Emit;
 
 namespace agentcs
 {
     public partial class MainForm : Form
     {
+        [DllImport("user32.dll")]
+        static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc callback, IntPtr hInstance, uint threadId);
+
+        [DllImport("user32.dll")]
+        static extern bool UnhookWindowsHookEx(IntPtr hInstance);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr CallNextHookEx(IntPtr idHook, int nCode, int wParam, IntPtr lParam);
+
+        [DllImport("kernel32.dll")]
+        static extern IntPtr LoadLibrary(string lpFileName);
+
+        [DllImport("user32.dll")]
+        public static extern ushort GetAsyncKeyState(Int32 vKey);
+
+        [DllImport("user32.dll")]
+        static extern short GetKeyState(int nCode);
+
+
+        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        const int WH_KEYBOARD_LL = 13;
+        const int WM_KEYDOWN = 0x100;
+        const int WM_KEYUP = 0x101;
+        const int WM_SYSKEYDOWN = 0x104;
+        const int WM_SYSKEYUP = 0x105;
+        static public bool Shift { get; private set; }
+        static public bool Control { get; private set; }
+
+        private IntPtr hook = IntPtr.Zero;
+
+
         private Network client;
         Thread? tsThread;
         private string shop_no = "";
@@ -25,11 +59,63 @@ namespace agentcs
         bool table_status = true;
         readonly Config config = Config.Instance;
 
+
         public MainForm()
         {
             InitializeComponent();
             InitData();
             client = new Network(MessageHandler, StatusHandler);
+        }
+
+        private void SetHook()
+        {
+            IntPtr hInstance = LoadLibrary("User32");
+            hook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProc, hInstance, 0);
+        }
+
+        private void UnHook()
+        {
+            UnhookWindowsHookEx(hook);
+        }
+
+        public IntPtr hookProc(int code, IntPtr wParam, IntPtr lParam)
+        {
+            if (wParam == (IntPtr)WM_KEYDOWN)
+            {
+                Keys vkKey = (Keys)Marshal.ReadInt32(lParam);
+                //int keyCode = Marshal.ReadInt32(lParam);
+                //Console.WriteLine("code : {0}, vkKey : {1}", keyCode, vkKey);
+
+                if (vkKey == Keys.LControlKey)
+                {
+                    Control = true;
+                }
+
+                if (vkKey == Keys.LShiftKey)
+                {
+                    Shift = true;
+                }
+            }
+
+            if (wParam == (IntPtr)WM_SYSKEYDOWN) // 알트 키 눌림
+            {
+                int key = Marshal.ReadInt32(lParam);
+                Console.WriteLine(key);
+
+                if (key == 221)
+                {
+                    GenPinReq();
+                    //MessageBox.Show("기능키  ALT + SHIFT + ] 가 눌렸습니다.");
+                }
+            }
+
+            if (wParam == (IntPtr)WM_KEYUP)
+            {
+                Control = false;
+                Shift = false;
+                return IntPtr.Zero;
+            }
+            return CallNextHookEx(hook, code, (int)wParam, lParam);
         }
 
         public void InitData()
@@ -61,12 +147,14 @@ namespace agentcs
         private void MainForm_Load(object sender, EventArgs e)
         {
             Log.Debug("MainForm_Load");
+            SetHook();
             Connect();
         }
 
         private async void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Log.Verbose("MainForm_FormClosing");
+            UnHook();
             table_status = false;
             tsThread?.Join();
             await client.CloseAsync();
@@ -78,11 +166,9 @@ namespace agentcs
             Log.Verbose("MainForm_FormClosed");
         }
 
-        private async void buttonGenPin_Click(object sender, EventArgs e)
+        private void buttonGenPin_Click(object sender, EventArgs e)
         {
-            string message = "{\"msgtype\":\"genpin\",\"shop_no\": \"" + shop_no + "\"}";
-            await client.SendAsync(message);
-            Log.Information("buttonGenPin_Click : " + message);
+            GenPinReq();
         }
 
         public void StatusHandler(WebSocketError error)
@@ -222,6 +308,13 @@ namespace agentcs
             {
                 Log.Error("LoginReq : {0}", ex.Message);
             }
+        }
+
+        public async void GenPinReq()
+        {
+            string message = "{\"msgtype\":\"genpin\",\"shop_no\": \"" + shop_no + "\"}";
+            await client.SendAsync(message);
+            Log.Information("buttonGenPin_Click : " + message);
         }
 
         public void OrderAns(JsonNode node)
