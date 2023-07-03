@@ -44,7 +44,12 @@ namespace agentcs
             print_port = config.GetString("print_port");
             print_font_width = config.GetInt("print_font_width");
             print_font_height = config.GetInt("print_font_height");
-            timer_status_query = config.GetInt("timer_status_query") * 1000;
+            timer_status_query = config.GetInt("timer_status_query");
+            if (timer_status_query < 10)
+            {
+                timer_status_query = 10;
+            }
+            timer_status_query *= 1000;
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()

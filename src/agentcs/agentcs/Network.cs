@@ -24,7 +24,12 @@ namespace agentcs
             MessageHandler = func1;
             StatusHandler = func2;
             clientWebSocket = null!;
-            timer_connect_retry = config.GetInt("timer_connect_retry") * 1000;
+            timer_connect_retry = config.GetInt("timer_connect_retry");
+            if (timer_connect_retry < 10)
+            {
+                timer_connect_retry = 10;
+            }
+            timer_connect_retry *= 1000;
         }
 
         ~Network()
