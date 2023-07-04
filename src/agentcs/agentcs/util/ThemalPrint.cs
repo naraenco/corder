@@ -24,13 +24,12 @@ namespace agentcs
                 serialPort.Open();
 
                 // 시간 인쇄
-                string command = createdAt;
-                byte[] data = Encoding.ASCII.GetBytes(command);
+                byte[] data = Encoding.ASCII.GetBytes(createdAt);
                 serialPort.Write(data, 0, data.Length);
 
                 // 폰트 크기 변경
                 //command = "\x1B!%c";
-                command = String.Format("\x1B!%c", ((width - 1) << 4) | (height - 1));
+                string command = String.Format("\x1B!%c", ((width - 1) << 4) | (height - 1));
                 data = Encoding.ASCII.GetBytes(command);
                 serialPort.Write(data, 0, data.Length);
 

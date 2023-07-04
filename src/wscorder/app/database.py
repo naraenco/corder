@@ -14,6 +14,6 @@ url_object = URL.create(
     database=config.get('db_name')
 )
 # print(url_object)
-engine = create_engine(url_object, pool_recycle=3600, connect_args={})
+engine = create_engine(url_object, pool_recycle=3600, connect_args={}, future=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

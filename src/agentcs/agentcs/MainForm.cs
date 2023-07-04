@@ -25,12 +25,6 @@ namespace agentcs
         [DllImport("kernel32.dll")]
         static extern IntPtr LoadLibrary(string lpFileName);
 
-        [DllImport("user32.dll")]
-        public static extern ushort GetAsyncKeyState(Int32 vKey);
-
-        [DllImport("user32.dll")]
-        static extern short GetKeyState(int nCode);
-
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
@@ -80,11 +74,16 @@ namespace agentcs
 
         public IntPtr hookProc(int code, IntPtr wParam, IntPtr lParam)
         {
+            Log.Verbose("hookProc IN");
+
             if (wParam == (IntPtr)WM_KEYDOWN)
             {
+                Log.Verbose("hookProc 01");
+
                 Keys vkKey = (Keys)Marshal.ReadInt32(lParam);
                 //int keyCode = Marshal.ReadInt32(lParam);
                 //Console.WriteLine("code : {0}, vkKey : {1}", keyCode, vkKey);
+                Log.Verbose("hookProc 02");
 
                 if (vkKey == Keys.LControlKey)
                 {
@@ -95,17 +94,22 @@ namespace agentcs
                 {
                     Shift = true;
                 }
+                Log.Verbose("hookProc 03");
             }
 
             if (wParam == (IntPtr)WM_SYSKEYDOWN) // 알트 키 눌림
             {
+                Log.Verbose("hookProc 04");
                 int key = Marshal.ReadInt32(lParam);
                 Console.WriteLine(key);
 
+                Log.Verbose("hookProc 05");
+
                 if (key == 221)
                 {
+                    Log.Verbose("hookProc 06");
+                    MessageBox.Show("기능키 ALT + SHIFT + ] 가 눌렸습니다.");
                     GenPinReq();
-                    //MessageBox.Show("기능키  ALT + SHIFT + ] 가 눌렸습니다.");
                 }
             }
 
@@ -115,6 +119,7 @@ namespace agentcs
                 Shift = false;
                 return IntPtr.Zero;
             }
+            Log.Verbose("hookProc 07");
             return CallNextHookEx(hook, code, (int)wParam, lParam);
         }
 
@@ -168,6 +173,7 @@ namespace agentcs
 
         private void buttonGenPin_Click(object sender, EventArgs e)
         {
+            Log.Information("buttonGenPin_Click");
             GenPinReq();
         }
 
@@ -218,14 +224,7 @@ namespace agentcs
                     case "genpin":
                         Log.Verbose("MessageHandler.genpin");
                         // ToDo: 핀 생성 성공하면 감열식 프린터로 인쇄
-                        string pin = "";
-                        string createdAt = "";
-                        ThemalPrint print = new();
-                        print.PrintPin(print_port,
-                            pin,
-                            createdAt,
-                            print_font_width,
-                            print_font_height);
+                        GenPinAns(json);
                         break;
 
                     case "order":
@@ -313,7 +312,34 @@ namespace agentcs
         {
             string message = "{\"msgtype\":\"genpin\",\"shop_no\": \"" + shop_no + "\"}";
             await client.SendAsync(message);
-            Log.Information("buttonGenPin_Click : " + message);
+            Log.Debug("GenPinReq : " + message);
+            
+        }
+
+        public void GenPinAns(JsonNode node)
+        {
+            Log.Information("GenPinAns()");
+
+            try
+            {
+                string pin = node["pin"]!.ToString();
+                string createdAt = node["created_at"]!.ToString();
+                if (String.IsNullOrEmpty(pin))
+                {
+                    Log.Warning("pin is null or empty");
+                    return;
+                }
+                ThemalPrint print = new();
+                print.PrintPin(print_port,
+                    pin,
+                    createdAt,
+                    print_font_width,
+                    print_font_height);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
         }
 
         public void OrderAns(JsonNode node)
@@ -337,7 +363,7 @@ namespace agentcs
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Error(ex.Message);
             }
         }
 
