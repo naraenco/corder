@@ -8,6 +8,7 @@ using Serilog;
 using Serilog.Core;
 using System.Runtime.InteropServices;
 using System.Reflection.Emit;
+using System.Diagnostics;
 
 namespace agentcs
 {
@@ -25,8 +26,12 @@ namespace agentcs
         [DllImport("kernel32.dll")]
         static extern IntPtr LoadLibrary(string lpFileName);
 
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr GetModuleHandle(string lpModuleName);
+
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+        private LowLevelKeyboardProc hookProcDelegate;
 
         const int WH_KEYBOARD_LL = 13;
         const int WM_KEYDOWN = 0x100;
@@ -61,10 +66,21 @@ namespace agentcs
             client = new Network(MessageHandler, StatusHandler);
         }
 
+        public void globalKeyboardHook()
+        {
+            hookProcDelegate = hookProc;
+            SetHook();
+        }
+
         private void SetHook()
         {
             IntPtr hInstance = LoadLibrary("User32");
-            hook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProc, hInstance, 0);
+
+            //using (Process curProcess = Process.GetCurrentProcess())
+            //using (ProcessModule curModule = curProcess.MainModule!)
+            //hook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProc, hInstance, 0);
+            //hook = SetWindowsHookEx(WH_KEYBOARD_LL, new LowLevelKeyboardProc(hookProc), hInstance, 0);
+            hook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProcDelegate, hInstance, 0);
         }
 
         private void UnHook()
@@ -74,16 +90,11 @@ namespace agentcs
 
         public IntPtr hookProc(int code, IntPtr wParam, IntPtr lParam)
         {
-            Log.Verbose("hookProc IN");
-
             if (wParam == (IntPtr)WM_KEYDOWN)
             {
-                Log.Verbose("hookProc 01");
-
                 Keys vkKey = (Keys)Marshal.ReadInt32(lParam);
                 //int keyCode = Marshal.ReadInt32(lParam);
                 //Console.WriteLine("code : {0}, vkKey : {1}", keyCode, vkKey);
-                Log.Verbose("hookProc 02");
 
                 if (vkKey == Keys.LControlKey)
                 {
@@ -94,21 +105,16 @@ namespace agentcs
                 {
                     Shift = true;
                 }
-                Log.Verbose("hookProc 03");
             }
 
             if (wParam == (IntPtr)WM_SYSKEYDOWN) // 알트 키 눌림
             {
-                Log.Verbose("hookProc 04");
                 int key = Marshal.ReadInt32(lParam);
                 Console.WriteLine(key);
 
-                Log.Verbose("hookProc 05");
-
                 if (key == 221)
                 {
-                    Log.Verbose("hookProc 06");
-                    MessageBox.Show("기능키 ALT + SHIFT + ] 가 눌렸습니다.");
+                    //MessageBox.Show("기능키 ALT + SHIFT + ] 가 눌렸습니다.");
                     GenPinReq();
                 }
             }
@@ -119,7 +125,6 @@ namespace agentcs
                 Shift = false;
                 return IntPtr.Zero;
             }
-            Log.Verbose("hookProc 07");
             return CallNextHookEx(hook, code, (int)wParam, lParam);
         }
 
@@ -152,7 +157,8 @@ namespace agentcs
         private void MainForm_Load(object sender, EventArgs e)
         {
             Log.Debug("MainForm_Load");
-            SetHook();
+            //SetHook();
+            globalKeyboardHook();
             Connect();
         }
 
