@@ -179,3 +179,11 @@ CREATE TABLE `data_menu` (
     `category`                  text NULL,
     `data`                      text NULL
 );
+
+CREATE TABLE `orders` (
+    `no`                        bigint NOT NULL PRIMARY KEY,
+    `shop_no`                   bigint NOT NULL,
+    `table_cd`                  varchar(20) NOT NULL,
+    `status`                    int NOT NULL DEFAULT 0 COMMENT '0:READY, 1:USE, 2:CANCEL, 3:FINISH',
+    `orders`                    text NULL
+);

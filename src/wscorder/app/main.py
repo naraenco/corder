@@ -29,8 +29,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(root_router.router, prefix='')
-app.include_router(data.router, prefix='/api/data')
-app.include_router(menu.router, prefix='/api/menu')
 app.include_router(order.router, prefix='/api/order')
 
 

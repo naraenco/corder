@@ -30,12 +30,12 @@ async def orderpost(orderdto: OrderDto):
     logging.getLogger().debug(f"orderdto : {orderdto}")
 
     try:
+        error = "0000"
         shop_no = str(data['shop_no'])
         if ws_manager.check_connection(shop_no) is not True:
             return "2001"
-        error = redis_pool.validate_pin(data['otp_pin'], shop_no)
-        if error != "0000":
-            return error
+        if redis_pool.exists(f"pin_{shop_no}_{data['otp_pin']}") == 0:
+            return "1003"
 
         dao = OrderDao(**orderdto.dict())
         db = SessionLocal()

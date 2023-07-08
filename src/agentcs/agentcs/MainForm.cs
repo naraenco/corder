@@ -105,7 +105,7 @@ namespace agentcs
             if (wParam == (IntPtr)WM_SYSKEYDOWN) // 알트 키 눌림
             {
                 int key = Marshal.ReadInt32(lParam);
-                Console.WriteLine(key);
+                //Console.WriteLine(key);
 
                 if (key == 221)
                 {
@@ -363,7 +363,7 @@ namespace agentcs
                 JsonNode orderList = node["pos_order"]!["orderList"]!;
 
                 node["status"] = 1;
-                Console.WriteLine(node.ToJsonString());
+                //Console.WriteLine(node.ToJsonString());
 
                 JsonObject obj = new();
                 obj.Add("tableNo", node["table_cd"]?.ToString());
