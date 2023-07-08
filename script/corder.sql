@@ -176,5 +176,6 @@ CREATE TABLE `data_table_map` (
 CREATE TABLE `data_menu` (
     `shop_no`                   bigint NOT NULL PRIMARY KEY,
     `regdate`                   varchar(14) NOT NULL,
+    `category`                  text NULL,
     `data`                      text NULL
 );

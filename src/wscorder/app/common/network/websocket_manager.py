@@ -219,16 +219,18 @@ class WebSocketManager:
             now = time
             regdate = now.strftime('%Y%m%d%H%M%S')
             data = json.dumps(recvmsg["data"]["PRODUCT"], ensure_ascii=False)
+            category = json.dumps(recvmsg["category"]["TOUCHCLASS"], ensure_ascii=False)
             if result[0] == 0:
-                sql = f"INSERT INTO data_menu (shop_no, regdate, data) VALUES (" \
+                sql = f"INSERT INTO data_menu (shop_no, regdate, category, data) VALUES (" \
                       f"{recvmsg['shop_no']}," \
                       f"'{regdate}'," \
+                      f"'{category}'," \
                       f"'{data}')"
                 db.execute(text(sql))
                 db.commit()
             else:
                 sql = f"UPDATE data_menu " \
-                      f"SET regdate='{regdate}',data='{data}'" \
+                      f"SET regdate='{regdate}',category='{category}', data='{data}'" \
                       f"WHERE shop_no={recvmsg['shop_no']};"
                 db.execute(text(sql))
                 db.commit()

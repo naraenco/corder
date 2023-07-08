@@ -3,6 +3,7 @@
     "pos_extra" : "01",
     "path_tablemap" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\USE_TABLE.json",
     "path_menu" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\SCD_PRODM.json",
+    "path_category" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\SCD_TUCLS.json",
     "path_status" : "C:\\_OKPOS\\OKPOSIF\\KOD\\SEND\\TableStatus.json",
     "path_order" : "C:\\_OKPOS\\OKPOSIF\\KOD\\RECV\\",
     "print_port" : "COM6",

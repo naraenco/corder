@@ -75,11 +75,6 @@ namespace agentcs
         private void SetHook()
         {
             IntPtr hInstance = LoadLibrary("User32");
-
-            //using (Process curProcess = Process.GetCurrentProcess())
-            //using (ProcessModule curModule = curProcess.MainModule!)
-            //hook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProc, hInstance, 0);
-            //hook = SetWindowsHookEx(WH_KEYBOARD_LL, new LowLevelKeyboardProc(hookProc), hInstance, 0);
             hook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProcDelegate, hInstance, 0);
         }
 
@@ -271,6 +266,13 @@ namespace agentcs
                 jsonMenu.Parse();
             }
 
+            JsonWrapper jsonCategory = new();
+            if (jsonCategory.Load(config.GetString("path_category"), codepage: 51949) == true)
+            {
+                jsonCategory.SetOptions(false);
+                jsonCategory.Parse();
+            }
+
             string message = "{\"msgtype\":\"tablemap\",\"shop_no\": \""
                 + shop_no
                 + "\", \"data\":"
@@ -280,7 +282,9 @@ namespace agentcs
 
             message = "{\"msgtype\":\"menu\",\"shop_no\": \""
                 + shop_no
-                + "\", \"data\":"
+                + "\", \"category\":"
+                + jsonCategory.ToString()
+                + ", \"data\":"
                 + jsonMenu.ToString()
                 + "}";
             await client.SendAsync(message);
