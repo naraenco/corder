@@ -6,8 +6,6 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from starlette.middleware.cors import CORSMiddleware
 from domain import root_router
-import domain.menu.router as data
-import domain.menu.router as menu
 import domain.order.router as order
 from common import ws_manager, logger
 
