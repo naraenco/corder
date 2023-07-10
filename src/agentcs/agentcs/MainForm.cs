@@ -9,6 +9,9 @@ using Serilog.Core;
 using System.Runtime.InteropServices;
 using System.Reflection.Emit;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Net.NetworkInformation;
 
 namespace agentcs
 {
@@ -31,7 +34,7 @@ namespace agentcs
 
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-        private LowLevelKeyboardProc hookProcDelegate;
+        private LowLevelKeyboardProc? hookProcDelegate;
 
         const int WH_KEYBOARD_LL = 13;
         const int WM_KEYDOWN = 0x100;
@@ -43,9 +46,9 @@ namespace agentcs
 
         private IntPtr hook = IntPtr.Zero;
 
-
+        FileSystemWatcher watcher = new();
         private Network client;
-        Thread? tsThread;
+        //Thread? tsThread;
         private string shop_no = "";
         private string auth_key = "C.ORDER";
         private string path_status = "";
@@ -55,7 +58,7 @@ namespace agentcs
         private int print_font_width = 0;
         private int print_font_height = 0;
         private int timer_status_query = 30;
-        bool table_status = true;
+        //bool table_status = true;
         readonly Config config = Config.Instance;
 
 
@@ -75,7 +78,7 @@ namespace agentcs
         private void SetHook()
         {
             IntPtr hInstance = LoadLibrary("User32");
-            hook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProcDelegate, hInstance, 0);
+            hook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProcDelegate!, hInstance, 0);
         }
 
         private void UnHook()
@@ -123,6 +126,56 @@ namespace agentcs
             return CallNextHookEx(hook, code, (int)wParam, lParam);
         }
 
+        private void watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            if (e.ChangeType != WatcherChangeTypes.Changed) return;
+
+            SendTableStatus();
+
+            try
+            {
+                watcher.EnableRaisingEvents = false;
+
+                // 파일 쓰기 중인지 확인한다.
+                while (true)
+                {
+                    try
+                    {
+                        using (Stream stream = File.Open(path_status, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        {
+                            if (null != stream) break;
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.ToString());
+                    }
+                    finally
+                    {
+                    }
+                    System.Threading.Thread.Sleep(1);   // 메인 스레드와 다른 스레드이기 때문에 슬립을 사용해도 다른 시스템에는 영향이 없다.
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.ToString());
+            }
+            finally
+            {
+                watcher.EnableRaisingEvents = true;
+            }
+        }
+
+        public void StatusMonitor()
+        {
+            watcher.Path = Path.GetDirectoryName(path_status)!;
+            watcher.NotifyFilter = NotifyFilters.LastWrite;
+            watcher.Changed += watcher_Changed;
+            watcher.Filter = Path.GetFileName(path_status);
+            watcher.IncludeSubdirectories = false;  // 하위 디렉토리의 변화까지 확인할 것이다.
+            watcher.EnableRaisingEvents = true;     // 이벤트를 발생 할 것이다.
+        }
+
         public void InitData()
         {
             if (config.Load() == false)
@@ -161,8 +214,8 @@ namespace agentcs
         {
             Log.Verbose("MainForm_FormClosing");
             UnHook();
-            table_status = false;
-            tsThread?.Join();
+            //table_status = false;
+            //tsThread?.Join();
             await client.CloseAsync();
             Log.CloseAndFlush();
         }
@@ -216,10 +269,12 @@ namespace agentcs
                 {
                     case "login":
                         Log.Verbose("MessageHandler.login");
-                        // ToDo: 로그인에 성공하면 POS 데이터 전송
+                        // ToDo: 로그인에 성공하면 POS 데이터 전송, TableStatus.json 모니터링 시작
                         SendPosData();
-                        tsThread = new(QueryTableStatus);
-                        tsThread.Start();
+                        SendTableStatus();
+                        StatusMonitor();
+                        //tsThread = new(SendTableStatus);
+                        //tsThread.Start();
                         break;
 
                     case "genpin":
@@ -266,11 +321,18 @@ namespace agentcs
                 jsonMenu.Parse();
             }
 
-            JsonWrapper jsonCategory = new();
-            if (jsonCategory.Load(config.GetString("path_category"), codepage: 51949) == true)
+            JsonWrapper jsonTouchClass = new();
+            if (jsonTouchClass.Load(config.GetString("path_touchclass"), codepage: 51949) == true)
             {
-                jsonCategory.SetOptions(false);
-                jsonCategory.Parse();
+                jsonTouchClass.SetOptions(true);
+                jsonTouchClass.Parse();
+            }
+
+            JsonWrapper jsonTouchKey = new();
+            if (jsonTouchKey.Load(config.GetString("path_touchkey"), codepage: 51949) == true)
+            {
+                jsonTouchKey.SetOptions(true);
+                jsonTouchKey.Parse();
             }
 
             string message = "{\"msgtype\":\"tablemap\",\"shop_no\": \""
@@ -282,8 +344,10 @@ namespace agentcs
 
             message = "{\"msgtype\":\"menu\",\"shop_no\": \""
                 + shop_no
-                + "\", \"category\":"
-                + jsonCategory.ToString()
+                + "\", \"touch_class\":"
+                + jsonTouchClass.ToString()
+                + ", \"touch_key\":"
+                + jsonTouchKey.ToString()
                 + ", \"data\":"
                 + jsonMenu.ToString()
                 + "}";
@@ -305,7 +369,6 @@ namespace agentcs
 
             try
             {
-                string auth_key = "C.오더";
                 string message = "{\"msgtype\":\"login\",\"shop_no\": \""
                     + shop_no + "\",\"auth_key\":\""
                     + auth_key + "\"}";
@@ -377,28 +440,27 @@ namespace agentcs
             }
         }
 
-        public async void QueryTableStatus()
+        public async void SendTableStatus()
+        //public void SendTableStatus()
         {
-            while (table_status == true)
+            Log.Information("SendTableStatus()");
+
+            JsonWrapper jsonTableStatus = new();
+            if (jsonTableStatus.Load(path_status, codepage: 51949) == true)
             {
-                Log.Information("QueryTableStatus()");
+                jsonTableStatus.SetOptions(false);
+                jsonTableStatus.Parse();
+            }
 
-                JsonWrapper jsonTableStatus = new();
-                if (jsonTableStatus.Load(config.GetString("path_status"), codepage: 51949) == true)
-                {
-                    jsonTableStatus.SetOptions(false);
-                    jsonTableStatus.Parse();
-                }
+            //the process cannot access the file because it is being used by another process
 
-                string message = "{\"msgtype\":\"tablestatus\",\"shop_no\": \""
+            string message = "{\"msgtype\":\"tablestatus\",\"shop_no\": \""
                     + shop_no
                     + "\", \"data\":"
                     + jsonTableStatus.ToString()
                     + "}";
-                await client.SendAsync(message);
-
-                await Task.Delay(timer_status_query);
-            }
+            //Console.WriteLine(message);
+            await client.SendAsync(message);
         }
     }
 }

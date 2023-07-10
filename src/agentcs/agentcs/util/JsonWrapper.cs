@@ -13,6 +13,7 @@ namespace agentcs
         private string? str = null;
         private JsonSerializerOptions options;
         private TextEncoderSettings encoderSettings;
+        private readonly object fileLock = new object();
 
         public JsonWrapper()
         {
@@ -46,8 +47,15 @@ namespace agentcs
                 else
                 {
                     Encoding encode = Encoding.GetEncoding(codepage);
-                    var bytes = File.ReadAllBytes(path);
-                    str = encode.GetString(bytes);
+
+                    using (FileStream filestream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        BinaryReader binaryreader = new BinaryReader(filestream);
+                        var bytes = binaryreader.ReadBytes((int)filestream.Length);
+                        str = encode.GetString(bytes);
+                    }
+                    //var bytes = File.ReadAllBytes(path);
+                    //str = encode.GetString(bytes);
                 }
             }
             catch (Exception ex)
@@ -55,6 +63,7 @@ namespace agentcs
                 Console.WriteLine("JsonWrapper.Load : {0}", ex.Message);
                 return false;
             }
+            
             return true;
         }
 
