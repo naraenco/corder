@@ -18,6 +18,7 @@ def genpin(recvmsg):
                 break
         now = time
         data = {
+            "pin": pin,
             "created_at": now.strftime('%Y-%m-%d %H:%M:%S')
         }
         response = copy.deepcopy(data)
@@ -30,7 +31,6 @@ def genpin(recvmsg):
     except Exception as e:
         logging.getLogger().error(e)
     return None
-
 
 async def update_menu(recvmsg):
     logging.getLogger().debug("ConnectionManager.menu")
