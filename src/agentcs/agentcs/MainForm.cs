@@ -2,16 +2,12 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Net.WebSockets;
-using System.Windows.Forms;
 using System.Threading;
 using Serilog;
 using Serilog.Core;
 using System.Runtime.InteropServices;
-using System.Reflection.Emit;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Net.NetworkInformation;
+using System.Collections;
+using System.DirectoryServices;
 
 namespace agentcs
 {
@@ -40,7 +36,6 @@ namespace agentcs
         const int WM_KEYDOWN = 0x100;
         const int WM_KEYUP = 0x101;
         const int WM_SYSKEYDOWN = 0x104;
-        const int WM_SYSKEYUP = 0x105;
         static public bool Shift { get; private set; }
         static public bool Control { get; private set; }
 
@@ -48,7 +43,6 @@ namespace agentcs
 
         FileSystemWatcher watcher = new();
         private Network client;
-        //Thread? tsThread;
         private string shop_no = "";
         private string auth_key = "C.ORDER";
         private string path_status = "";
@@ -58,8 +52,8 @@ namespace agentcs
         private int print_font_width = 0;
         private int print_font_height = 0;
         private int timer_status_query = 30;
-        //bool table_status = true;
         readonly Config config = Config.Instance;
+        JsonWrapper? lastTableStatus = null;
 
 
         public MainForm()
@@ -205,7 +199,6 @@ namespace agentcs
         private void MainForm_Load(object sender, EventArgs e)
         {
             Log.Debug("MainForm_Load");
-            //SetHook();
             globalKeyboardHook();
             Connect();
         }
@@ -214,8 +207,6 @@ namespace agentcs
         {
             Log.Verbose("MainForm_FormClosing");
             UnHook();
-            //table_status = false;
-            //tsThread?.Join();
             await client.CloseAsync();
             Log.CloseAndFlush();
         }
@@ -229,6 +220,12 @@ namespace agentcs
         {
             Log.Information("buttonGenPin_Click");
             GenPinReq();
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            Log.Information("buttonCancel_Click()");
+            SendClear(0, textTable.Text);
         }
 
         public void StatusHandler(WebSocketError error)
@@ -273,8 +270,6 @@ namespace agentcs
                         SendPosData();
                         SendTableStatus();
                         StatusMonitor();
-                        //tsThread = new(SendTableStatus);
-                        //tsThread.Start();
                         break;
 
                     case "genpin":
@@ -386,7 +381,6 @@ namespace agentcs
             string message = "{\"msgtype\":\"genpin\",\"shop_no\": \"" + shop_no + "\"}";
             await client.SendAsync(message);
             Log.Debug("GenPinReq : " + message);
-            
         }
 
         public void GenPinAns(JsonNode node)
@@ -441,10 +435,8 @@ namespace agentcs
         }
 
         public async void SendTableStatus()
-        //public void SendTableStatus()
         {
             Log.Information("SendTableStatus()");
-
             JsonWrapper jsonTableStatus = new();
             if (jsonTableStatus.Load(path_status, codepage: 51949) == true)
             {
@@ -452,14 +444,66 @@ namespace agentcs
                 jsonTableStatus.Parse();
             }
 
-            //the process cannot access the file because it is being used by another process
+            try
+            {
+                List<string> orders = new();
+
+                JsonArray currTables = jsonTableStatus.GetNode("tableList").AsArray();
+                foreach (var table in currTables)
+                {
+                    var obj = table?.AsObject();
+                    if (obj?.ContainsKey("orderList") == true)
+                    {
+                        string tableNo = table?["tableNo"]!.ToString()!;
+                        orders?.Add(tableNo);
+                    }
+                }
+
+                if (lastTableStatus != null)
+                {
+                    JsonArray lastTables = lastTableStatus.GetNode("tableList").AsArray();
+                    foreach (var table in lastTables)
+                    {
+                        var obj = table?.AsObject();
+                        if (obj?.ContainsKey("orderList") == true)
+                        {
+                            string tableNo = table?["tableNo"]!.ToString()!;
+                            if (orders.Contains(tableNo) == false)
+                            {
+                                SendClear(1, tableNo);
+                            }
+                        }
+                    }
+                }
+
+                lastTableStatus = new();
+                lastTableStatus.Parse(jsonTableStatus.ToString()!);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
 
             string message = "{\"msgtype\":\"tablestatus\",\"shop_no\": \""
                     + shop_no
                     + "\", \"data\":"
                     + jsonTableStatus.ToString()
                     + "}";
-            //Console.WriteLine(message);
+            await client.SendAsync(message);
+        }
+
+        public async void SendClear(int type, string table_cd)
+        {
+            Log.Information("SendClear() - type : {0}, table : {1}", type, table_cd);
+
+            string message = "{\"msgtype\":\"clear\",\"shop_no\": \""
+                    + shop_no
+                    + "\", \"table_cd\": \""
+                    + table_cd
+                    + "\", \"type\": "
+                    + type
+                    + "}";
+            Console.WriteLine(message);
             await client.SendAsync(message);
         }
     }

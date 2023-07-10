@@ -42,6 +42,9 @@ class WebSocketManager:
                     await logic.update_tablemap(json_object)
                 elif msgtype == "menu":
                     await logic.update_menu(json_object)
+                elif msgtype == "clear":
+                    await self.clear(json_object)
+
             elif len(message) == 0:
                 print("message size = 0")
         except WebSocketDisconnect as e:
@@ -115,6 +118,25 @@ class WebSocketManager:
             data = recvmsg['data']
             data = json.dumps(data, ensure_ascii=False)
             self.redis.set(key, data)
+        except Exception as e:
+            logging.getLogger().error(e)
+
+    async def clear(self, recvmsg):
+        logging.getLogger().debug("ConnectionManager.clear")
+        try:
+            if recvmsg['type'] == 0:
+                print("cancel")
+            else:
+                print("finish")
+            shop_no = recvmsg['shop_no']
+            table_cd = recvmsg['table_cd']
+            key = f"order_{shop_no}_{table_cd}"
+            orders = self.redis.get(key)
+            orders = json.loads(orders)
+            for order in orders:
+                pin = order['pin']
+                self.redis.remove(f"pin_{shop_no}_{pin}")
+            self.redis.remove(key)
         except Exception as e:
             logging.getLogger().error(e)
 
