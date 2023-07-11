@@ -170,7 +170,8 @@ CREATE TABLE `data_table_status` (
 CREATE TABLE `data_table_map` (
     `shop_no`                   bigint NOT NULL PRIMARY KEY,
     `regdate`                   varchar(14) NOT NULL,
-    `data`                      text NULL
+    `scdtable`                  text NULL,
+    `usetable`                  text NULL
 );
 
 CREATE TABLE `data_menu` (

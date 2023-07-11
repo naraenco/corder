@@ -73,17 +73,19 @@ async def update_tablemap(recvmsg):
         result = db.execute(text(sql)).fetchone()
         now = time
         regdate = now.strftime('%Y%m%d%H%M%S')
-        data = json.dumps(recvmsg["data"]["TABLEUSE"], ensure_ascii=False)
+        scdtable = json.dumps(recvmsg["scdtable"]["TABLE"], ensure_ascii=False)
+        usetable = json.dumps(recvmsg["usetable"]["TABLEUSE"], ensure_ascii=False)
         if result[0] == 0:
-            sql = f"INSERT INTO data_table_map (shop_no, regdate, data) VALUES (" \
+            sql = f"INSERT INTO data_table_map (shop_no, regdate, scdtable, usetable) VALUES (" \
                   f"{recvmsg['shop_no']}," \
                   f"'{regdate}'," \
-                  f"'{data}')"
+                  f"'{scdtable}'," \
+                  f"'{usetable}')"
             db.execute(text(sql))
             db.commit()
         else:
             sql = f"UPDATE data_table_map " \
-                  f"SET regdate='{regdate}',data='{data}'" \
+                  f"SET regdate='{regdate}',scdtable='{scdtable}',usetable='{usetable}'" \
                   f"WHERE shop_no={recvmsg['shop_no']};"
             db.execute(text(sql))
             db.commit()

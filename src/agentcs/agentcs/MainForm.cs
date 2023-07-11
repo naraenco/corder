@@ -302,11 +302,18 @@ namespace agentcs
         {
             Log.Information("SendPosData()");
 
-            JsonWrapper jsonTableMap = new();
-            if (jsonTableMap.Load(config.GetString("path_tablemap"), codepage: 51949) == true)
+            JsonWrapper jsonScdTable = new();
+            if (jsonScdTable.Load(config.GetString("path_scdtable"), codepage: 51949) == true)
             {
-                jsonTableMap.SetOptions(false);
-                jsonTableMap.Parse();
+                jsonScdTable.SetOptions(false);
+                jsonScdTable.Parse();
+            }
+
+            JsonWrapper jsonUseTable = new();
+            if (jsonUseTable.Load(config.GetString("path_usetable"), codepage: 51949) == true)
+            {
+                jsonUseTable.SetOptions(false);
+                jsonUseTable.Parse();
             }
 
             JsonWrapper jsonMenu = new();
@@ -332,8 +339,10 @@ namespace agentcs
 
             string message = "{\"msgtype\":\"tablemap\",\"shop_no\": \""
                 + shop_no
-                + "\", \"data\":"
-                + jsonTableMap.ToString()
+                + "\", \"scdtable\":"
+                + jsonScdTable.ToString()
+                + ", \"usetable\":"
+                + jsonUseTable.ToString()
                 + "}";
             await client.SendAsync(message);
 

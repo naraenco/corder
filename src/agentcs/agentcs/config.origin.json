@@ -1,7 +1,8 @@
 {
     "pos_type" : "KIS",
     "pos_extra" : "01",
-    "path_tablemap" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\USE_TABLE.json",
+    "path_scdtable" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\SCD_TABLE.json",
+    "path_usetable" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\USE_TABLE.json",
     "path_menu" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\SCD_PRODM.json",
     "path_touchclass" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\SCD_TUCLS.json",
     "path_touchkey" : "C:\\_OKPOS\\OKPOSIF\\MASTER\\SCD_TUKEY.json",
