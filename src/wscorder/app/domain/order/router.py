@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import time
 from fastapi import APIRouter
@@ -9,6 +10,7 @@ from common.util.corder_exception import CorderException
 from common.util.response_entity import response_entity
 
 router = APIRouter()
+lock = asyncio.Lock()
 
 
 @router.get("")
@@ -24,6 +26,7 @@ async def orderget():
 @router.post("", include_in_schema=False)
 @response_entity
 async def orderpost(orderdto: OrderDto):
+    await lock.acquire()
     now = time
     orderdto.regdate = now.strftime('%Y%m%d%H%M%S')
     data = orderdto.dict()
@@ -49,5 +52,5 @@ async def orderpost(orderdto: OrderDto):
     except Exception as e:
         logger.error(f"orderpost : {e}")
         error = "1001"
+    lock.release()
     return error, data
-

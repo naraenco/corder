@@ -143,12 +143,14 @@ class WebSocketManager:
             logging.getLogger().error(e)
 
     async def api_order(self,params):
-        await self.lock.acquire()
+        # await self.lock.acquire()
+        logging.getLogger().debug("api_order 01")
         try:
             shop_no = str(params['shop_no'])
             table_cd = params['table_cd']
             pin = str(params['otp_pin'])
             conn = self.connections.get(shop_no)
+            logging.getLogger().debug("api_order 02 : ", conn)
             if conn is None:
                 logging.getLogger().error("api_order - get connection failure")
                 return "2001"
@@ -156,24 +158,30 @@ class WebSocketManager:
             response['msgtype'] = "order"
             response['status'] = 0
             error = self.redis.update_pin(f"pin_{shop_no}_{pin}", table_cd)
+            logging.getLogger().debug("api_order 03 : ", error)
             if error != "0000":
                 logging.getLogger().error(f"api_order - update_pin failure code ({error})")
                 return error
             key = f"order_{shop_no}_{table_cd}"
             orders = []
             current_order = {"order_no": params['order_no'], "pin": str(params['otp_pin'])}
+            logging.getLogger().debug("api_order 04 : ", current_order)
             if self.redis.exists(key) == 0:
                 orders.append(current_order)
             else:
                 order_info = self.redis.get(key)
                 orders = json.loads(order_info)
                 orders.append(current_order)
+            logging.getLogger().debug("api_order 05 : ", orders)
             value = json.dumps(orders)
             self.redis.set(key, value)
             response = str(json.dumps(response, ensure_ascii=False))
+            logging.getLogger().debug("api_order 06 : ", response)
             await conn.send_text(response)      # API에서 요청 받은 주문을 agent에 전송
+            logging.getLogger().debug("api_order 07")
         except Exception as e:
             error = "1001"
             logging.getLogger().error(f"api_order : {e}")
-        self.lock.release()
+        logging.getLogger().debug("api_order 08 : ", error)
+        # self.lock.release()
         return error
