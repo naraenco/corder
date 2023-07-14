@@ -49,6 +49,7 @@ namespace agentcs
         private string pos_extra = "";
         private string path_order = "";
         private string print_port = "COM6";
+        private bool print_use = true;
         private int print_font_width = 0;
         private int print_font_height = 0;
         private int timer_status_query = 30;
@@ -179,6 +180,10 @@ namespace agentcs
             path_order = config.GetString("path_order") + "Order_";
             shop_no = config.GetString("shop_no");
             auth_key = config.GetString("auth_key");
+            if (config.GetString("print_port") == "false")
+            {
+                print_use = false;
+            }
             print_port = config.GetString("print_port");
             print_font_width = config.GetInt("print_font_width");
             print_font_height = config.GetInt("print_font_height");
@@ -275,7 +280,7 @@ namespace agentcs
                     case "genpin":
                         Log.Verbose("MessageHandler.genpin");
                         // ToDo: 핀 생성 성공하면 감열식 프린터로 인쇄
-                        GenPinAns(json);
+                        if (print_use != false) GenPinAns(json);
                         break;
 
                     case "order":
