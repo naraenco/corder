@@ -13,7 +13,7 @@ class WebSocketManager:
         self.redis = redis_pool
         self.lock = asyncio.Lock()
 
-    def check_connection(self, shop_no):
+    async def check_connection(self, shop_no):
         logging.getLogger().debug(f"check_connection :\n{self.connections}")
         if type(shop_no) == int:
             shop_no = str(shop_no)
@@ -106,8 +106,8 @@ class WebSocketManager:
             data = json.dumps(recvmsg, ensure_ascii=False)
             await websocket.send_text(data)
         except Exception as e:
+            logging.getLogger().error(f"login exception : {e}")
             await websocket.close()
-            logging.getLogger().error(e)
         logging.getLogger().debug(self.connections)
 
     async def delpin(self, recvmsg):

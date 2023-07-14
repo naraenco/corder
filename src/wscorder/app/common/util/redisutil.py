@@ -50,7 +50,7 @@ class RedisUtil:
             raise Exception
         return data
 
-    def exists(self, key):
+    async def exists(self, key):
         try:
             with redis.StrictRedis(connection_pool=self.redis) as conn:
                 return conn.exists(key)
