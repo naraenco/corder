@@ -1,3 +1,4 @@
+import asyncio
 import copy
 import json
 import logging
@@ -10,6 +11,7 @@ class WebSocketManager:
         self.connections: dict[str, WebSocket] = {}
         from common import redis_pool
         self.redis = redis_pool
+        self.lock = asyncio.Lock()
 
     def check_connection(self, shop_no):
         if type(shop_no) == int:
@@ -140,8 +142,8 @@ class WebSocketManager:
         except Exception as e:
             logging.getLogger().error(e)
 
-    async def api_order(self, params):
-        result = False
+    async def api_order(self,params):
+        await self.lock.acquire()
         try:
             shop_no = str(params['shop_no'])
             table_cd = params['table_cd']
@@ -149,14 +151,14 @@ class WebSocketManager:
             conn = self.connections.get(shop_no)
             if conn is None:
                 logging.getLogger().error("api_order - get connection failure")
-                return False
+                return "2001"
             response = copy.deepcopy(params)
             response['msgtype'] = "order"
             response['status'] = 0
             error = self.redis.update_pin(f"pin_{shop_no}_{pin}", table_cd)
             if error != "0000":
                 logging.getLogger().error(f"api_order - update_pin failure code ({error})")
-                return False
+                return error
             key = f"order_{shop_no}_{table_cd}"
             orders = []
             current_order = {"order_no": params['order_no'], "pin": str(params['otp_pin'])}
@@ -170,7 +172,8 @@ class WebSocketManager:
             self.redis.set(key, value)
             response = str(json.dumps(response, ensure_ascii=False))
             await conn.send_text(response)      # API에서 요청 받은 주문을 agent에 전송
-            result = True
         except Exception as e:
+            error = "1001"
             logging.getLogger().error(f"api_order : {e}")
-        return result
+        self.lock.release()
+        return error

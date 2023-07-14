@@ -29,8 +29,8 @@ async def orderpost(orderdto: OrderDto):
     data = orderdto.dict()
     logging.getLogger().debug(f"orderdto : {orderdto}")
 
+    error = "0000"
     try:
-        error = "0000"
         shop_no = str(data['shop_no'])
         if ws_manager.check_connection(shop_no) is not True:
             return "2001"
@@ -42,11 +42,12 @@ async def orderpost(orderdto: OrderDto):
         db.add(dao)
         db.commit()
         data['order_no'] = dao.order_no
-        if await ws_manager.api_order(data) is not True:
-            return "2002"
+        error = await ws_manager.api_order(data)
     except CorderException as e:
-        error = e.value()
+        logger.error(f"orderpost : {e}")
+        # error = e.value()
     except Exception as e:
         logger.error(f"orderpost : {e}")
         error = "1001"
-    return error
+    return error, data
+

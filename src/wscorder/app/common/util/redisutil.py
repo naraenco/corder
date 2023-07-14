@@ -63,10 +63,6 @@ class RedisUtil:
             with redis.StrictRedis(connection_pool=self.redis) as conn:
                 if conn.exists(key) == 0:
                     return "1003"
-                # data = bytes(conn.get(key)).decode('utf-8')
-                # data = json.loads(data)
-                # if data['shop_no'] != value:
-                #     return "1004"
         except Exception as e:
             logging.getLogger().error(e)
             return "1002"
@@ -81,7 +77,6 @@ class RedisUtil:
                     data['table_cd'] = value
                 elif data.get('table_cd') != value:     # 기존 사용한 TABLE 번호랑 PIN 번호가 다르다.
                     return "1006", 0
-
                 data = str(json.dumps(data))
                 ttl = conn.ttl(key)
                 conn.set(key, data)

@@ -180,7 +180,7 @@ namespace agentcs
             path_order = config.GetString("path_order") + "Order_";
             shop_no = config.GetString("shop_no");
             auth_key = config.GetString("auth_key");
-            if (config.GetString("print_port") == "false")
+            if (config.GetString("print_use") == "false")
             {
                 print_use = false;
             }
