@@ -35,7 +35,10 @@ async def orderpost(orderdto: OrderDto):
     error = "0000"
     try:
         shop_no = str(data['shop_no'])
-        if ws_manager.check_connection(shop_no) is False:
+        conn = await ws_manager.check_connection(shop_no) 
+        #if ws_manager.check_connection(shop_no) is False:
+        if conn is False:
+            logging.getLogger().debug(f"orderpost : connetion not found")
             return "2001"
         if redis_pool.exists(f"pin_{shop_no}_{data['otp_pin']}") == 0:
             return "1003"

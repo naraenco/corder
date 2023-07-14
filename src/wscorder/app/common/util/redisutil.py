@@ -15,7 +15,7 @@ class RedisUtil:
                                           socket_connect_timeout=5,
                                           socket_timeout=5)
 
-    def set(self, key, value, expire_time=6000):
+    def set(self, key, value, expire_time=60000):
         try:
             with redis.StrictRedis(connection_pool=self.redis) as conn:
                 conn.set(key, value)
@@ -50,7 +50,7 @@ class RedisUtil:
             raise Exception
         return data
 
-    async def exists(self, key):
+    def exists(self, key):
         try:
             with redis.StrictRedis(connection_pool=self.redis) as conn:
                 return conn.exists(key)

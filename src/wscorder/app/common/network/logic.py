@@ -11,9 +11,11 @@ def genpin(recvmsg):
     try:
         from common import redis_pool
         shop_no = str(recvmsg['shop_no'])
+        logging.getLogger().debug(f"ConnectionManager.genpin - shop_no : {shop_no}")
         while True:
             num = random.randrange(1, 9999)
             pin = str(num).zfill(4)
+            #logging.getLogger().debug(f"ConnectionManager.genpin - pin : {pin}")
             if redis_pool.exists(f"pin_{shop_no}_{pin}") == 0:     # 중복 확인
                 break
         now = time

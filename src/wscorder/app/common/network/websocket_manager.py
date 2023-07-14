@@ -151,12 +151,15 @@ class WebSocketManager:
 
     async def api_order(self,params):
         await self.lock.acquire()
+        #self.lock.acquire()
         logging.getLogger().debug("api_order 01")
         error = "0000"
         try:
             shop_no = str(params['shop_no'])
             table_cd = params['table_cd']
             pin = str(params['otp_pin'])
+            logging.getLogger().debug(f"shop_no : {shop_no}")
+            logging.getLogger().debug(f"connections : {self.connections}")
             conn = self.connections.get(shop_no)
             logging.getLogger().debug(f"api_order 02 : {conn}")
             if conn is None:
@@ -175,16 +178,23 @@ class WebSocketManager:
             current_order = {"order_no": params['order_no'], "pin": str(params['otp_pin'])}
             logging.getLogger().debug(f"api_order 04 : {current_order}")
             if self.redis.exists(key) == 0:
+                logging.getLogger().debug("api_order 04-A1")
                 orders.append(current_order)
+                logging.getLogger().debug("api_order 04-A2")
             else:
+                logging.getLogger().debug("api_order 04-B1")
                 order_info = self.redis.get(key)
+                logging.getLogger().debug("api_order 04-B2")
                 orders = json.loads(order_info)
+                logging.getLogger().debug("api_order 04-B3")
                 orders.append(current_order)
+                logging.getLogger().debug("api_order 04-B4")
             logging.getLogger().debug(f"api_order 05 : {orders}")
             value = json.dumps(orders)
             self.redis.set(key, value)
             response = str(json.dumps(response, ensure_ascii=False))
             logging.getLogger().debug(f"api_order 06 : {response}")
+            #await conn.send_text(response)      # API에서 요청 받은 주문을 agent에 전송
             await conn.send_text(response)      # API에서 요청 받은 주문을 agent에 전송
             logging.getLogger().debug("api_order 07")
         except Exception as e:
