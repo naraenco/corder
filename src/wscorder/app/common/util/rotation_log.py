@@ -53,7 +53,7 @@ def create_date_rotating_file_handler(
     handler = DateRotatingFileHandler(path, name, ext)
     handler.setFormatter(lformat)
 
-    logger = logging.getLogger()
+    logger = logging.getLogger('gunicorn.error')
     logger.addHandler(handler)
     logger.setLevel(level)
 

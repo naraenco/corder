@@ -29,6 +29,11 @@ app.add_middleware(
 app.include_router(root_router.router, prefix='')
 app.include_router(order.router, prefix='/api/order')
 
+pid = os.getpid()
+ppid = os.getppid()
+euid = os.geteuid()
+egid = os.getegid()
+logger.info(f"pid : {pid}, ppid : {ppid}, euid : {euid}, egid : {egid}")
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):

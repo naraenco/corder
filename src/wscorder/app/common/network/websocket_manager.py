@@ -2,6 +2,7 @@ import asyncio
 import copy
 import json
 import logging
+import os
 from fastapi import WebSocket, WebSocketDisconnect
 from . import logic
 
@@ -14,7 +15,8 @@ class WebSocketManager:
         self.lock = asyncio.Lock()
 
     async def check_connection(self, shop_no):
-        logging.getLogger().debug(f"check_connection :\n{self.connections}")
+        pid = os.getpid()
+        logging.getLogger().debug(f"pid : {pid}, check_connection :\n{self.connections}")
         if type(shop_no) == int:
             shop_no = str(shop_no)
         try:
@@ -150,18 +152,21 @@ class WebSocketManager:
             logging.getLogger().error(e)
 
     async def api_order(self,params):
-        await self.lock.acquire()
-        #self.lock.acquire()
-        logging.getLogger().debug("api_order 01")
+        #await self.lock.acquire()
+        logging.getLogger().debug("ConnectionManager.api_order")
         error = "0000"
         try:
             shop_no = str(params['shop_no'])
             table_cd = params['table_cd']
             pin = str(params['otp_pin'])
-            logging.getLogger().debug(f"shop_no : {shop_no}")
-            logging.getLogger().debug(f"connections : {self.connections}")
+            pid = os.getpid()
+
+            #worker_class = os.environ.get('WORKER_CLASS')
+            #worker_id = int(os.environ.get('WORKER_ID'))
+            #logging.getLogger().debug(f"class : {worker_class}, id : {worker_id}\nconnections : {self.connections}")
+            logging.getLogger().debug(f"pid : {pid}, connections : {self.connections}")
             conn = self.connections.get(shop_no)
-            logging.getLogger().debug(f"api_order 02 : {conn}")
+            logging.getLogger().debug(f"connection : {conn}")
             if conn is None:
                 logging.getLogger().error("api_order - get connection failure")
                 return "2001"
@@ -169,37 +174,26 @@ class WebSocketManager:
             response['msgtype'] = "order"
             response['status'] = 0
             error = self.redis.update_pin(f"pin_{shop_no}_{pin}", table_cd)
-            logging.getLogger().debug(f"api_order 03 : {error}")
             if error != "0000":
                 logging.getLogger().error(f"api_order - update_pin failure code ({error})")
                 return error
             key = f"order_{shop_no}_{table_cd}"
             orders = []
             current_order = {"order_no": params['order_no'], "pin": str(params['otp_pin'])}
-            logging.getLogger().debug(f"api_order 04 : {current_order}")
             if self.redis.exists(key) == 0:
-                logging.getLogger().debug("api_order 04-A1")
                 orders.append(current_order)
-                logging.getLogger().debug("api_order 04-A2")
             else:
-                logging.getLogger().debug("api_order 04-B1")
                 order_info = self.redis.get(key)
-                logging.getLogger().debug("api_order 04-B2")
                 orders = json.loads(order_info)
-                logging.getLogger().debug("api_order 04-B3")
                 orders.append(current_order)
-                logging.getLogger().debug("api_order 04-B4")
-            logging.getLogger().debug(f"api_order 05 : {orders}")
             value = json.dumps(orders)
             self.redis.set(key, value)
             response = str(json.dumps(response, ensure_ascii=False))
             logging.getLogger().debug(f"api_order 06 : {response}")
             #await conn.send_text(response)      # API에서 요청 받은 주문을 agent에 전송
             await conn.send_text(response)      # API에서 요청 받은 주문을 agent에 전송
-            logging.getLogger().debug("api_order 07")
         except Exception as e:
             error = "1001"
             logging.getLogger().error(f"api_order : {e}")
-        logging.getLogger().debug("api_order 08 : " + error)
-        self.lock.release()
+        #self.lock.release()
         return error
