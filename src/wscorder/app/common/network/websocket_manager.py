@@ -128,6 +128,7 @@ class WebSocketManager:
             key = "status_" + str(recvmsg['shop_no'])
             data = recvmsg['data']
             data = json.dumps(data, ensure_ascii=False)
+            logging.getLogger().debug(data)
             self.redis.set(key, data)
         except Exception as e:
             logging.getLogger().error(e)
