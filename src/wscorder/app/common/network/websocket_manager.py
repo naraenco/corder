@@ -152,7 +152,7 @@ class WebSocketManager:
             logging.getLogger().error(e)
 
     async def api_order(self,params):
-        #await self.lock.acquire()
+        # await self.lock.acquire()
         logging.getLogger().debug("ConnectionManager.api_order")
         error = "0000"
         try:
@@ -160,10 +160,6 @@ class WebSocketManager:
             table_cd = params['table_cd']
             pin = str(params['otp_pin'])
             pid = os.getpid()
-
-            #worker_class = os.environ.get('WORKER_CLASS')
-            #worker_id = int(os.environ.get('WORKER_ID'))
-            #logging.getLogger().debug(f"class : {worker_class}, id : {worker_id}\nconnections : {self.connections}")
             logging.getLogger().debug(f"pid : {pid}, connections : {self.connections}")
             conn = self.connections.get(shop_no)
             logging.getLogger().debug(f"connection : {conn}")
@@ -190,10 +186,9 @@ class WebSocketManager:
             self.redis.set(key, value)
             response = str(json.dumps(response, ensure_ascii=False))
             logging.getLogger().debug(f"api_order 06 : {response}")
-            #await conn.send_text(response)      # API에서 요청 받은 주문을 agent에 전송
             await conn.send_text(response)      # API에서 요청 받은 주문을 agent에 전송
         except Exception as e:
             error = "1001"
             logging.getLogger().error(f"api_order : {e}")
-        #self.lock.release()
+        # self.lock.release()
         return error

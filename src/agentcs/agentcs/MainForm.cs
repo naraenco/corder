@@ -136,7 +136,7 @@ namespace agentcs
                 {
                     try
                     {
-                        using (Stream stream = File.Open(path_status, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        using (Stream stream = File.Open(path_status, FileMode.Open, FileAccess.Read, FileShare.None))
                         {
                             if (null != stream) break;
                         }

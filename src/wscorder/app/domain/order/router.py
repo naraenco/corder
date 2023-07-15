@@ -36,12 +36,11 @@ async def orderpost(orderdto: OrderDto):
     try:
         shop_no = str(data['shop_no'])
         conn = await ws_manager.check_connection(shop_no) 
-        #if ws_manager.check_connection(shop_no) is False:
         if conn is False:
             logging.getLogger().debug(f"orderpost : connetion not found")
-            return "2001"
+            return "2001", data
         if redis_pool.exists(f"pin_{shop_no}_{data['otp_pin']}") == 0:
-            return "1003"
+            return "1003", data
 
         dao = OrderDao(**orderdto.dict())
         db = SessionLocal()
@@ -55,7 +54,7 @@ async def orderpost(orderdto: OrderDto):
         # error = e.value()
     except Exception as e:
         logging.getLogger().debug(f"orderpost 2 : {e}")
-        error = "1001"
+        error = "1001", data
     finally:
         lock.release()
     return error, data
