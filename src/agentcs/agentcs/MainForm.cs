@@ -125,8 +125,6 @@ namespace agentcs
         {
             if (e.ChangeType != WatcherChangeTypes.Changed) return;
 
-            SendTableStatus();
-
             try
             {
                 watcher.EnableRaisingEvents = false;
@@ -136,7 +134,7 @@ namespace agentcs
                 {
                     try
                     {
-                        using (Stream stream = File.Open(path_status, FileMode.Open, FileAccess.Read, FileShare.None))
+                        using (Stream stream = File.Open(path_status, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
                             if (null != stream) break;
                         }
@@ -150,6 +148,7 @@ namespace agentcs
                     }
                     System.Threading.Thread.Sleep(1);   // 메인 스레드와 다른 스레드이기 때문에 슬립을 사용해도 다른 시스템에는 영향이 없다.
                 }
+                SendTableStatus();
             }
             catch (Exception exception)
             {
@@ -176,7 +175,7 @@ namespace agentcs
             if (config.Load() == false)
                 return;
             path_status = config.GetString("path_status");
-            pos_extra = config.GetString("pos_extra") + ".json";
+            pos_extra = config.GetString("pos_extra");
             path_order = config.GetString("path_order") + "Order_";
             shop_no = config.GetString("shop_no");
             auth_key = config.GetString("auth_key");
@@ -429,8 +428,9 @@ namespace agentcs
 
             try
             {
+                string orderno = node["order_no"]!.ToString();
                 string regdate = node["regdate"]!.ToString();
-                string path = path_order + regdate + pos_extra;
+                string path = path_order + regdate + pos_extra + orderno + ".json";
                 JsonNode orderList = node["pos_order"]!["orderList"]!;
 
                 node["status"] = 1;
@@ -439,8 +439,8 @@ namespace agentcs
                 JsonObject obj = new();
                 obj.Add("tableNo", node["table_cd"]?.ToString());
                 obj.Add("orderList", JsonNode.Parse(orderList.ToJsonString()));
-
                 JsonUtil.WriteFile(path, obj, indent: true, codepage: 51949);
+                Log.Debug(path);
             }
             catch (Exception ex)
             {
@@ -450,13 +450,19 @@ namespace agentcs
 
         public async void SendTableStatus()
         {
-            Log.Information("SendTableStatus()");
             JsonWrapper jsonTableStatus = new();
             if (jsonTableStatus.Load(path_status, codepage: 51949) == true)
             {
                 jsonTableStatus.SetOptions(false);
                 jsonTableStatus.Parse();
             }
+
+            if (!String.IsNullOrEmpty(lastTableStatus?.ToString()) && jsonTableStatus.ToString() == lastTableStatus?.ToString())
+            {
+                return;
+            }
+
+            Log.Information("SendTableStatus()");
 
             try
             {
