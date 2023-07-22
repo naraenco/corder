@@ -8,6 +8,12 @@ using Serilog.Core;
 using System.Runtime.InteropServices;
 using System.Collections;
 using System.DirectoryServices;
+using System.Text;
+using System.Net;
+using System.Windows.Forms;
+//using static System.Net.Mime.MediaTypeNames;
+using System.Net.NetworkInformation;
+
 
 namespace agentcs
 {
@@ -28,14 +34,20 @@ namespace agentcs
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
 
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [DllImport("user32.dll")]
+        private static extern bool ReleaseCapture();
+
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
         private LowLevelKeyboardProc? hookProcDelegate;
 
-        const int WH_KEYBOARD_LL = 13;
-        const int WM_KEYDOWN = 0x100;
-        const int WM_KEYUP = 0x101;
-        const int WM_SYSKEYDOWN = 0x104;
+        private const int WM_NCLBUTTONDOWN = 0xA1;
+        private const int HT_CAPTION = 0x2; const int WH_KEYBOARD_LL = 13;
+        private const int WM_KEYDOWN = 0x100;
+        private const int WM_KEYUP = 0x101;
+        private const int WM_SYSKEYDOWN = 0x104;
         static public bool Shift { get; private set; }
         static public bool Control { get; private set; }
 
@@ -43,6 +55,7 @@ namespace agentcs
 
         FileSystemWatcher watcher = new();
         private Network client;
+        const string apiUrl = "http://corder.co.kr/api/";
         private string shop_no = "";
         private string auth_key = "C.ORDER";
         private string path_status = "";
@@ -56,13 +69,7 @@ namespace agentcs
         readonly Config config = Config.Instance;
         JsonWrapper? lastTableStatus = null;
 
-
-        public MainForm()
-        {
-            InitializeComponent();
-            InitData();
-            client = new Network(MessageHandler, StatusHandler);
-        }
+        FormLogin formLogin;
 
         public void globalKeyboardHook()
         {
@@ -170,6 +177,66 @@ namespace agentcs
             watcher.EnableRaisingEvents = true;     // 이벤트를 발생 할 것이다.
         }
 
+        public void SetDialog(int style)
+        {
+            Console.WriteLine($"SetDialog : {style}");
+            //Log.Debug($"SetDialog {style}");
+
+            switch (style)
+            {
+                case 0: // login
+                    buttonCancel.Visible = false;
+                    textTable.Visible = false;
+                    picGenPin.Visible = false;
+                    picTableStatus.Visible = false;
+                    picSetting.Visible = false;
+                    picWebpage.Visible = false;
+                    break;
+
+                case 1: // default
+                    buttonCancel.Visible = true;
+                    textTable.Visible = true;
+                    picGenPin.Visible = true;
+                    picTableStatus.Visible = true;
+                    picSetting.Visible = true;
+                    picWebpage.Visible = true;
+                    break;
+            }
+        }
+
+        public void InitUI()
+        {
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.ClientSize = new Size(800, 400);
+
+            this.Paint += MainForm_Paint;
+            this.MouseDown += MainForm_MouseDown;
+
+            // default
+            picClose.Location = new Point(340, 20);
+            picLogo.Location = new Point(150, 32);
+            picCorderText.Location = new Point(98, 60);
+            picDecoBox.Location = new Point(370, 165);
+            picDecoBox.BackColor = Color.Transparent;
+
+            // func
+            picGenPin.Location = new Point(58, 108);
+            picTableStatus.Location = new Point(202, 108);
+            picSetting.Location = new Point(58, 253);
+            picWebpage.Location = new Point(202, 253);
+
+            SetDialog(0);
+
+            this.formLogin = new()
+            {
+                TopLevel = false
+            };
+            //this.formLogin.Parent = this;
+            this.Controls.Add(this.formLogin);
+            this.formLogin.Show();
+            this.formLogin.Location = new Point(0, 0);
+        }
+
         public void InitData()
         {
             if (config.Load() == false)
@@ -200,9 +267,35 @@ namespace agentcs
             .CreateLogger();
         }
 
+        public static async Task<string?> CallApiAsync(string apiUrl)
+        {
+            using HttpClient client = new();
+            try
+            {
+                var buffer = await client.GetByteArrayAsync(apiUrl);
+                var byteArray = buffer.ToArray();
+                var responseString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+                return responseString;
+            }
+            catch (HttpRequestException e)
+            {
+                Log.Error($"CallApiAsync Exception : {e.Message}");
+                return null;
+            }
+        }
+
+        public MainForm()
+        {
+            InitializeComponent();
+            InitUI();
+            InitData();
+            client = new Network(MessageHandler, StatusHandler);
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             Log.Debug("MainForm_Load");
+            // ToDo: 기능 중단 
             globalKeyboardHook();
             Connect();
         }
@@ -220,10 +313,29 @@ namespace agentcs
             Log.Verbose("MainForm_FormClosed");
         }
 
-        private void buttonGenPin_Click(object sender, EventArgs e)
+        private void MainForm_Paint(object? sender, PaintEventArgs e)
         {
-            Log.Information("buttonGenPin_Click");
-            GenPinReq();
+            System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
+            System.Drawing.Graphics formGraphics;
+            formGraphics = this.CreateGraphics();
+            formGraphics.FillRectangle(myBrush, new Rectangle(400, 2, 398, 396));
+            myBrush.Dispose();
+            formGraphics.Dispose();
+
+            using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
+            {
+                e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
+            }
+        }
+
+        private void MainForm_MouseDown(object? sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                IntPtr handle = this.Handle;
+                ReleaseCapture();
+                SendMessage(handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -270,7 +382,6 @@ namespace agentcs
                 {
                     case "login":
                         Log.Verbose("MessageHandler.login");
-                        // ToDo: 로그인에 성공하면 POS 데이터 전송, TableStatus.json 모니터링 시작
                         SendPosData();
                         SendTableStatus();
                         StatusMonitor();
@@ -278,7 +389,6 @@ namespace agentcs
 
                     case "genpin":
                         Log.Verbose("MessageHandler.genpin");
-                        // ToDo: 핀 생성 성공하면 감열식 프린터로 인쇄
                         if (print_use != false) GenPinAns(json);
                         break;
 
@@ -350,6 +460,17 @@ namespace agentcs
                 + "}";
             await client.SendAsync(message);
 
+            string url1 = apiUrl + "sync_tables.php?shop_no=" + shop_no;
+            try
+            {
+                string? response = await CallApiAsync(url1);
+                Log.Debug("sync_tables response : " + response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"sync_tables exception : {ex.Message}");
+            }
+
             message = "{\"msgtype\":\"menu\",\"shop_no\": \""
                 + shop_no
                 + "\", \"touch_class\":"
@@ -360,6 +481,17 @@ namespace agentcs
                 + jsonMenu.ToString()
                 + "}";
             await client.SendAsync(message);
+
+            string url2 = apiUrl + "sync_menus.php?shop_no=" + shop_no;
+            try
+            {
+                string? response = await CallApiAsync(url2);
+                Log.Debug("sync_menus response : " + response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"sync_menus exception : {ex.Message}");
+            }
         }
 
         public async void Connect()
@@ -525,6 +657,43 @@ namespace agentcs
                     + "}";
             Console.WriteLine(message);
             await client.SendAsync(message);
+
+            string url = apiUrl + $"delete_connect.php?shop_no={shop_no}&table_cd={table_cd}";
+            try
+            {
+                string? response = await CallApiAsync(url);
+                Log.Debug("delete_connect response : " + response);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"delete_connect exception : {ex.Message}");
+            }
+        }
+
+        private void picClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void picGenPin_Click(object sender, EventArgs e)
+        {
+            Log.Information("picGenPin_Click");
+            GenPinReq();
+        }
+
+        private void picTableStatus_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void picSetting_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void picWebpage_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

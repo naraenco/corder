@@ -100,7 +100,7 @@ namespace agentcs
                         break;
                     }
 
-                    string receivedMessage = System.Text.Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    string receivedMessage = Encoding.UTF8.GetString(buffer, 0, result.Count);
                     Console.WriteLine("Received message: " + receivedMessage);
                     MessageHandler(receivedMessage);
                 }
