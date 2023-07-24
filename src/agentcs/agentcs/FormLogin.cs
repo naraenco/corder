@@ -193,7 +193,7 @@ namespace agentcs
         {
             MainForm form = (MainForm)this.Parent;
             form.SetDialog(1);
-            
+
             Close();
         }
     }

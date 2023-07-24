@@ -146,8 +146,7 @@
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(235, 235, 235);
             ClientSize = new Size(800, 400);
             ControlBox = false;
