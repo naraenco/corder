@@ -54,7 +54,7 @@ namespace agentcs
             textID.PlaceholderText = "ID를 입력하세요";
             textPW.PlaceholderText = "암호를 입력하세요";
 
-            Font font = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            Font font = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             textID.Font = font;
             textPW.Font = font;
         }

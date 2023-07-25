@@ -201,7 +201,7 @@ namespace agentcs
             this.Paint += MainForm_Paint;
             this.MouseDown += MainForm_MouseDown;
 
-            nanumFont = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            nanumFont = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
 
 
             // default
