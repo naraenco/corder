@@ -199,16 +199,18 @@
   </data>
   <data name="picClose.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABGdBTUEAALGPC/xhBQAAAddJREFUWEft
-        mLtKBTEQhg+CL2BpIQqClaBvYaWV4K3QN7CyEn0FLU7rBa+FIOIL+n9gIEwme1azZ7PK+eFrwmTzM9nJ
-        7GY00xS1JPbFhbgS4465FpeCNVZEa82JLfEuPnviQ+wI1m4UAaeCCd6Dpglrnol5kRWZq2EuEDLpineu
-        z23NgQe8JOJl9SbUAC+JqFYvuAZ4ScRR4gXXAC+JOJu84BrgJdG/MfgqTsSBuP0ea+JeHIpjwVwvxlJk
-        EHNBy6Jp0TexJoKY68VZigySuVir4k7YOMZic4i5Ns6jyCDbSuZibYgnEWJexKaIxeHb5pWAIoPAtpK5
-        WIviQWDOfp1g7lF4z/IoNghsoc3SuvDGboT3jBydGIRnQeZyWhBk1ZvbRGcGga0jS1aM/cYcdGrQKwhk
-        C+cndGbQK4hYoXC8uU10YnDQRWI7BAoF4RXOpI5jKTJIb7XmbEF4hcO5ydz4WTmKDNL4Y3EIe1vImO04
-        R8LGeRQZ5KskaFKHsB2HuV6cpcggiw76c6sP/qZB7kq84BrgJREXOV5wDfCSaPA/7vTUmvcyATxk+/u2
-        qH15tCuy4vqNK7AaJlnzXDRevyECyGTfF5hkbqK5WLSxPTG4K+CZ2ms0+gJSLgOKKGZunAAAAABJRU5E
-        rkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAZdEVYdFNvZnR3YXJlAEFkb2JlIEltYWdlUmVhZHlxyWU8AAACLUlEQVRYR92Yv07CUBTGjYmv
+        QcJrsDFAOhAlARN5CycnA68AA89hjPInTkwEJgcHHYyDqxNh4E8g9XxNW8rla4ul9FZO8kvI5Zyej3N7
+        ess5M00z1dDFNLH5sGsZoSbUhabQjpmW0BCQIytsWZDAc8EQHoSnhHgUrgTktsxPIBxuBQSwCx0T5LwT
+        LgRfgaicDnEOTiWpQNxzSW6rH9CQYQJxs7IAHdSYQHQrc9ZBnQnEo4Q566DJBOLZxJx10D5dgfl8vj8Y
+        DDrj8bhXqVQ6zMdLuVzujkYjKwaxzIcQXSASib9li8XiMyhpLpd7mc1m77a7iVjmR4guEJUTf9fm8/mH
+        VGknMda84mCIVf18iC4Q24rKSYxrk8nk1TAMN3mhUOhjzf7asuVy+bXPLWFzWJNgW1E5iXNttVp9l0ql
+        LsSpPwDivD9gDw4TCLCFapWm0+kbW6tWq8/sGgEcLhAUi8UeKifx1Nbr9Q+qymJDiEcgwNahSnKNLcNa
+        RHEgPoGsIWBq4/yReASyhvCa0zgsNoQTbxL1hIA5DcEaJ+zEIUQXiLNVFac2BGsc+8TZd7ujC8TBL/6u
+        4SHMthBr6v05HA6PL9D7shB2QqgnTiIvC0iKRKl93UqI/ykQsxLmrIMWE4hBDnPWQYMJTP0fd4zAdM5l
+        HKAhywTCLgXdw6NrYaNLEYjxG0ZgOkQi570QOH6DwQGVTHqAicpZ4mBBAh3DOO5GSMcIOK3QxfRgnv0C
+        diKiJtztZgsAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="picGenPin.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

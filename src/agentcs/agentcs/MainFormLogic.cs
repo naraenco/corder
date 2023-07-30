@@ -102,6 +102,14 @@ namespace agentcs
                 jsonScdTable.SetOptions(false);
                 jsonScdTable.Parse();
             }
+            var data = jsonScdTable.GetNode("TABLE").AsArray();
+            dicScdTable.Clear();
+            foreach (var node in data)
+            {
+                string table_nm = node["TABLE_NM"]!.ToString();
+                string table_cd = node["TABLE_CD"]!.ToString();
+                dicScdTable[table_nm] = table_cd;
+            }
 
             JsonWrapper jsonUseTable = new();
             if (jsonUseTable.Load(config.GetString("path_usetable"), codepage: 51949) == true)
@@ -327,6 +335,7 @@ namespace agentcs
         public async void SendClear(int type, string table_cd)
         {
             Log.Information("SendClear() - type : {0}, table : {1}", type, table_cd);
+            return;
 
             string message = "{\"msgtype\":\"clear\",\"shop_no\": \""
                     + shop_no
@@ -348,6 +357,26 @@ namespace agentcs
             {
                 Log.Error($"delete_connect exception : {ex.Message}");
             }
+        }
+
+        public string GetTableCodeByName(string tableName)
+        {
+            string table_cd = dicScdTable[tableName];
+            return table_cd;
+        }
+
+        public string GetTableNameByCode(string code)
+        {
+            string table_nm = "";
+            foreach (string key in dicScdTable.Keys)
+            {
+                if (dicScdTable[key] == code)
+                {
+                    table_nm = key;
+                    break;
+                }
+            }
+            return table_nm;
         }
     }
 }

@@ -1,7 +1,7 @@
 using Serilog;
 using System.Runtime.InteropServices;
 using System.Text;
-
+using System.Text.Json.Nodes;
 
 namespace agentcs
 {
@@ -56,9 +56,12 @@ namespace agentcs
         private int timer_status_query = 30;
         readonly Config config = Config.Instance;
         JsonWrapper? lastTableStatus = null;
+        public Dictionary<string, string> dicScdTable = new();
 
         Font? nanumFont;
+
         FormLogin? formLogin;
+        FormTable? formTable;
 
         public void globalKeyboardHook()
         {
@@ -168,7 +171,6 @@ namespace agentcs
 
         public void SetDialog(int style)
         {
-            Console.WriteLine($"SetDialog : {style}");
             //Log.Debug($"SetDialog {style}");
 
             switch (style)
@@ -203,7 +205,6 @@ namespace agentcs
 
             nanumFont = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
 
-
             // default
             picClose.Location = new Point(340, 20);
             picLogo.Location = new Point(150, 32);
@@ -217,19 +218,24 @@ namespace agentcs
             picSetting.Location = new Point(58, 253);
             picWebpage.Location = new Point(202, 253);
 
-            // etc
             textTable.Font = nanumFont;
-
-            SetDialog(0);
 
             this.formLogin = new()
             {
                 TopLevel = false
             };
-            //this.formLogin.Parent = this;
+
+            this.formTable = new()
+            {
+                TopLevel = true,
+                mainForm = this
+            };
+
+            // ToDo: UI ¼³Á¤
             this.Controls.Add(this.formLogin);
             this.formLogin.Show();
             this.formLogin.Location = new Point(0, 0);
+            SetDialog(0);
         }
 
         public void InitData()
@@ -260,6 +266,23 @@ namespace agentcs
                 .WriteTo.Console()
                 .WriteTo.File("log/log_.txt", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)
             .CreateLogger();
+
+            // Temporary Process;
+            JsonWrapper jsonScdTable = new();
+            if (jsonScdTable.Load(config.GetString("path_scdtable"), codepage: 51949) == true)
+            {
+                jsonScdTable.SetOptions(false);
+                jsonScdTable.Parse();
+            }
+
+            var data = jsonScdTable.GetNode("TABLE").AsArray();
+            dicScdTable.Clear();
+            foreach (var node in data)
+            {
+                string table_nm = node!["TABLE_NM"]!.ToString();
+                string table_cd = node!["TABLE_CD"]!.ToString();
+                dicScdTable[table_nm] = table_cd;
+            }
         }
 
         public MainForm()
@@ -267,6 +290,7 @@ namespace agentcs
             InitializeComponent();
             InitUI();
             InitData();
+            this.ActiveControl = null;
             client = new Network(MessageHandler, StatusHandler);
         }
 
@@ -337,7 +361,8 @@ namespace agentcs
 
         private void picTableStatus_Click(object sender, EventArgs e)
         {
-
+            this.formTable?.SetTableData();
+            this.formTable?.ShowDialog();
         }
 
         private void picSetting_Click(object sender, EventArgs e)

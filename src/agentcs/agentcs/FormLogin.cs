@@ -57,6 +57,8 @@ namespace agentcs
             Font font = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             textID.Font = font;
             textPW.Font = font;
+
+            this.ActiveControl = null;
         }
 
         private void FormLogin_Paint(object? sender, PaintEventArgs e)

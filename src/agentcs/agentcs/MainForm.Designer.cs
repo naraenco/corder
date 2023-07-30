@@ -79,20 +79,25 @@
             // 
             // textTable
             // 
+            textTable.CausesValidation = false;
             textTable.Font = new Font("맑은 고딕", 12F, FontStyle.Regular, GraphicsUnit.Point);
             textTable.Location = new Point(515, 162);
             textTable.Name = "textTable";
             textTable.Size = new Size(100, 29);
             textTable.TabIndex = 30;
+            textTable.TabStop = false;
             // 
             // buttonCancel
             // 
+            buttonCancel.CausesValidation = false;
             buttonCancel.Location = new Point(621, 156);
             buttonCancel.Name = "buttonCancel";
             buttonCancel.Size = new Size(100, 50);
             buttonCancel.TabIndex = 29;
+            buttonCancel.TabStop = false;
             buttonCancel.Text = "취소 처리";
             buttonCancel.UseVisualStyleBackColor = true;
+            buttonCancel.Click += buttonCancel_Click;
             // 
             // picClose
             // 
