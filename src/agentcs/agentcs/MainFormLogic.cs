@@ -335,7 +335,6 @@ namespace agentcs
         public async void SendClear(int type, string table_cd)
         {
             Log.Information("SendClear() - type : {0}, table : {1}", type, table_cd);
-            return;
 
             string message = "{\"msgtype\":\"clear\",\"shop_no\": \""
                     + shop_no
