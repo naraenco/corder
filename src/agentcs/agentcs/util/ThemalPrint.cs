@@ -22,20 +22,66 @@ namespace agentcs
             {
                 // 프린터 연결
                 serialPort.Open();
+                string command = "";
 
                 // 시간 인쇄
-                byte[] data = Encoding.ASCII.GetBytes(createdAt);
-                serialPort.Write(data, 0, data.Length);
+                byte[] datetime = Encoding.ASCII.GetBytes(createdAt);
+                serialPort.Write(datetime, 0, datetime.Length);
 
                 // 폰트 크기 변경
-                //command = "\x1B!%c";
-                string command = String.Format("\x1B!%c", ((width - 1) << 4) | (height - 1));
-                data = Encoding.ASCII.GetBytes(command);
-                serialPort.Write(data, 0, data.Length);
+                //string command = String.Format("\x1B!%c", ((width - 1) << 4) | (height - 1));
+                //byte[] font = Encoding.ASCII.GetBytes(command);
+                //serialPort.Write(font, 0, font.Length);
+                byte[] setFontSizeCommand = new byte[] { 27, 33, 1 };
+                serialPort.Write(setFontSizeCommand, 0, setFontSizeCommand.Length);
 
                 // 핀 인쇄
                 command = "\nPIN : " + pin + "\n\n\n\n\n\n\n\n\n\n";
-                data = Encoding.ASCII.GetBytes(command);
+                byte[] data = Encoding.ASCII.GetBytes(command);
+                serialPort.Write(data, 0, data.Length);
+
+                // CUT
+                byte[] comm = { 0x1B, 0x69 };
+                serialPort.Write(comm, 0, comm.Length);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("프린터와 통신 중 오류 발생: " + ex.Message);
+            }
+            finally
+            {
+                serialPort.Close();
+            }
+        }
+
+        public void PrintOrder(string portName, string order, int width = 2, int height = 2)
+        {
+            serialPort = new System.IO.Ports.SerialPort
+            {
+                PortName = portName,
+                BaudRate = 9600,
+                DataBits = 8,
+                Parity = System.IO.Ports.Parity.None,
+                StopBits = System.IO.Ports.StopBits.One
+            };
+
+            try
+            {
+                // 프린터 연결
+                serialPort.Open();
+                string command = "";
+
+                // 폰트 크기 변경
+                byte[] setFontSizeCommand = new byte[] { 27, 33, 0 };
+                serialPort.Write(setFontSizeCommand, 0, setFontSizeCommand.Length);
+
+                // 주문 인쇄
+                command = "\n" + order + "\n\n\n\n\n\n\n\n\n\n";
+
+                Encoding encode = Encoding.GetEncoding(51949);
+                byte[] data = encode.GetBytes(command);
+                //byte[] data = Encoding.UTF8.GetBytes(command);
+                //byte[] data = Encoding.ASCII.GetBytes(command);
                 serialPort.Write(data, 0, data.Length);
 
                 // CUT

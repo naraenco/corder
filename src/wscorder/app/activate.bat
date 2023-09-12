@@ -1,4 +1,4 @@
-@set "VIRTUAL_ENV=C:\dev\github\bizorder\src\wscorder\venv"
+@set "VIRTUAL_ENV=C:\dev\github\corder\src\wscorder\venv"
 
 @if defined _OLD_VIRTUAL_PROMPT (
     @set "PROMPT=%_OLD_VIRTUAL_PROMPT%"

@@ -57,6 +57,8 @@ namespace agentcs
         readonly Config config = Config.Instance;
         JsonWrapper? lastTableStatus = null;
         public Dictionary<string, string> dicScdTable = new();
+        public Dictionary<string, string> dicMenuName = new();
+        public Dictionary<string, string> dicMenuPrice = new();
 
         Font? nanumFont;
 

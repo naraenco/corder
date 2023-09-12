@@ -2,6 +2,8 @@
 using System.Net.WebSockets;
 using Serilog;
 using System.Text;
+using System.Windows.Forms;
+using System.Globalization;
 
 namespace agentcs
 {
@@ -106,8 +108,8 @@ namespace agentcs
             dicScdTable.Clear();
             foreach (var node in data)
             {
-                string table_nm = node["TABLE_NM"]!.ToString();
-                string table_cd = node["TABLE_CD"]!.ToString();
+                string table_nm = node!["TABLE_NM"]!.ToString();
+                string table_cd = node!["TABLE_CD"]!.ToString();
                 dicScdTable[table_nm] = table_cd;
             }
 
@@ -123,6 +125,17 @@ namespace agentcs
             {
                 jsonMenu.SetOptions(false);
                 jsonMenu.Parse();
+
+                JsonArray products = jsonMenu.GetNode("PRODUCT").AsArray();
+                foreach (var product in products)
+                {
+                    string key = product!["PROD_CD"]!.ToString();
+                    string name = product!["PROD_NM"]!.ToString();
+                    string price = product!["SALE_UPRC"]!.ToString();
+
+                    dicMenuName.Add(key, name);
+                    dicMenuPrice.Add(key, price);
+                }
             }
 
             JsonWrapper jsonTouchClass = new();
@@ -253,14 +266,53 @@ namespace agentcs
                 string path = path_order + regdate + pos_extra + orderno + ".json";
                 JsonNode orderList = node["pos_order"]!["orderList"]!;
 
+                CultureInfo provider = CultureInfo.InvariantCulture;
+                //DateTime dt = DateTime.ParseExact(regdate, "yyyy:MM:dd HH:mm:ss", provider);
+                DateTime dt = DateTime.ParseExact(regdate, "yyyyMMddHHmmss", null);
+
                 node["status"] = 1;
-                //Console.WriteLine(node.ToJsonString());
 
                 JsonObject obj = new();
                 obj.Add("tableNo", node["table_cd"]?.ToString());
                 obj.Add("orderList", JsonNode.Parse(orderList.ToJsonString()));
                 JsonUtil.WriteFile(path, obj, indent: true, codepage: 51949);
                 Log.Debug(path);
+
+
+                if (print_use != false)
+                {
+                    string orderText = "[모바일 오더 주문서]\n\n";
+
+                    orderText += "[테 이 블] " + node["table_cd"]?.ToString() + "\n";
+                    orderText += "[발행일시] " + dt.ToString() + "\n";
+                    orderText += "==========================================\n";
+                    orderText += "  메뉴명                            수량\n";
+                    orderText += "------------------------------------------\n";
+
+                    foreach (var order in orderList.AsArray())
+                    {
+                        string productCode = order!["productCode"]!.ToString();
+                        string qty = order!["qty"]!.ToString();
+
+                        string productName = dicMenuName[productCode];
+
+                        byte[] data = Encoding.Unicode.GetBytes(productName);
+                        int count = data.Length;
+                        int pad = 38 - count;
+                        orderText += productName + qty.PadLeft(pad) + "\n";
+                    }
+                    orderText += "------------------------------------------\n\n";
+                    orderText += "[정보] 중복 주문을 방지하려면?\n";
+                    orderText += "한 분이 모아서 주문해주세요!\n";
+
+                    Console.WriteLine(orderText);
+
+                    ThemalPrint print = new();
+                    print.PrintOrder(print_port,
+                        orderText,
+                        print_font_width,
+                        print_font_height);
+                }
             }
             catch (Exception ex)
             {
