@@ -27,6 +27,12 @@ namespace agentcs
         [DllImport("user32.dll")]
         private static extern bool ReleaseCapture();
 
+        [DllImport("user32.dll", SetLastError = false)]
+        private static extern IntPtr GetDesktopWindow();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
 
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
         private LowLevelKeyboardProc? hookProcDelegate;
@@ -51,8 +57,6 @@ namespace agentcs
         private string path_order = "";
         private string print_port = "COM6";
         private bool print_use = true;
-        private int print_font_width = 0;
-        private int print_font_height = 0;
         private int timer_status_query = 30;
         readonly Config config = Config.Instance;
         JsonWrapper? lastTableStatus = null;
@@ -60,7 +64,7 @@ namespace agentcs
         public Dictionary<string, string> dicMenuName = new();
         public Dictionary<string, string> dicMenuPrice = new();
 
-        Font? nanumFont;
+        //Font? nanumFont;
 
         FormLogin? formLogin;
         FormTable? formTable;
@@ -178,66 +182,44 @@ namespace agentcs
             switch (style)
             {
                 case 0: // login
-                    buttonCancel.Visible = false;
-                    textTable.Visible = false;
                     picGenPin.Visible = false;
                     picTableStatus.Visible = false;
-                    picSetting.Visible = false;
-                    picWebpage.Visible = false;
+                    picShowOrder.Visible = false;
                     break;
 
                 case 1: // default
-                    buttonCancel.Visible = true;
-                    textTable.Visible = true;
                     picGenPin.Visible = true;
                     picTableStatus.Visible = true;
-                    picSetting.Visible = true;
-                    picWebpage.Visible = true;
+                    picShowOrder.Visible = true;
                     break;
             }
         }
 
         public void InitUI()
         {
+            this.TopLevel = true;
             this.FormBorderStyle = FormBorderStyle.None;
-            this.ClientSize = new Size(800, 400);
+            this.ClientSize = new Size(701, 44);
 
             this.Paint += MainForm_Paint;
             this.MouseDown += MainForm_MouseDown;
 
-            nanumFont = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            //nanumFont = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
 
             // default
-            picClose.Location = new Point(340, 20);
-            picLogo.Location = new Point(150, 32);
-            picCorderText.Location = new Point(98, 60);
-            picDecoBox.Location = new Point(370, 165);
-            picDecoBox.BackColor = Color.Transparent;
+            picLogo.Location = new Point(49, 15);
 
             // func
-            picGenPin.Location = new Point(58, 108);
-            picTableStatus.Location = new Point(202, 108);
-            picSetting.Location = new Point(58, 253);
-            picWebpage.Location = new Point(202, 253);
-
-            textTable.Font = nanumFont;
-
-            this.formLogin = new()
-            {
-                TopLevel = false
-            };
-
-            this.formTable = new()
-            {
-                TopLevel = true,
-                mainForm = this
-            };
+            picGenPin.Location = new Point(306, 7);
+            picTableStatus.Location = new Point(436, 7);
+            picShowOrder.Location = new Point(566, 7);
 
             // ToDo: UI 설정
-            this.Controls.Add(this.formLogin);
-            this.formLogin.Show();
-            this.formLogin.Location = new Point(0, 0);
-            SetDialog(0);
+            //this.Controls.Add(this.formLogin);
+            //this.formLogin.Show();
+            //this.formLogin.ShowDialog();
+            //this.formLogin.Location = new Point(0, 0);
+            //SetDialog(0);
         }
 
         public void InitData()
@@ -254,8 +236,6 @@ namespace agentcs
                 print_use = false;
             }
             print_port = config.GetString("print_port");
-            print_font_width = config.GetInt("print_font_width");
-            print_font_height = config.GetInt("print_font_height");
             timer_status_query = config.GetInt("timer_status_query");
             if (timer_status_query < 10)
             {
@@ -296,10 +276,42 @@ namespace agentcs
             client = new Network(MessageHandler, StatusHandler);
         }
 
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            if (this.Handle != IntPtr.Zero)
+            {
+                IntPtr hWndDeskTop = GetDesktopWindow();
+                SetParent(this.Handle, hWndDeskTop);
+            }
+
+            base.OnHandleCreated(e);
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             Log.Debug("MainForm_Load");
             // ToDo: 기능 중단 
+
+            this.formLogin = new()
+            {
+                Owner = this,
+                TopLevel = true,
+                mainForm = this
+            };
+
+            this.formTable = new()
+            {
+                Owner = this,
+                TopLevel = true,
+                mainForm = this
+            };
+
+            //this.formLogin.StartPosition = FormStartPosition.CenterParent;
+            Point parentPoint = this.Location;
+            //this.formLogin.StartPosition = FormStartPosition.Manual;
+            this.formLogin.Location = parentPoint;
+            this.formLogin.ShowDialog();
+
             globalKeyboardHook();
             Connect();
         }
@@ -321,33 +333,27 @@ namespace agentcs
 
         private void MainForm_Paint(object? sender, PaintEventArgs e)
         {
-            System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
-            System.Drawing.Graphics formGraphics;
-            formGraphics = this.CreateGraphics();
-            formGraphics.FillRectangle(myBrush, new Rectangle(400, 2, 398, 396));
-            myBrush.Dispose();
-            formGraphics.Dispose();
+            //System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
+            //System.Drawing.Graphics formGraphics;
+            //formGraphics = this.CreateGraphics();
+            //formGraphics.FillRectangle(myBrush, new Rectangle(400, 2, 398, 396));
+            //myBrush.Dispose();
+            //formGraphics.Dispose();
 
-            using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
-            {
-                e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
-            }
+            //using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
+            //{
+            //    e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
+            //}
         }
 
         private void MainForm_MouseDown(object? sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                IntPtr handle = this.Handle;
-                ReleaseCapture();
-                SendMessage(handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
-        }
-
-        private void buttonCancel_Click(object sender, EventArgs e)
-        {
-            Log.Information("buttonCancel_Click()");
-            SendClear(0, textTable.Text);
+            //if (e.Button == MouseButtons.Left)
+            //{
+            //    IntPtr handle = this.Handle;
+            //    ReleaseCapture();
+            //    SendMessage(handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            //}
         }
 
         private void picClose_Click(object sender, EventArgs e)
@@ -367,14 +373,8 @@ namespace agentcs
             this.formTable?.ShowDialog();
         }
 
-        private void picSetting_Click(object sender, EventArgs e)
+        private void picShowOrder_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void picWebpage_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -243,11 +243,7 @@ namespace agentcs
                     return;
                 }
                 ThemalPrint print = new();
-                print.PrintPin(print_port,
-                    pin,
-                    createdAt,
-                    print_font_width,
-                    print_font_height);
+                print.PrintPin(print_port, pin, createdAt);
             }
             catch (Exception ex)
             {
@@ -308,10 +304,7 @@ namespace agentcs
                     Console.WriteLine(orderText);
 
                     ThemalPrint print = new();
-                    print.PrintOrder(print_port,
-                        orderText,
-                        print_font_width,
-                        print_font_height);
+                    print.PrintOrder(print_port, orderText);
                 }
             }
             catch (Exception ex)

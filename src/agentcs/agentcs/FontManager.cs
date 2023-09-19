@@ -24,11 +24,11 @@ namespace agentcs
         {
             AddFontFromMemory();
         }
-
+         
         private void AddFontFromMemory()
         {
             List<byte[]> fonts = new List<byte[]>();
-            fonts.Add(Properties.Resources.NanumSquareNeo_cBd);
+            //fonts.Add(Properties.Resources.NanumSquareNeo_cBd);
 
             foreach (byte[] font in fonts)
             {

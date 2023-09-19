@@ -7,7 +7,7 @@ namespace agentcs
     {
         private System.IO.Ports.SerialPort? serialPort = null;
 
-        public void PrintPin(string portName, string pin, string createdAt, int width = 3, int height = 3)
+        public void PrintPin(string portName, string pin, string createdAt)
         {
             serialPort = new System.IO.Ports.SerialPort
             {
@@ -20,7 +20,6 @@ namespace agentcs
 
             try
             {
-                // 프린터 연결
                 serialPort.Open();
                 string command = "";
 
@@ -28,10 +27,6 @@ namespace agentcs
                 byte[] datetime = Encoding.ASCII.GetBytes(createdAt);
                 serialPort.Write(datetime, 0, datetime.Length);
 
-                // 폰트 크기 변경
-                //string command = String.Format("\x1B!%c", ((width - 1) << 4) | (height - 1));
-                //byte[] font = Encoding.ASCII.GetBytes(command);
-                //serialPort.Write(font, 0, font.Length);
                 byte[] setFontSizeCommand = new byte[] { 27, 33, 1 };
                 serialPort.Write(setFontSizeCommand, 0, setFontSizeCommand.Length);
 
@@ -54,7 +49,7 @@ namespace agentcs
             }
         }
 
-        public void PrintOrder(string portName, string order, int width = 2, int height = 2)
+        public void PrintOrder(string portName, string order)
         {
             serialPort = new System.IO.Ports.SerialPort
             {
@@ -67,7 +62,6 @@ namespace agentcs
 
             try
             {
-                // 프린터 연결
                 serialPort.Open();
                 string command = "";
 
@@ -80,8 +74,6 @@ namespace agentcs
 
                 Encoding encode = Encoding.GetEncoding(51949);
                 byte[] data = encode.GetBytes(command);
-                //byte[] data = Encoding.UTF8.GetBytes(command);
-                //byte[] data = Encoding.ASCII.GetBytes(command);
                 serialPort.Write(data, 0, data.Length);
 
                 // CUT

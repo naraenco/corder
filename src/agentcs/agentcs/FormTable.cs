@@ -100,7 +100,7 @@ namespace agentcs
 
         private void CreateTableUI()
         {
-            Font font = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            //Font font = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
 
             for (int r = 0; r < 12; r++)
             {
@@ -117,7 +117,7 @@ namespace agentcs
                 {
                     Text = "00",
                     TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
-                    Font = font,
+                    //Font = font,
                     Size = new Size(120, 30),
                     Location = new Point((170 / 2) - (120 / 2), (38 / 2) - (30 / 2)),
                     BorderStyle = BorderStyle.None,

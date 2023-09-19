@@ -25,6 +25,7 @@ namespace agentcs
         private const int HT_CAPTION = 0x2; const int WH_KEYBOARD_LL = 13;
 
         private int currentInput = 0;
+        public MainForm? mainForm;
 
 
         public FormLogin()
@@ -37,53 +38,56 @@ namespace agentcs
             this.Paint += FormLogin_Paint;
             this.MouseDown += FormLogin_MouseDown;
 
-            picClose.Location = new Point(340, 20);
-            picLogo.Location = new Point(150, 32);
-            picCorderText.Location = new Point(98, 60);
-            picDecoBox.Location = new Point(370, 165);
-            picDecoBox.BackColor = Color.Transparent;
+            picLogo.Location = new Point(49, 15);
 
             // login
-            picInputID.Location = new Point(100, 120);
-            picInputPW.Location = new Point(100, 170);
-            textID.Location = new Point(125, 129);
-            textPW.Location = new Point(125, 179);
-            picBtnLogin.Location = new Point(100, 230);
-            picTextFindPW.Location = new Point(157, 361);
+            textID.AutoSize = false;
+            textPW.AutoSize = false;
+            textID.Size = new Size(100, 24);
+            textPW.Size = new Size(100, 24);
+            textID.Location = new Point(315, 12);
+            textPW.Location = new Point(495, 12);
+            picBtnLogin.Location = new Point(626, 11);
 
-            textID.PlaceholderText = "ID를 입력하세요";
-            textPW.PlaceholderText = "암호를 입력하세요";
+            //textID.PlaceholderText = "ID를 입력하세요";
+            //textPW.PlaceholderText = "암호를 입력하세요";
 
-            Font font = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            textID.Font = font;
-            textPW.Font = font;
+            //Font font = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            //textID.Font = font;
+            //textPW.Font = font;
 
             this.ActiveControl = null;
         }
 
         private void FormLogin_Paint(object? sender, PaintEventArgs e)
         {
-            System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
             System.Drawing.Graphics formGraphics;
             formGraphics = this.CreateGraphics();
-            formGraphics.FillRectangle(myBrush, new Rectangle(400, 2, 398, 396));
+
+            System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(Color.FromArgb(255, 239, 237, 238));
+            formGraphics.FillRectangle(myBrush, new Rectangle(0, 44, 701, 9));
+
+            myBrush = new System.Drawing.SolidBrush(Color.FromArgb(255, 251, 244, 235));
+            formGraphics.FillRectangle(myBrush, new Rectangle(470, 53, 231, 311));
+
             myBrush.Dispose();
             formGraphics.Dispose();
 
-            using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
-            {
-                e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
-            }
+            //using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
+            //{
+            //    e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
+            //}
         }
 
         private void FormLogin_MouseDown(object? sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                IntPtr handle = Parent.Handle;
-                ReleaseCapture();
-                SendMessage(handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
+            //if (e.Button == MouseButtons.Left)
+            //{
+            //    MainForm form = (MainForm)this.mainForm!;
+            //    IntPtr handle = form.Handle;
+            //    ReleaseCapture();
+            //    SendMessage(handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            //}
         }
 
         private void NumClick(string value)
