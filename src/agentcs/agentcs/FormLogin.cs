@@ -201,8 +201,8 @@ namespace agentcs
 
         private void picBtnLogin_Click(object sender, EventArgs e)
         {
-            MainForm form = (MainForm)this.Parent;
-            form.SetDialog(1);
+            //MainForm form = (MainForm)this.Parent;
+            //form.SetDialog(1);
 
             Close();
         }

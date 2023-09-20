@@ -291,6 +291,7 @@ namespace agentcs
         {
             Log.Debug("MainForm_Load");
             // ToDo: 기능 중단 
+            this.Location = new Point(256, 17);
 
             this.formLogin = new()
             {
@@ -311,6 +312,8 @@ namespace agentcs
             //this.formLogin.StartPosition = FormStartPosition.Manual;
             this.formLogin.Location = parentPoint;
             this.formLogin.ShowDialog();
+
+            this.formTable.Location = parentPoint;
 
             globalKeyboardHook();
             Connect();

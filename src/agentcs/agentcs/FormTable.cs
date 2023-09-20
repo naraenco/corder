@@ -155,26 +155,26 @@ namespace agentcs
             int totalno = form.dicScdTable.Count;
             int lastno = (12 * pageNo) + 12;
 
-            double c = (double)totalno / ((pageNo+1) * 12);
+            double c = (double)totalno / ((pageNo + 1) * 12);
             double quotient = System.Math.Truncate(c);
             double remainder = totalno % 12;
-            
+
             if (quotient == 0)
             {
                 lastno = (12 * pageNo) + (int)remainder;
             }
-            
+
             //Console.WriteLine($"SetTableData - startno: {startno}, totalno: {totalno}");
             //Console.WriteLine($"SetTableData - quotient: {quotient}, remainder: {remainder}");
             //Console.WriteLine($"SetTableData - startno: {startno}, lastno: {lastno}");
 
-            for (int i=0; i<12; i++)
+            for (int i = 0; i < 12; i++)
             {
                 lbTableNo[i].Text = "";
             }
 
             int j = 0;
-            for (int idx= startno; idx<lastno; idx++)
+            for (int idx = startno; idx < lastno; idx++)
             {
                 var item = form.dicScdTable.ElementAt(idx);
                 lbTableNo[j].Text = item.Key.ToString();

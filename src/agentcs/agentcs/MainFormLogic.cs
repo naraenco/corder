@@ -298,8 +298,6 @@ namespace agentcs
                         orderText += productName + qty.PadLeft(pad) + "\n";
                     }
                     orderText += "------------------------------------------\n\n";
-                    orderText += "[정보] 중복 주문을 방지하려면?\n";
-                    orderText += "한 분이 모아서 주문해주세요!\n";
 
                     Console.WriteLine(orderText);
 

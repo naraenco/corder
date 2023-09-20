@@ -166,6 +166,7 @@
             Name = "FormTable";
             StartPosition = FormStartPosition.CenterParent;
             Text = "FormTable";
+            TopMost = true;
             ((System.ComponentModel.ISupportInitialize)picButtonReset).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonKeep).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonPrev).EndInit();
