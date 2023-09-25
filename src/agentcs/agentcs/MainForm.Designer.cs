@@ -49,6 +49,8 @@
             picLogo.Size = new Size(100, 20);
             picLogo.TabIndex = 3;
             picLogo.TabStop = false;
+            picLogo.Click += picLogo_Click;
+            picLogo.DoubleClick += picLogo_DoubleClick;
             // 
             // picGenPin
             // 

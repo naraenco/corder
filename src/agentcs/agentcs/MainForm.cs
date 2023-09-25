@@ -351,12 +351,12 @@ namespace agentcs
 
         private void MainForm_MouseDown(object? sender, MouseEventArgs e)
         {
-            //if (e.Button == MouseButtons.Left)
-            //{
-            //    IntPtr handle = this.Handle;
-            //    ReleaseCapture();
-            //    SendMessage(handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            //}
+            if (e.Button == MouseButtons.Left)
+            {
+                IntPtr handle = this.Handle;
+                ReleaseCapture();
+                SendMessage(handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
         }
 
         private void picClose_Click(object sender, EventArgs e)
@@ -378,6 +378,15 @@ namespace agentcs
 
         private void picShowOrder_Click(object sender, EventArgs e)
         {
+        }
+
+        private void picLogo_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void picLogo_DoubleClick(object sender, EventArgs e)
+        {
+            this.Location = new Point(256, 17);
         }
     }
 }
