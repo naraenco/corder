@@ -56,6 +56,9 @@ namespace agentcs
         private string pos_extra = "";
         private string path_order = "";
         private string print_port = "COM6";
+        private int print_speed = 9600;
+        private int print_pin_width = 2;
+        private int print_pin_height = 2;
         private bool print_use = true;
         private int timer_status_query = 30;
         readonly Config config = Config.Instance;
@@ -236,6 +239,9 @@ namespace agentcs
                 print_use = false;
             }
             print_port = config.GetString("print_port");
+            print_speed = config.GetInt("print_speed");
+            print_pin_width = config.GetInt("print_pin_width");
+            print_pin_height = config.GetInt("print_pin_height");
             timer_status_query = config.GetInt("timer_status_query");
             if (timer_status_query < 10)
             {

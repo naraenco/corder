@@ -190,7 +190,11 @@ namespace agentcs
             return result;
         }
 
-        public void PrintPin(string portName, string pin, string createdAt)
+        public void PrintPin(string portName, 
+            string pin, 
+            string createdAt, 
+            int pin_width = 2, 
+            int pin_height = 2)
         {
             serialPort = new System.IO.Ports.SerialPort
             {
@@ -207,12 +211,11 @@ namespace agentcs
                 string command = "";
 
                 // 시간 인쇄
+                string strfont = ConvertFontSize(1, 1);
                 byte[] datetime = Encoding.ASCII.GetBytes(createdAt);
                 serialPort.Write(datetime, 0, datetime.Length);
 
-                //byte[] setFontSizeCommand = new byte[] { 27, 33, 1 };
-                //serialPort.Write(setFontSizeCommand, 0, setFontSizeCommand.Length);
-                string strfont = ConvertFontSize(3, 3);
+                strfont = ConvertFontSize(pin_width, pin_height);
                 byte[] bytefont = Encoding.ASCII.GetBytes(strfont);
                 serialPort.Write(bytefont, 0, bytefont.Length);
 
