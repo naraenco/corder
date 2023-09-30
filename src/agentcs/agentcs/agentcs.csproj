@@ -33,6 +33,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(SolutionDir)agentcs\config.origin.json&quot; &quot;$(TargetDir)\config.json&quot; /d /y" />
   </Target>

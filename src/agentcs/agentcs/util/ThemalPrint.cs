@@ -190,7 +190,8 @@ namespace agentcs
             return result;
         }
 
-        public void PrintPin(string portName, 
+        public void PrintPin(string portName,
+            int baudRate,
             string pin, 
             string createdAt, 
             int pin_width = 2, 
@@ -199,7 +200,7 @@ namespace agentcs
             serialPort = new System.IO.Ports.SerialPort
             {
                 PortName = portName,
-                BaudRate = 9600,
+                BaudRate = baudRate,
                 DataBits = 8,
                 Parity = System.IO.Ports.Parity.None,
                 StopBits = System.IO.Ports.StopBits.One
@@ -248,12 +249,14 @@ namespace agentcs
             }
         }
 
-        public void PrintOrder(string portName, string order)
+        public void PrintOrder(string portName, 
+            int baudRate, 
+            string order)
         {
             serialPort = new System.IO.Ports.SerialPort
             {
                 PortName = portName,
-                BaudRate = 9600,
+                BaudRate = baudRate,
                 DataBits = 8,
                 Parity = System.IO.Ports.Parity.None,
                 StopBits = System.IO.Ports.StopBits.One

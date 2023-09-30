@@ -29,86 +29,50 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormTable));
-            picButtonReset = new PictureBox();
             picButtonKeep = new PictureBox();
-            labelTableName = new Label();
-            labelResetConfirm = new Label();
             labelResetDesc = new Label();
             picButtonPrev = new PictureBox();
             picButtonNext = new PictureBox();
-            labelSelectTable = new Label();
             picButtonClose = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)picButtonReset).BeginInit();
+            pictureBox1 = new PictureBox();
+            label1 = new Label();
+            label2 = new Label();
+            lbPage = new Label();
             ((System.ComponentModel.ISupportInitialize)picButtonKeep).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picButtonPrev).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picButtonNext).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picButtonClose).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
-            // 
-            // picButtonReset
-            // 
-            picButtonReset.Image = (Image)resources.GetObject("picButtonReset.Image");
-            picButtonReset.Location = new Point(125, 157);
-            picButtonReset.Name = "picButtonReset";
-            picButtonReset.Size = new Size(170, 38);
-            picButtonReset.TabIndex = 0;
-            picButtonReset.TabStop = false;
-            picButtonReset.Click += picButtonReset_Click;
             // 
             // picButtonKeep
             // 
-            picButtonKeep.Image = (Image)resources.GetObject("picButtonKeep.Image");
-            picButtonKeep.Location = new Point(305, 157);
+            picButtonKeep.Location = new Point(0, 0);
             picButtonKeep.Name = "picButtonKeep";
-            picButtonKeep.Size = new Size(170, 38);
-            picButtonKeep.TabIndex = 1;
+            picButtonKeep.Size = new Size(100, 50);
+            picButtonKeep.TabIndex = 13;
             picButtonKeep.TabStop = false;
-            picButtonKeep.Click += picButtonKeep_Click;
-            // 
-            // labelTableName
-            // 
-            labelTableName.AutoSize = true;
-            labelTableName.BackColor = Color.Transparent;
-            labelTableName.Font = new Font("나눔스퀘어 네오 Bold", 27.75F, FontStyle.Bold, GraphicsUnit.Point);
-            labelTableName.ForeColor = Color.White;
-            labelTableName.Location = new Point(206, 34);
-            labelTableName.Name = "labelTableName";
-            labelTableName.Size = new Size(193, 40);
-            labelTableName.TabIndex = 2;
-            labelTableName.Text = "0번 테이블";
-            // 
-            // labelResetConfirm
-            // 
-            labelResetConfirm.AutoSize = true;
-            labelResetConfirm.BackColor = Color.Transparent;
-            labelResetConfirm.Font = new Font("나눔스퀘어 네오 Bold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            labelResetConfirm.ForeColor = Color.White;
-            labelResetConfirm.Location = new Point(142, 121);
-            labelResetConfirm.Name = "labelResetConfirm";
-            labelResetConfirm.Size = new Size(322, 18);
-            labelResetConfirm.TabIndex = 3;
-            labelResetConfirm.Text = "위 테이블의 주문 내역을 초기화 하시겠습니까?";
             // 
             // labelResetDesc
             // 
             labelResetDesc.AutoSize = true;
             labelResetDesc.BackColor = Color.Transparent;
-            labelResetDesc.Font = new Font("나눔스퀘어 네오 Bold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            labelResetDesc.ForeColor = Color.White;
-            labelResetDesc.Location = new Point(66, 237);
+            labelResetDesc.Font = new Font("맑은 고딕", 12F, FontStyle.Bold, GraphicsUnit.Pixel);
+            labelResetDesc.ForeColor = Color.Black;
+            labelResetDesc.ImageAlign = ContentAlignment.TopLeft;
+            labelResetDesc.Location = new Point(25, 58);
             labelResetDesc.Name = "labelResetDesc";
-            labelResetDesc.Size = new Size(467, 26);
+            labelResetDesc.Size = new Size(338, 15);
             labelResetDesc.TabIndex = 4;
-            labelResetDesc.Text = "POS 주문은 삭제되지 않으며, 손님이 보고 있는 모바일 메뉴판의 테이블 번호만 초기화됩니다.\r\n손님이 테이블을 이동한 경우, 잊지 말고 꼭! 초기화 해주세요.";
-            labelResetDesc.TextAlign = ContentAlignment.TopCenter;
+            labelResetDesc.Text = "*손님이 주문 전 테이블 이동한 경우, 반드시 초기화 해주세요.";
             // 
             // picButtonPrev
             // 
             picButtonPrev.BackColor = Color.Transparent;
             picButtonPrev.Image = (Image)resources.GetObject("picButtonPrev.Image");
-            picButtonPrev.Location = new Point(12, 225);
+            picButtonPrev.Location = new Point(20, 420);
             picButtonPrev.Name = "picButtonPrev";
-            picButtonPrev.Size = new Size(170, 38);
+            picButtonPrev.Size = new Size(70, 24);
             picButtonPrev.TabIndex = 5;
             picButtonPrev.TabStop = false;
             picButtonPrev.Click += picButtonPrev_Click;
@@ -117,75 +81,104 @@
             // 
             picButtonNext.BackColor = Color.Transparent;
             picButtonNext.Image = (Image)resources.GetObject("picButtonNext.Image");
-            picButtonNext.Location = new Point(418, 225);
+            picButtonNext.Location = new Point(310, 420);
             picButtonNext.Name = "picButtonNext";
-            picButtonNext.Size = new Size(170, 38);
+            picButtonNext.Size = new Size(70, 24);
             picButtonNext.TabIndex = 6;
             picButtonNext.TabStop = false;
             picButtonNext.Click += picButtonNext_Click;
-            // 
-            // labelSelectTable
-            // 
-            labelSelectTable.AutoSize = true;
-            labelSelectTable.BackColor = Color.Transparent;
-            labelSelectTable.Font = new Font("나눔스퀘어 네오 Bold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            labelSelectTable.ForeColor = Color.White;
-            labelSelectTable.Location = new Point(46, 87);
-            labelSelectTable.Name = "labelSelectTable";
-            labelSelectTable.Size = new Size(162, 18);
-            labelSelectTable.TabIndex = 7;
-            labelSelectTable.Text = "테이블을 선택해주세요";
             // 
             // picButtonClose
             // 
             picButtonClose.BackColor = Color.Transparent;
             picButtonClose.Image = (Image)resources.GetObject("picButtonClose.Image");
-            picButtonClose.Location = new Point(493, 12);
+            picButtonClose.Location = new Point(0, 470);
             picButtonClose.Name = "picButtonClose";
-            picButtonClose.Size = new Size(40, 40);
+            picButtonClose.Size = new Size(400, 30);
             picButtonClose.TabIndex = 8;
             picButtonClose.TabStop = false;
             picButtonClose.Click += picButtonClose_Click;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(286, 29);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(83, 20);
+            pictureBox1.TabIndex = 9;
+            pictureBox1.TabStop = false;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
+            label1.ForeColor = Color.FromArgb(255, 108, 0);
+            label1.Location = new Point(24, 30);
+            label1.Name = "label1";
+            label1.Size = new Size(51, 19);
+            label1.TabIndex = 10;
+            label1.Text = "테이블";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
+            label2.Location = new Point(70, 30);
+            label2.Name = "label2";
+            label2.Size = new Size(51, 19);
+            label2.TabIndex = 11;
+            label2.Text = "초기화";
+            // 
+            // lbPage
+            // 
+            lbPage.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
+            lbPage.Location = new Point(166, 423);
+            lbPage.Name = "lbPage";
+            lbPage.Size = new Size(70, 20);
+            lbPage.TabIndex = 12;
+            lbPage.Text = "PAGE";
+            lbPage.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // FormTable
             // 
             AutoScaleMode = AutoScaleMode.None;
-            BackColor = Color.FromArgb(65, 65, 65);
-            ClientSize = new Size(600, 300);
+            BackColor = Color.FromArgb(251, 244, 235);
+            ClientSize = new Size(400, 500);
             ControlBox = false;
+            Controls.Add(lbPage);
+            Controls.Add(label2);
+            Controls.Add(label1);
+            Controls.Add(pictureBox1);
             Controls.Add(picButtonClose);
-            Controls.Add(labelSelectTable);
             Controls.Add(picButtonNext);
             Controls.Add(picButtonPrev);
             Controls.Add(labelResetDesc);
-            Controls.Add(labelResetConfirm);
-            Controls.Add(labelTableName);
             Controls.Add(picButtonKeep);
-            Controls.Add(picButtonReset);
+            Font = new Font("맑은 고딕", 9F, FontStyle.Regular, GraphicsUnit.Point);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FormTable";
-            StartPosition = FormStartPosition.CenterParent;
+            StartPosition = FormStartPosition.Manual;
             Text = "FormTable";
             TopMost = true;
-            ((System.ComponentModel.ISupportInitialize)picButtonReset).EndInit();
+            Load += FormTable_Load;
             ((System.ComponentModel.ISupportInitialize)picButtonKeep).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonPrev).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonNext).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonClose).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
-        private PictureBox picButtonReset;
         private PictureBox picButtonKeep;
-        private Label labelTableName;
-        private Label labelResetConfirm;
         private Label labelResetDesc;
         private PictureBox picButtonPrev;
         private PictureBox picButtonNext;
-        private Label labelSelectTable;
         private PictureBox picButtonClose;
+        private PictureBox pictureBox1;
+        private Label label1;
+        private Label label2;
+        private Label lbPage;
     }
 }

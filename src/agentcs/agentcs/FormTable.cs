@@ -5,8 +5,9 @@ namespace agentcs
     public partial class FormTable : Form
     {
         private int pageNo = 0;
-        public PictureBox[] bgTableNo = new PictureBox[12];
-        public Label[] lbTableNo = new Label[12];
+        //public PictureBox[] bgTableNo = new PictureBox[10];
+        public Label[] bgTableNo = new Label[10];
+        public Label[] lbTableNo = new Label[10];
         string table_nm = "";
         public MainForm? mainForm;
 
@@ -14,44 +15,34 @@ namespace agentcs
         public FormTable()
         {
             InitializeComponent();
+            this.Paint += FormTable_Paint;
 
-            picButtonClose.Location = new Point(520, 10);
+            labelResetDesc.Text = "*손님이 주문 전 테이블 이동한 경우, 반드시 초기화 해주세요.";
+            labelResetDesc.Location = new Point(29, 58);
 
-            labelTableName.Location = new Point(206, 34);
+            picButtonPrev.Location = new Point(20, 420);
+            picButtonNext.Location = new Point(310, 420);
 
-            labelResetConfirm.Text = "위 테이블의 주문 내역을 초기화 하시겠습니까?";
-            labelResetConfirm.Location = new Point(142, 121);
-
-            labelResetDesc.Text = "POS 주문은 삭제되지 않으며, 손님이 보고 있는 모바일 메뉴판의 테이블 번호만 초기화됩니다.\r\n손님이 테이블을 이동한 경우, 잊지 말고 꼭! 초기화 해주세요.";
-            labelResetDesc.Location = new Point(66, 237);
-
-            picButtonReset.Location = new Point(125, 157);
-            picButtonKeep.Location = new Point(305, 157);
-
-            labelSelectTable.Text = "테이블을 선택해주세요";
-            labelSelectTable.Location = new Point(40, 20);
-            picButtonPrev.Location = new Point(40, 246);
-            picButtonNext.Location = new Point(400, 246);
+            picButtonClose.Location = new Point(0, 470);
 
             CreateTableUI();
-
-            SetUI(0);
         }
 
-        private void picButtonReset_Click(object sender, EventArgs e)
+        private void FormTable_Paint(object? sender, PaintEventArgs e)
         {
-            MainForm form = (MainForm)this.mainForm!;
-            string table_cd = form.GetTableCodeByName(table_nm);
-            form.SendClear(0, table_cd);
-            SetUI(0);
-            Close();
+            using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
+            {
+                e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
+            }
         }
 
-        private void picButtonKeep_Click(object sender, EventArgs e)
-        {
-            SetUI(0);
-            Close();
-        }
+        //private void picButtonReset_Click(object sender, EventArgs e)
+        //{
+        //    MainForm form = (MainForm)this.mainForm!;
+        //    string table_cd = form.GetTableCodeByName(table_nm);
+        //    form.SendClear(0, table_cd);
+        //    Close();
+        //}
 
         private void SetUI(int no)
         {
@@ -60,17 +51,12 @@ namespace agentcs
                 case 0:
                     pageNo = 0;
                     table_nm = "";
-                    labelTableName.Visible = false;
-                    labelResetConfirm.Visible = false;
-                    labelResetDesc.Visible = false;
-                    picButtonReset.Visible = false;
-                    picButtonKeep.Visible = false;
+                    labelResetDesc.Visible = true;
 
-                    labelSelectTable.Visible = true;
                     picButtonPrev.Visible = true;
                     picButtonNext.Visible = true;
 
-                    for (int i = 0; i < 12; i++)
+                    for (int i = 0; i < 10; i++)
                     {
                         bgTableNo[i].Visible = true;
                     }
@@ -78,17 +64,12 @@ namespace agentcs
                     break;
 
                 case 1:
-                    labelTableName.Visible = true;
-                    labelResetConfirm.Visible = true;
-                    labelResetDesc.Visible = true;
-                    picButtonReset.Visible = true;
-                    picButtonKeep.Visible = true;
-
-                    labelSelectTable.Visible = false;
+                    labelResetDesc.Visible = false;
+                    
                     picButtonPrev.Visible = false;
                     picButtonNext.Visible = false;
 
-                    for (int i = 0; i < 12; i++)
+                    for (int i = 0; i < 10; i++)
                     {
                         bgTableNo[i].Visible = false;
                     }
@@ -102,48 +83,56 @@ namespace agentcs
         {
             //Font font = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
 
-            for (int r = 0; r < 12; r++)
+            Color lineColor;
+
+            for (int r = 0; r < 10; r++)
             {
+                if (r % 2 == 1)
+                {
+                    lineColor = Color.FromArgb(246, 246, 246);
+                }
+                else
+                {
+                    lineColor = Color.FromArgb(255, 255, 255);
+                }
+
                 bgTableNo[r] = new()
                 {
-                    Image = (Bitmap)Properties.Resources.buttn_tableno,
-                    Size = new Size(170, 38),
+                    Text = "",
+                    BackColor = lineColor,
+                    Size = new Size(400, 30),
                     Visible = true
                 };
 
                 this.Controls.Add(bgTableNo[r]);
 
+                Font lbFont = new Font("맑은 고딕", 11);
+
                 lbTableNo[r] = new()
                 {
+                    Font = lbFont,
                     Text = "00",
-                    TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
-                    //Font = font,
-                    Size = new Size(120, 30),
-                    Location = new Point((170 / 2) - (120 / 2), (38 / 2) - (30 / 2)),
+                    TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
+                    Size = new Size(360, 30),
+                    Location = new Point(22, 0),
                     BorderStyle = BorderStyle.None,
-                    BackColor = Color.FromArgb(135, 135, 135),
-                    //BackColor = Color.FromArgb(135, 0, 0),
-                    ForeColor = Color.White
+                    BackColor = lineColor,
+                    ForeColor = Color.Black
                 };
 
                 bgTableNo[r].Controls.Add(lbTableNo[r]);
                 lbTableNo[r].Click += new EventHandler(DynamicButtonClickHandler!);
             }
 
-            int marginLeft = 40;
-            int marginTop = 55;
-            //int marginX = 50;
-            //int marginY = 100;
+            int marginLeft = 0;
+            int marginTop = 100;
 
             int no = 0;
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 10; i++)
             {
-                for (int j = 0; j < 3; j++)
-                {
-                    bgTableNo[no].Location = new Point(marginLeft + (j * 180), marginTop + (i * 47));
-                    lbTableNo[no].Text = (no + 1).ToString();
-                    no++;
-                }
+                bgTableNo[no].Location = new Point(marginLeft, marginTop + (i * 30));
+                lbTableNo[no].Text = (no + 1).ToString();
+                no++;
             }
         }
 
@@ -151,24 +140,36 @@ namespace agentcs
         {
             MainForm form = (MainForm)this.mainForm!;
 
-            int startno = (pageNo * 12);
+            int startno = (pageNo * 10);
             int totalno = form.dicScdTable.Count;
-            int lastno = (12 * pageNo) + 12;
+            int lastno = (10 * pageNo) + 10;
+            int totalPage = 0;
 
-            double c = (double)totalno / ((pageNo + 1) * 12);
+            if (form.dicScdTable.Count % 10 == 0)
+            {
+                totalPage = form.dicScdTable.Count / 10;
+            }
+            else
+            {
+                totalPage = form.dicScdTable.Count / 10 + 1;
+            }
+
+            lbPage.Text = (pageNo + 1).ToString() + " / " + totalPage.ToString();
+
+            double c = (double)totalno / ((pageNo + 1) * 10);
             double quotient = System.Math.Truncate(c);
-            double remainder = totalno % 12;
+            double remainder = totalno % 10;
 
             if (quotient == 0)
             {
-                lastno = (12 * pageNo) + (int)remainder;
+                lastno = (10 * pageNo) + (int)remainder;
             }
 
             //Console.WriteLine($"SetTableData - startno: {startno}, totalno: {totalno}");
             //Console.WriteLine($"SetTableData - quotient: {quotient}, remainder: {remainder}");
             //Console.WriteLine($"SetTableData - startno: {startno}, lastno: {lastno}");
 
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 10; i++)
             {
                 lbTableNo[i].Text = "";
             }
@@ -196,7 +197,7 @@ namespace agentcs
         private void picButtonNext_Click(object sender, EventArgs e)
         {
             MainForm form = (MainForm)this.mainForm!;
-            if ((pageNo + 1) * 12 > form.dicScdTable.Count)
+            if ((pageNo + 1) * 10 > form.dicScdTable.Count)
             {
                 return;
             }
@@ -208,15 +209,39 @@ namespace agentcs
         {
             Label label = (Label)sender;
             table_nm = label.Text;
-            labelTableName.Text = "테이블 [" + table_nm + "]";
-
-            SetUI(1);
+            FormClear formClear = new()
+            {
+                Owner = this,
+                TopLevel = true
+            };
+            Point parentPoint = this.Location;
+            formClear.Location = parentPoint;
+            formClear.Left += 50;
+            formClear.Top += 150;
+            formClear.setTableName(table_nm);
+            DialogResult result = formClear.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                MainForm form = (MainForm)this.mainForm!;
+                string table_cd = form.GetTableCodeByName(table_nm);
+                form.SendClear(0, table_cd);
+                Close();
+            }
+            else
+            {
+                table_nm = "";
+            }
         }
 
         private void picButtonClose_Click(object sender, EventArgs e)
         {
             SetUI(0);
             Close();
+        }
+
+        private void FormTable_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

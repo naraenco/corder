@@ -172,8 +172,9 @@
   </data>
   <data name="picMenu.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAABGdBTUEAALGPC/xhBQAAACFJREFUOE9j
-        +E9lwDAKKAfQsKQagBo7CigB0LCkEvj/HwAiM+8RzjMskQAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1
+        MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAACxMAAAsTAQCanBgAAAA5SURBVDhPrZCxCQAACMP8/+mq
+        4JjJNhCHDAqWwtSwIylGR4yOGP/eL2PMUrjiidERoyPGv/fLEFIDnN+OgG4IzekAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="picShowOrder.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

@@ -1,5 +1,7 @@
 using Serilog;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Text.Json.Nodes;
 
@@ -66,8 +68,6 @@ namespace agentcs
         public Dictionary<string, string> dicScdTable = new();
         public Dictionary<string, string> dicMenuName = new();
         public Dictionary<string, string> dicMenuPrice = new();
-
-        //Font? nanumFont;
 
         FormLogin? formLogin;
         FormTable? formTable;
@@ -313,13 +313,11 @@ namespace agentcs
                 mainForm = this
             };
 
-            //this.formLogin.StartPosition = FormStartPosition.CenterParent;
             Point parentPoint = this.Location;
-            //this.formLogin.StartPosition = FormStartPosition.Manual;
-            this.formLogin.Location = parentPoint;
-            this.formLogin.ShowDialog();
-
             this.formTable.Location = parentPoint;
+            this.formTable.Top += 54;
+            this.formLogin.Location = parentPoint;
+            //this.formLogin.ShowDialog();
 
             globalKeyboardHook();
             Connect();
@@ -388,11 +386,37 @@ namespace agentcs
 
         private void picLogo_Click(object sender, EventArgs e)
         {
+            string command = $"start http://corder.co.kr/manager";
+
+            Process process = new Process();
+            process.EnableRaisingEvents = true;
+            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.Arguments = string.Format("/C {0}", command);
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
         }
 
         private void picLogo_DoubleClick(object sender, EventArgs e)
         {
             this.Location = new Point(256, 17);
+        }
+
+        private void picMenu_Click(object sender, EventArgs e)
+        {
+            FormMenu formMenu = new()
+            {
+                Owner = this,
+                TopLevel = true,
+                mainForm = this
+            };
+
+            Point parentPoint = this.Location;
+            formMenu.Location = parentPoint;
+            formMenu.Top += 54;
+            formMenu.Show();
         }
     }
 }

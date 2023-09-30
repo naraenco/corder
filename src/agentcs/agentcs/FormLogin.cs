@@ -70,13 +70,13 @@ namespace agentcs
             myBrush = new System.Drawing.SolidBrush(Color.FromArgb(255, 251, 244, 235));
             formGraphics.FillRectangle(myBrush, new Rectangle(470, 53, 231, 311));
 
-            myBrush.Dispose();
-            formGraphics.Dispose();
-
             //using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
             //{
             //    e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
             //}
+
+            myBrush.Dispose();
+            formGraphics.Dispose();
         }
 
         private void FormLogin_MouseDown(object? sender, MouseEventArgs e)

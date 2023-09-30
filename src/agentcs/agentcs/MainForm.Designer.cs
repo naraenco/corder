@@ -80,6 +80,7 @@
             picMenu.Size = new Size(20, 11);
             picMenu.TabIndex = 35;
             picMenu.TabStop = false;
+            picMenu.Click += picMenu_Click;
             // 
             // picShowOrder
             // 
