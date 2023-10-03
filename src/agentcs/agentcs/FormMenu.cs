@@ -37,17 +37,8 @@ namespace agentcs
 
         private void menuManager_Click(object sender, EventArgs e)
         {
-            string command = $"start http://corder.co.kr/manager";
-
-            Process process = new Process();
-            process.EnableRaisingEvents = true;
-            process.StartInfo.FileName = "cmd.exe";
-            process.StartInfo.Arguments = string.Format("/C {0}", command);
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.Start();
+            string url = "http://corder.co.kr/manager";
+            util.Tools.Browse(url);
         }
 
         private void menuExit_Click(object sender, EventArgs e)

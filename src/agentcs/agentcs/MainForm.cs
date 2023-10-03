@@ -62,6 +62,7 @@ namespace agentcs
         private int print_pin_width = 2;
         private int print_pin_height = 2;
         private bool print_use = true;
+        private bool order_popup = true;
         private int timer_status_query = 30;
         readonly Config config = Config.Instance;
         JsonWrapper? lastTableStatus = null;
@@ -71,6 +72,7 @@ namespace agentcs
 
         FormLogin? formLogin;
         FormTable? formTable;
+        FormMenu? formMenu;
 
         public void globalKeyboardHook()
         {
@@ -178,26 +180,6 @@ namespace agentcs
             watcher.EnableRaisingEvents = true;     // 이벤트를 발생 할 것이다.
         }
 
-        public void SetDialog(int style)
-        {
-            //Log.Debug($"SetDialog {style}");
-
-            switch (style)
-            {
-                case 0: // login
-                    picGenPin.Visible = false;
-                    picTableStatus.Visible = false;
-                    picShowOrder.Visible = false;
-                    break;
-
-                case 1: // default
-                    picGenPin.Visible = true;
-                    picTableStatus.Visible = true;
-                    picShowOrder.Visible = true;
-                    break;
-            }
-        }
-
         public void InitUI()
         {
             this.TopLevel = true;
@@ -206,23 +188,6 @@ namespace agentcs
 
             this.Paint += MainForm_Paint;
             this.MouseDown += MainForm_MouseDown;
-
-            //nanumFont = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-
-            // default
-            picLogo.Location = new Point(49, 15);
-
-            // func
-            picGenPin.Location = new Point(306, 7);
-            picTableStatus.Location = new Point(436, 7);
-            picShowOrder.Location = new Point(566, 7);
-
-            // ToDo: UI 설정
-            //this.Controls.Add(this.formLogin);
-            //this.formLogin.Show();
-            //this.formLogin.ShowDialog();
-            //this.formLogin.Location = new Point(0, 0);
-            //SetDialog(0);
         }
 
         public void InitData()
@@ -234,10 +199,15 @@ namespace agentcs
             path_order = config.GetString("path_order") + "Order_";
             shop_no = config.GetString("shop_no");
             auth_key = config.GetString("auth_key");
+            if (config.GetString("order_popup") == "false")
+            {
+                order_popup = false;
+            }
             if (config.GetString("print_use") == "false")
             {
                 print_use = false;
             }
+
             print_port = config.GetString("print_port");
             print_speed = config.GetInt("print_speed");
             print_pin_width = config.GetInt("print_pin_width");
@@ -317,7 +287,7 @@ namespace agentcs
             this.formTable.Location = parentPoint;
             this.formTable.Top += 54;
             this.formLogin.Location = parentPoint;
-            //this.formLogin.ShowDialog();
+            this.formLogin.ShowDialog();
 
             globalKeyboardHook();
             Connect();
@@ -340,17 +310,6 @@ namespace agentcs
 
         private void MainForm_Paint(object? sender, PaintEventArgs e)
         {
-            //System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
-            //System.Drawing.Graphics formGraphics;
-            //formGraphics = this.CreateGraphics();
-            //formGraphics.FillRectangle(myBrush, new Rectangle(400, 2, 398, 396));
-            //myBrush.Dispose();
-            //formGraphics.Dispose();
-
-            //using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
-            //{
-            //    e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
-            //}
         }
 
         private void MainForm_MouseDown(object? sender, MouseEventArgs e)
@@ -382,21 +341,12 @@ namespace agentcs
 
         private void picShowOrder_Click(object sender, EventArgs e)
         {
+            string url = "http://corder.co.kr/ManagerOrder";
+            util.Tools.Browse(url);
         }
 
         private void picLogo_Click(object sender, EventArgs e)
         {
-            string command = $"start http://corder.co.kr/manager";
-
-            Process process = new Process();
-            process.EnableRaisingEvents = true;
-            process.StartInfo.FileName = "cmd.exe";
-            process.StartInfo.Arguments = string.Format("/C {0}", command);
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.Start();
         }
 
         private void picLogo_DoubleClick(object sender, EventArgs e)
@@ -406,7 +356,12 @@ namespace agentcs
 
         private void picMenu_Click(object sender, EventArgs e)
         {
-            FormMenu formMenu = new()
+            if (formMenu?.Visible == true)
+            {
+                return;
+            }
+
+            formMenu = new()
             {
                 Owner = this,
                 TopLevel = true,

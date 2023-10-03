@@ -5,7 +5,6 @@ namespace agentcs
     public partial class FormTable : Form
     {
         private int pageNo = 0;
-        //public PictureBox[] bgTableNo = new PictureBox[10];
         public Label[] bgTableNo = new Label[10];
         public Label[] lbTableNo = new Label[10];
         string table_nm = "";
@@ -16,14 +15,6 @@ namespace agentcs
         {
             InitializeComponent();
             this.Paint += FormTable_Paint;
-
-            labelResetDesc.Text = "*손님이 주문 전 테이블 이동한 경우, 반드시 초기화 해주세요.";
-            labelResetDesc.Location = new Point(29, 58);
-
-            picButtonPrev.Location = new Point(20, 420);
-            picButtonNext.Location = new Point(310, 420);
-
-            picButtonClose.Location = new Point(0, 470);
 
             CreateTableUI();
         }
@@ -36,53 +27,8 @@ namespace agentcs
             }
         }
 
-        //private void picButtonReset_Click(object sender, EventArgs e)
-        //{
-        //    MainForm form = (MainForm)this.mainForm!;
-        //    string table_cd = form.GetTableCodeByName(table_nm);
-        //    form.SendClear(0, table_cd);
-        //    Close();
-        //}
-
-        private void SetUI(int no)
-        {
-            switch (no)
-            {
-                case 0:
-                    pageNo = 0;
-                    table_nm = "";
-                    labelResetDesc.Visible = true;
-
-                    picButtonPrev.Visible = true;
-                    picButtonNext.Visible = true;
-
-                    for (int i = 0; i < 10; i++)
-                    {
-                        bgTableNo[i].Visible = true;
-                    }
-
-                    break;
-
-                case 1:
-                    labelResetDesc.Visible = false;
-                    
-                    picButtonPrev.Visible = false;
-                    picButtonNext.Visible = false;
-
-                    for (int i = 0; i < 10; i++)
-                    {
-                        bgTableNo[i].Visible = false;
-                    }
-
-                    break;
-            }
-            this.ActiveControl = null;
-        }
-
         private void CreateTableUI()
         {
-            //Font font = new Font(FontManager.fontFamilys[0], 14, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-
             Color lineColor;
 
             for (int r = 0; r < 10; r++)
@@ -235,7 +181,9 @@ namespace agentcs
 
         private void picButtonClose_Click(object sender, EventArgs e)
         {
-            SetUI(0);
+            pageNo = 0;
+            table_nm = "";
+            this.ActiveControl = null;
             Close();
         }
 

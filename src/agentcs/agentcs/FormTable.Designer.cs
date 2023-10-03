@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormTable));
-            picButtonKeep = new PictureBox();
             labelResetDesc = new Label();
             picButtonPrev = new PictureBox();
             picButtonNext = new PictureBox();
@@ -38,20 +37,11 @@
             label1 = new Label();
             label2 = new Label();
             lbPage = new Label();
-            ((System.ComponentModel.ISupportInitialize)picButtonKeep).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picButtonPrev).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picButtonNext).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picButtonClose).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
-            // 
-            // picButtonKeep
-            // 
-            picButtonKeep.Location = new Point(0, 0);
-            picButtonKeep.Name = "picButtonKeep";
-            picButtonKeep.Size = new Size(100, 50);
-            picButtonKeep.TabIndex = 13;
-            picButtonKeep.TabStop = false;
             // 
             // labelResetDesc
             // 
@@ -153,7 +143,6 @@
             Controls.Add(picButtonNext);
             Controls.Add(picButtonPrev);
             Controls.Add(labelResetDesc);
-            Controls.Add(picButtonKeep);
             Font = new Font("맑은 고딕", 9F, FontStyle.Regular, GraphicsUnit.Point);
             FormBorderStyle = FormBorderStyle.None;
             Name = "FormTable";
@@ -161,7 +150,6 @@
             Text = "FormTable";
             TopMost = true;
             Load += FormTable_Load;
-            ((System.ComponentModel.ISupportInitialize)picButtonKeep).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonPrev).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonNext).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonClose).EndInit();
@@ -171,7 +159,6 @@
         }
 
         #endregion
-        private PictureBox picButtonKeep;
         private Label labelResetDesc;
         private PictureBox picButtonPrev;
         private PictureBox picButtonNext;

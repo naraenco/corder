@@ -269,7 +269,9 @@ namespace agentcs
                 node["status"] = 1;
 
                 JsonObject obj = new();
-                obj.Add("tableNo", node["table_cd"]?.ToString());
+                string tableNo = node["table_cd"]?.ToString()!;
+
+                obj.Add("tableNo", tableNo);
                 obj.Add("orderList", JsonNode.Parse(orderList.ToJsonString()));
                 JsonUtil.WriteFile(path, obj, indent: true, codepage: 51949);
                 Log.Debug(path);
@@ -279,7 +281,7 @@ namespace agentcs
                 {
                     string orderText = "[모바일 오더 주문서]\n\n";
 
-                    orderText += "[테 이 블] " + node["table_cd"]?.ToString() + "\n";
+                    orderText += "[테 이 블] " + tableNo + "\n";
                     orderText += "[발행일시] " + dt.ToString() + "\n";
                     orderText += "==========================================\n";
                     orderText += "  메뉴명                            수량\n";
@@ -289,7 +291,6 @@ namespace agentcs
                     {
                         string productCode = order!["productCode"]!.ToString();
                         string qty = order!["qty"]!.ToString();
-
                         string productName = dicMenuName[productCode];
 
                         byte[] data = Encoding.Unicode.GetBytes(productName);
@@ -304,6 +305,32 @@ namespace agentcs
                     ThemalPrint print = new();
                     print.PrintOrder(print_port, print_speed, orderText);
                 }
+
+                if (order_popup != false)
+                {
+                    List<string> productList = new();
+                    List<string> qtyList = new();
+
+                    foreach (var order in orderList.AsArray())
+                    {
+                        string productCode = order!["productCode"]!.ToString();
+                        string qty = order!["qty"]!.ToString();
+                        string productName = dicMenuName[productCode];
+
+                        productList.Add(productName);
+                        qtyList.Add(qty);
+                    }
+                    FormOrder form = new()
+                    {
+                        TopLevel = true
+                    };
+                    Point parentPoint = this.Location;
+                    form.Location = parentPoint;
+                    form.Top += 54;
+                    form.SetData(tableNo, dt.ToString(), productList, qtyList);
+                    form.ShowDialog();
+                }
+
             }
             catch (Exception ex)
             {
