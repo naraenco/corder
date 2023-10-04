@@ -124,7 +124,7 @@ namespace agentcs
         /// <returns>변환된 문자열</returns>
         public static string DecimalToCharString(decimal val)
         {
-            string result = "";
+            string result = string.Empty;
 
             try
             {
@@ -139,6 +139,28 @@ namespace agentcs
     internal class ThemalPrint
     {
         private System.IO.Ports.SerialPort? serialPort = null;
+
+        private string portname = "COM6";
+        private int baudrate = 9600;
+        private int margin_pin_top = 3;
+        private int margin_pin_bottom = 5;
+        private int margin_order_top = 3;
+        private int margin_order_bottom = 5;
+
+        public void setConstant(string port, 
+            int rate, 
+            int pin_top, 
+            int pin_bottom, 
+            int order_top, 
+            int order_bottom)
+        {
+            portname = port;
+            baudrate = rate;
+            margin_pin_top = pin_top;
+            margin_pin_bottom = pin_bottom;
+            margin_order_top = order_top;
+            margin_order_bottom = order_bottom;
+        }
 
         private string ConvertFontSize(int width, int height)
         {
@@ -190,17 +212,15 @@ namespace agentcs
             return result;
         }
 
-        public void PrintPin(string portName,
-            int baudRate,
-            string pin, 
+        public void PrintPin(string pin, 
             string createdAt, 
             int pin_width = 2, 
             int pin_height = 2)
         {
             serialPort = new System.IO.Ports.SerialPort
             {
-                PortName = portName,
-                BaudRate = baudRate,
+                PortName = this.portname,
+                BaudRate = this.baudrate,
                 DataBits = 8,
                 Parity = System.IO.Ports.Parity.None,
                 StopBits = System.IO.Ports.StopBits.One
@@ -209,7 +229,7 @@ namespace agentcs
             try
             {
                 serialPort.Open();
-                string command = "";
+                string command = string.Empty;
 
                 // 시간 인쇄
                 string strfont = ConvertFontSize(1, 1);
@@ -222,8 +242,20 @@ namespace agentcs
 
                 Encoding encode = Encoding.GetEncoding(51949);
 
+                // Margin
+                string margintop = string.Empty;
+                for (int i = 0; i < margin_pin_top; i++)
+                {
+                    margintop += "\n";
+                }
+                string marginbttom = string.Empty;
+                for (int i = 0;i < margin_pin_bottom; i++)
+                { 
+                    marginbttom += "\n";
+                }
+
                 // 핀 인쇄
-                command = "\n\n\n인증번호 : " + pin + "\n\n\n";
+                command = margintop + "인증번호 : " + pin + "\n\n\n";
                 byte[] data = encode.GetBytes(command);
                 serialPort.Write(data, 0, data.Length);
 
@@ -231,7 +263,7 @@ namespace agentcs
                 bytefont = Encoding.ASCII.GetBytes(strfont);
                 serialPort.Write(bytefont, 0, bytefont.Length);
 
-                string infoText = "[정보] 중복 주문을 방지하려면?\n한 분이 모아서 주문해주세요!\n\n";
+                string infoText = "[정보] 중복 주문을 방지하려면?\n한 분이 모아서 주문해주세요!" + marginbttom;
                 byte[] info = encode.GetBytes(infoText);
                 serialPort.Write(info, 0, info.Length);
 
@@ -249,14 +281,12 @@ namespace agentcs
             }
         }
 
-        public void PrintOrder(string portName, 
-            int baudRate, 
-            string order)
+        public void PrintOrder(string order)
         {
             serialPort = new System.IO.Ports.SerialPort
             {
-                PortName = portName,
-                BaudRate = baudRate,
+                PortName = this.portname,
+                BaudRate = this.baudrate,
                 DataBits = 8,
                 Parity = System.IO.Ports.Parity.None,
                 StopBits = System.IO.Ports.StopBits.One
@@ -265,14 +295,26 @@ namespace agentcs
             try
             {
                 serialPort.Open();
-                string command = "";
+                string command = string.Empty;
+
+                // Margin
+                string margintop = string.Empty;
+                for (int i = 0; i < margin_order_top; i++)
+                {
+                    margintop += "\n";
+                }
+                string marginbttom = string.Empty;
+                for (int i = 0; i < margin_order_bottom; i++)
+                {
+                    marginbttom += "\n";
+                }
 
                 // 폰트 크기 변경
                 byte[] setFontSizeCommand = new byte[] { 27, 33, 0 };
                 serialPort.Write(setFontSizeCommand, 0, setFontSizeCommand.Length);
 
                 // 주문 인쇄
-                command = "\n" + order + "\n\n\n\n\n\n\n\n\n\n";
+                command = margintop + order + marginbttom;
 
                 Encoding encode = Encoding.GetEncoding(51949);
                 byte[] data = encode.GetBytes(command);

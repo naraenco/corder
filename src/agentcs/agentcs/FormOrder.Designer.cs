@@ -46,6 +46,7 @@
             lbMenu = new Label();
             lbQty = new Label();
             label8 = new Label();
+            lbTotalOrder = new Label();
             ((System.ComponentModel.ISupportInitialize)picConfirm).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picLogo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picButtonNext).BeginInit();
@@ -70,6 +71,7 @@
             picLogo.Size = new Size(83, 20);
             picLogo.TabIndex = 1;
             picLogo.TabStop = false;
+            picLogo.Click += picLogo_Click;
             // 
             // label2
             // 
@@ -224,12 +226,25 @@
             label8.TabIndex = 28;
             label8.Text = "[ 주문위치 ] ";
             // 
+            // lbTotalOrder
+            // 
+            lbTotalOrder.AutoSize = true;
+            lbTotalOrder.Font = new Font("맑은 고딕", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            lbTotalOrder.ForeColor = SystemColors.MenuHighlight;
+            lbTotalOrder.Location = new Point(128, 31);
+            lbTotalOrder.Name = "lbTotalOrder";
+            lbTotalOrder.Size = new Size(57, 17);
+            lbTotalOrder.TabIndex = 29;
+            lbTotalOrder.Text = "(주문수)";
+            // 
             // FormOrder
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(251, 244, 235);
             ClientSize = new Size(400, 500);
             ControlBox = false;
+            Controls.Add(lbTotalOrder);
             Controls.Add(label8);
             Controls.Add(lbQty);
             Controls.Add(lbMenu);
@@ -256,6 +271,7 @@
             StartPosition = FormStartPosition.Manual;
             Text = "FormOrder";
             TopMost = true;
+            Load += FormOrder_Load;
             ((System.ComponentModel.ISupportInitialize)picConfirm).EndInit();
             ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonNext).EndInit();
@@ -283,5 +299,6 @@
         private Label lbMenu;
         private Label lbQty;
         private Label label8;
+        private Label lbTotalOrder;
     }
 }

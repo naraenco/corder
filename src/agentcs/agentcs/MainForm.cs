@@ -1,9 +1,8 @@
 using Serilog;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Security.Policy;
 using System.Text;
-using System.Text.Json.Nodes;
+using System.Windows.Forms;
 
 namespace agentcs
 {
@@ -52,15 +51,19 @@ namespace agentcs
         FileSystemWatcher watcher = new();
         private Network client;
         const string apiUrl = "http://corder.co.kr/api/";
-        private string shop_no = "";
+        private string shop_no = string.Empty;
         private string auth_key = "C.ORDER";
-        private string path_status = "";
-        private string pos_extra = "";
-        private string path_order = "";
+        private string path_status = string.Empty;
+        private string pos_extra = string.Empty;
+        private string path_order = string.Empty;
         private string print_port = "COM6";
         private int print_speed = 9600;
         private int print_pin_width = 2;
         private int print_pin_height = 2;
+        private int print_margin_pin_top = 3;
+        private int print_margin_pin_bottom = 5;
+        private int print_margin_order_top = 3;
+        private int print_margin_order_bottom = 5;
         private bool print_use = true;
         private bool order_popup = true;
         private int timer_status_query = 30;
@@ -70,9 +73,12 @@ namespace agentcs
         public Dictionary<string, string> dicMenuName = new();
         public Dictionary<string, string> dicMenuPrice = new();
 
+        ThemalPrint themalPrint = new();
+
         FormLogin? formLogin;
         FormTable? formTable;
         FormMenu? formMenu;
+        FormOrder? formOrder;
 
         public void globalKeyboardHook()
         {
@@ -212,6 +218,10 @@ namespace agentcs
             print_speed = config.GetInt("print_speed");
             print_pin_width = config.GetInt("print_pin_width");
             print_pin_height = config.GetInt("print_pin_height");
+            print_margin_pin_top = config.GetInt("print_margin_pin_top");
+            print_margin_pin_bottom = config.GetInt("print_margin_pin_bottom");
+            print_margin_order_top = config.GetInt("print_margin_order_top");
+            print_margin_order_bottom = config.GetInt("print_margin_order_bottom");
             timer_status_query = config.GetInt("timer_status_query");
             if (timer_status_query < 10)
             {
@@ -224,6 +234,13 @@ namespace agentcs
                 .WriteTo.Console()
                 .WriteTo.File("log/log_.txt", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)
             .CreateLogger();
+
+            themalPrint.setConstant(print_port,
+                print_speed,
+                print_margin_pin_top,
+                print_margin_pin_bottom,
+                print_margin_order_top,
+                print_margin_order_bottom);
 
             // Temporary Process;
             JsonWrapper jsonScdTable = new();
@@ -268,25 +285,36 @@ namespace agentcs
             Log.Debug("MainForm_Load");
             // ToDo: 기능 중단 
             this.Location = new Point(256, 17);
+            Point parentPoint = this.Location;
 
             this.formLogin = new()
             {
+                Location = parentPoint,
+                mainForm = this,
                 Owner = this,
-                TopLevel = true,
-                mainForm = this
+                TopLevel = true
             };
 
             this.formTable = new()
             {
+                Location = parentPoint,
+                mainForm = this,
                 Owner = this,
+                Top = Top + 54,
                 TopLevel = true,
-                mainForm = this
             };
 
-            Point parentPoint = this.Location;
-            this.formTable.Location = parentPoint;
-            this.formTable.Top += 54;
-            this.formLogin.Location = parentPoint;
+            this.formOrder = new()
+            {
+                mainForm = this,
+                Location = parentPoint,
+                Top = Top + 54,
+                TopLevel = true
+            };
+
+            this.formOrder.Show();
+            this.formOrder.Hide();
+
             this.formLogin.ShowDialog();
 
             globalKeyboardHook();

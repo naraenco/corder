@@ -7,7 +7,7 @@ namespace agentcs
         private int pageNo = 0;
         public Label[] bgTableNo = new Label[10];
         public Label[] lbTableNo = new Label[10];
-        string table_nm = "";
+        string table_nm = string.Empty;
         public MainForm? mainForm;
 
 
@@ -175,14 +175,14 @@ namespace agentcs
             }
             else
             {
-                table_nm = "";
+                table_nm = string.Empty;
             }
         }
 
         private void picButtonClose_Click(object sender, EventArgs e)
         {
             pageNo = 0;
-            table_nm = "";
+            table_nm = string.Empty;
             this.ActiveControl = null;
             Close();
         }

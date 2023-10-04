@@ -242,8 +242,8 @@ namespace agentcs
                     Log.Warning("pin is null or empty");
                     return;
                 }
-                ThemalPrint print = new();
-                print.PrintPin(print_port, print_speed, pin, createdAt, print_pin_width, print_pin_height);
+                //ThemalPrint print = new();
+                themalPrint.PrintPin(pin, createdAt, print_pin_width, print_pin_height);
             }
             catch (Exception ex)
             {
@@ -302,8 +302,8 @@ namespace agentcs
 
                     Console.WriteLine(orderText);
 
-                    ThemalPrint print = new();
-                    print.PrintOrder(print_port, print_speed, orderText);
+                    //ThemalPrint print = new();
+                    themalPrint.PrintOrder(orderText);
                 }
 
                 if (order_popup != false)
@@ -320,15 +320,30 @@ namespace agentcs
                         productList.Add(productName);
                         qtyList.Add(qty);
                     }
-                    FormOrder form = new()
+
+                    //Thread dialogThread = new Thread(() => CreateOrderDialog(tableNo,
+                    //    dt.ToString(),
+                    //    productList,
+                    //    qtyList));
+                    //dialogThread.Start();
+
+                    this.formOrder!.AddData(tableNo, dt.ToString(), productList, qtyList);
+                    if (this.formOrder.Visible == false)
                     {
-                        TopLevel = true
-                    };
-                    Point parentPoint = this.Location;
-                    form.Location = parentPoint;
-                    form.Top += 54;
-                    form.SetData(tableNo, dt.ToString(), productList, qtyList);
-                    form.ShowDialog();
+                        this.formOrder.SetData();
+                    }
+                    this.formOrder.Show();
+
+                    //FormOrder formOrder = new()
+                    //{
+                    //    TopLevel = true
+                    //};
+                    //Point parentPoint = this.Location;
+                    //formOrder.Location = parentPoint;
+                    //formOrder.Top += 54;
+                    //formOrder.SetData(tableNo, dt.ToString(), productList, qtyList);
+                    //formOrder.Show();
+                    //formOrder.ShowDialog();
                 }
 
             }
@@ -436,7 +451,7 @@ namespace agentcs
 
         public string GetTableNameByCode(string code)
         {
-            string table_nm = "";
+            string table_nm = string.Empty;
             foreach (string key in dicScdTable.Keys)
             {
                 if (dicScdTable[key] == code)
@@ -446,6 +461,22 @@ namespace agentcs
                 }
             }
             return table_nm;
+        }
+
+        public void CreateOrderDialog(string tableName,
+            string datetime,
+            List<string> productList,
+            List<string> qtyList)
+        {
+            FormOrder formOrder = new()
+            {
+                TopLevel = true
+            };
+            Point parentPoint = this.Location;
+            formOrder.Location = parentPoint;
+            formOrder.Top += 54;
+            formOrder.AddData(tableName, datetime, productList, qtyList);
+            formOrder.ShowDialog();
         }
     }
 }

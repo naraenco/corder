@@ -4,17 +4,8 @@ namespace agentcs
 {
     public partial class FormLogin : Form
     {
-        [DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        [DllImport("user32.dll")]
-        private static extern bool ReleaseCapture();
-
-        private const int WM_NCLBUTTONDOWN = 0xA1;
-        private const int HT_CAPTION = 0x2; const int WH_KEYBOARD_LL = 13;
-
         private int currentInput = 0;
         public MainForm? mainForm;
-
 
         public FormLogin()
         {
@@ -24,11 +15,9 @@ namespace agentcs
         private void FormLogin_Load(object sender, EventArgs e)
         {
             this.Paint += FormLogin_Paint;
-            this.MouseDown += FormLogin_MouseDown;
 
             picLogo.Location = new Point(49, 15);
 
-            // login
             textID.AutoSize = false;
             textPW.AutoSize = false;
             //textID.PlaceholderText = "ID를 입력하세요";
@@ -50,17 +39,6 @@ namespace agentcs
 
             myBrush.Dispose();
             formGraphics.Dispose();
-        }
-
-        private void FormLogin_MouseDown(object? sender, MouseEventArgs e)
-        {
-            //if (e.Button == MouseButtons.Left)
-            //{
-            //    MainForm form = (MainForm)this.mainForm!;
-            //    IntPtr handle = form.Handle;
-            //    ReleaseCapture();
-            //    SendMessage(handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            //}
         }
 
         private void NumClick(string value)
