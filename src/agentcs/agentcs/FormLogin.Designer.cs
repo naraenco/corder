@@ -245,6 +245,7 @@
             picMenu.Size = new Size(20, 11);
             picMenu.TabIndex = 39;
             picMenu.TabStop = false;
+            picMenu.Click += picMenu_Click;
             // 
             // label1
             // 

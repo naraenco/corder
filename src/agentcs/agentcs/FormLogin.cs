@@ -152,7 +152,13 @@ namespace agentcs
 
         private void picBtnLogin_Click(object sender, EventArgs e)
         {
+            this.DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private void picMenu_Click(object sender, EventArgs e)
+        {
+            mainForm?.PopupMenu();
         }
     }
 }

@@ -382,7 +382,7 @@ namespace agentcs
             this.Location = new Point(256, 17);
         }
 
-        private void picMenu_Click(object sender, EventArgs e)
+        public void PopupMenu()
         {
             if (formMenu?.Visible == true)
             {
@@ -400,6 +400,11 @@ namespace agentcs
             formMenu.Location = parentPoint;
             formMenu.Top += 54;
             formMenu.Show();
+        }
+
+        private void picMenu_Click(object sender, EventArgs e)
+        {
+            PopupMenu();
         }
     }
 }
