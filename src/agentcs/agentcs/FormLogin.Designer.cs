@@ -73,17 +73,20 @@
             textPW.Name = "textPW";
             textPW.PasswordChar = '*';
             textPW.Size = new Size(100, 16);
-            textPW.TabIndex = 21;
+            textPW.TabIndex = 2;
+            textPW.WordWrap = false;
             textPW.Enter += textPW_Enter;
             // 
             // textID
             // 
             textID.BorderStyle = BorderStyle.None;
-            textID.Font = new Font("맑은 고딕", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            textID.Font = new Font("맑은 고딕", 12F, FontStyle.Regular, GraphicsUnit.Pixel);
             textID.Location = new Point(313, 11);
             textID.Name = "textID";
             textID.Size = new Size(100, 16);
-            textID.TabIndex = 20;
+            textID.TabIndex = 1;
+            textID.TabStop = false;
+            textID.WordWrap = false;
             textID.Enter += textID_Enter;
             // 
             // picBtnLogin

@@ -6,6 +6,7 @@ namespace agentcs
     {
         private int currentInput = 0;
         public MainForm? mainForm;
+        public string uid = string.Empty;
 
         public FormLogin()
         {
@@ -20,8 +21,12 @@ namespace agentcs
 
             textID.AutoSize = false;
             textPW.AutoSize = false;
+
+            textID.Text = uid;
+            //textPW.Text = "3694";
+
             //textID.PlaceholderText = "ID를 입력하세요";
-            //textPW.PlaceholderText = "암호를 입력하세요";
+            textPW.PlaceholderText = "암호를 입력하세요";
 
             this.ActiveControl = null;
         }
@@ -152,13 +157,38 @@ namespace agentcs
 
         private void picBtnLogin_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
-            Close();
+            string uid = textID.Text.Trim();
+            string pwd = textPW.Text.Trim();
+
+            if (uid.Length < 4)
+            {
+                MessageBox.Show("아이디를 입력하세요");
+                return;
+            }
+            if (pwd.Length < 4)
+            {
+                MessageBox.Show("암호를 입력하세요");
+                return;
+            }
+
+            mainForm?.LoginReq(uid, pwd);
         }
 
         private void picMenu_Click(object sender, EventArgs e)
         {
             mainForm?.PopupMenu();
         }
+
+        public void ResultMessage(string message)
+        {
+            MessageBox.Show(message);
+        }
+
+        public void LoginSuccess()
+        {
+            this.DialogResult = DialogResult.OK;
+            Close();
+        }
     }
 }
+

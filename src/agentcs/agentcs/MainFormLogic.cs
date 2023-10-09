@@ -4,6 +4,7 @@ using Serilog;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using System.Security.Cryptography;
 
 namespace agentcs
 {
@@ -26,13 +27,21 @@ namespace agentcs
             }
         }
 
+        public string ComputeMD5(string s)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                return BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(s)))
+                            .Replace("-", "");
+            }
+        }
+
         public void StatusHandler(WebSocketError error)
         {
             switch (error)
             {
                 case WebSocketError.Success:
                     Log.Information("StatusHandler : CONNECTED");
-                    LoginReq();
                     break;
 
                 case WebSocketError.Faulted:
@@ -64,9 +73,7 @@ namespace agentcs
                 {
                     case "login":
                         Log.Verbose("MessageHandler.login");
-                        SendPosData();
-                        SendTableStatus();
-                        StatusMonitor();
+                        LoginAns(json);
                         break;
 
                     case "genpin":
@@ -204,15 +211,17 @@ namespace agentcs
             await client.ConnectAsync(serverUri);
         }
 
-        public async void LoginReq()
+        public async void LoginReq(string business_number, string password)
         {
             Log.Information("LoginReq()");
+            string login_pass = ComputeMD5(password);
 
             try
             {
-                string message = "{\"msgtype\":\"login\",\"shop_no\": \""
-                    + shop_no + "\",\"auth_key\":\""
-                    + auth_key + "\"}";
+                string message = "{\"msgtype\":\"login\",\"shop_no\": \"" + shop_no 
+                    + "\",\"business_number\":\"" + business_number
+                    + "\",\"login_pass\":\"" + login_pass
+                    + "\"}";
                 await client.SendAsync(message);
                 Log.Debug("LoginReq : " + message);
             }
@@ -249,6 +258,32 @@ namespace agentcs
             {
                 Log.Error(ex.Message);
             }
+        }
+        
+        public void LoginAns(JsonNode node)
+        {
+            try
+            {
+                string result = node["result"]!.ToString();
+                Log.Debug("LoginAns : " + result);
+
+                if (result == "false")
+                {
+                    formLogin?.ResultMessage("로그인에 실패했습니다");
+                    return;
+                }
+
+                formLogin?.LoginSuccess();
+
+                SendPosData();
+                SendTableStatus();
+                StatusMonitor();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+
         }
 
         public void OrderAns(JsonNode node)

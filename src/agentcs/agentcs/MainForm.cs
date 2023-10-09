@@ -1,4 +1,5 @@
 using Serilog;
+using Serilog.Configuration;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -52,6 +53,7 @@ namespace agentcs
         private Network client;
         const string apiUrl = "http://corder.co.kr/api/";
         private string shop_no = string.Empty;
+        private string business_number = string.Empty;
         private string auth_key = "C.ORDER";
         private string path_status = string.Empty;
         private string pos_extra = string.Empty;
@@ -66,7 +68,6 @@ namespace agentcs
         private int print_margin_order_bottom = 5;
         private bool print_use = true;
         private bool order_popup = true;
-        private int timer_status_query = 30;
         readonly Config config = Config.Instance;
         JsonWrapper? lastTableStatus = null;
         public Dictionary<string, string> dicScdTable = new();
@@ -204,6 +205,7 @@ namespace agentcs
             pos_extra = config.GetString("pos_extra");
             path_order = config.GetString("path_order") + "Order_";
             shop_no = config.GetString("shop_no");
+            business_number = config.GetString("business_number");
             auth_key = config.GetString("auth_key");
             if (config.GetString("order_popup") == "false")
             {
@@ -222,12 +224,16 @@ namespace agentcs
             print_margin_pin_bottom = config.GetInt("print_margin_pin_bottom");
             print_margin_order_top = config.GetInt("print_margin_order_top");
             print_margin_order_bottom = config.GetInt("print_margin_order_bottom");
-            timer_status_query = config.GetInt("timer_status_query");
-            if (timer_status_query < 10)
-            {
-                timer_status_query = 10;
-            }
-            timer_status_query *= 1000;
+
+            string log_level = config.GetString("log_level");
+            log_level = log_level.ToLower();
+
+            // Verbose
+            // Debug
+            // Information
+            // Warning
+            // Error
+            // Fatal
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
@@ -294,6 +300,7 @@ namespace agentcs
                 Owner = this,
                 TopLevel = true
             };
+            formLogin.uid = business_number;
 
             this.formTable = new()
             {
@@ -315,10 +322,16 @@ namespace agentcs
             this.formOrder.Show();
             this.formOrder.Hide();
 
-            this.formLogin.ShowDialog();
-
-            globalKeyboardHook();
             Connect();
+            DialogResult result = this.formLogin.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                globalKeyboardHook();
+            }
+            else
+            {
+                Close();
+            }
         }
 
         private async void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -326,7 +339,6 @@ namespace agentcs
             Log.Verbose("MainForm_FormClosing");
             UnHook();
             await client.CloseAsync();
-            //formLogin.Dispose();
 
             Log.CloseAndFlush();
         }

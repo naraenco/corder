@@ -4,6 +4,7 @@ import json
 import logging
 import os
 from fastapi import WebSocket, WebSocketDisconnect
+from sqlalchemy import text
 from . import logic
 
 
@@ -29,14 +30,14 @@ class WebSocketManager:
         return True
 
     async def message_handler(self, websocket: WebSocket):
-        logging.getLogger().debug("ConnectionManager.message_handler")
+        # logging.getLogger().debug("ConnectionManager.message_handler")
         try:
             message = await websocket.receive_text()
             # ToDo: 메시지 디버깅
-            # logging.getLogger().debug(f"Receive: {message}")
             if len(message) > 0:
                 json_object = json.loads(message)
                 msgtype = json_object.get("msgtype")
+                logging.getLogger().debug(f"ConnectionManager.message_handler : {msgtype}")
                 if msgtype == "login":      # 상점 로그인 (실패시 소켓 끊김)
                     await self.login(json_object, websocket)
                 elif msgtype == "genpin":   # PIN 번호 생성 요청
@@ -53,9 +54,10 @@ class WebSocketManager:
                     await logic.update_menu(json_object)
                 elif msgtype == "clear":
                     await self.clear(json_object)
-
-            elif len(message) == 0:
-                print("message size = 0")
+            else:
+                logging.getLogger().debug("ConnectionManager.message_handler : size 0")
+            # elif len(message) == 0:
+            #     print("message size = 0")
         except WebSocketDisconnect as e:
             logging.getLogger().error(e)
             raise
@@ -71,7 +73,7 @@ class WebSocketManager:
                 shop_no = no
                 break
         del self.connections[shop_no]
-        websocket.close()
+        # websocket.close()
 
     async def send(self, message: str, shop_no):
         logging.getLogger().debug("ConnectionManager.send")
@@ -101,16 +103,32 @@ class WebSocketManager:
     #         await conn.send_text(message)
 
     async def login(self, recvmsg, websocket: WebSocket):
-        logging.getLogger().debug("ConnectionManager.login")
+        logging.getLogger().info("ConnectionManager.login")
         try:
             shop_no = str(recvmsg['shop_no'])
-            self.connections[shop_no] = websocket
+            business_number = recvmsg['business_number']
+            login_pass = recvmsg['login_pass']
+
+            from database import engine
+            sql = ("SELECT COUNT(*) FROM shop WHERE shop_no=" + recvmsg['shop_no']
+                   + " and business_number='" + business_number
+                   + "' and login_pass='" + login_pass
+                   + "';")
+            db = engine.connect()
+            result = db.execute(text(sql)).fetchone()
+            if result[0] == 1:
+                recvmsg['result'] = "true"
+                self.connections[shop_no] = websocket
+                logging.getLogger().info(f"Login was successful : {shop_no}")
+            else:
+                recvmsg['result'] = "false"
+                logging.getLogger().info(f"Login failed : {shop_no}")
             data = json.dumps(recvmsg, ensure_ascii=False)
             await websocket.send_text(data)
         except Exception as e:
             logging.getLogger().error(f"login exception : {e}")
-            await websocket.close()
-        logging.getLogger().debug(self.connections)
+            # await websocket.close()
+        logging.getLogger().debug(f"connections : {self.connections}")
 
     async def delpin(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.delpin")
@@ -135,10 +153,10 @@ class WebSocketManager:
     async def clear(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.clear")
         try:
-            if recvmsg['type'] == 0:
-                print("cancel")
-            else:
-                print("finish")
+            # if recvmsg['type'] == 0:
+            #     print("cancel")
+            # else:
+            #     print("finish")
             shop_no = recvmsg['shop_no']
             table_cd = recvmsg['table_cd']
             key = f"order_{shop_no}_{table_cd}"

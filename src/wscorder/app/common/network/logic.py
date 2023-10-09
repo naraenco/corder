@@ -15,7 +15,6 @@ def genpin(recvmsg):
         while True:
             num = random.randrange(1, 9999)
             pin = str(num).zfill(4)
-            #logging.getLogger().debug(f"ConnectionManager.genpin - pin : {pin}")
             if redis_pool.exists(f"pin_{shop_no}_{pin}") == 0:     # 중복 확인
                 break
         now = time
