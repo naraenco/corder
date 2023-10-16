@@ -141,7 +141,7 @@ namespace agentcs
                 this.totalPage = this.total / 10 + 1;
             }
             orderList.RemoveAt(0);
-            lbTotalOrder.Text = "(남은 주문서 : " + orderList.Count + ")";
+            lbTotalOrder.Text = "(남은 주문수 : " + orderList.Count + ")";
             ShowMenu();
         }
 

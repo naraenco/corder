@@ -41,10 +41,12 @@ namespace agentcs
             switch (error)
             {
                 case WebSocketError.Success:
+                    client.connect_status = true;
                     Log.Information("StatusHandler : CONNECTED");
                     break;
 
                 case WebSocketError.Faulted:
+                    client.connect_status = false;
                     Log.Information("StatusHandler : FAULTED");
                     break;
 
@@ -52,6 +54,7 @@ namespace agentcs
                 //    break;
 
                 default:
+                    client.connect_status = false;
                     Log.Information("StatusHandler : DISCONNECTED");
                     break;
             }
@@ -213,6 +216,12 @@ namespace agentcs
 
         public async void LoginReq(string business_number, string password)
         {
+            if (client.connect_status == false)
+            {
+                MessageBox.Show(this, "서버와 연결이 되어있지 않습니다");
+                return;
+            }
+
             Log.Information("LoginReq()");
             string login_pass = ComputeMD5(password);
 

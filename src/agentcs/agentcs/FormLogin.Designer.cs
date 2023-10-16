@@ -243,9 +243,9 @@
             // picMenu
             // 
             picMenu.Image = (Image)resources.GetObject("picMenu.Image");
-            picMenu.Location = new Point(15, 17);
+            picMenu.Location = new Point(15, 13);
             picMenu.Name = "picMenu";
-            picMenu.Size = new Size(20, 11);
+            picMenu.Size = new Size(20, 22);
             picMenu.TabIndex = 39;
             picMenu.TabStop = false;
             picMenu.Click += picMenu_Click;

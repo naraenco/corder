@@ -418,5 +418,10 @@ namespace agentcs
         {
             PopupMenu();
         }
+
+        public void PopupMessage(string message)
+        {
+            MessageBox.Show(this, message);
+        }
     }
 }

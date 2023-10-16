@@ -12,7 +12,7 @@ namespace agentcs
         public delegate void Delegate2(WebSocketError error);
         Delegate1 MessageHandler;
         Delegate2 StatusHandler;
-        bool connect_status = false;
+        public bool connect_status = false;
         bool service_status = true;
         int timer_connect_retry;
         readonly Config config = Config.Instance;
@@ -52,7 +52,6 @@ namespace agentcs
                     {
                         clientWebSocket = new ClientWebSocket();
                         await clientWebSocket.ConnectAsync(uri, CancellationToken.None);
-                        connect_status = true;
                         StartReceiving();
                         StatusHandler(WebSocketError.Success);
                     }

@@ -32,7 +32,7 @@ namespace agentcs
 
         private void menuConfig_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Config");
+            mainForm?.PopupMessage("설정 기능은 준비중입니다");
         }
 
         private void menuManager_Click(object sender, EventArgs e)

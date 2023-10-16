@@ -233,9 +233,9 @@
             lbTotalOrder.ForeColor = SystemColors.MenuHighlight;
             lbTotalOrder.Location = new Point(128, 31);
             lbTotalOrder.Name = "lbTotalOrder";
-            lbTotalOrder.Size = new Size(57, 17);
+            lbTotalOrder.Size = new Size(88, 17);
             lbTotalOrder.TabIndex = 29;
-            lbTotalOrder.Text = "(주문수)";
+            lbTotalOrder.Text = "(남은 주문수)";
             // 
             // FormOrder
             // 

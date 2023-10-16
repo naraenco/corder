@@ -162,12 +162,12 @@ namespace agentcs
 
             if (uid.Length < 4)
             {
-                MessageBox.Show("아이디를 입력하세요");
+                MessageBox.Show(this, "아이디를 입력하세요");
                 return;
             }
             if (pwd.Length < 4)
             {
-                MessageBox.Show("암호를 입력하세요");
+                MessageBox.Show(this, "암호를 입력하세요");
                 return;
             }
 
@@ -181,7 +181,7 @@ namespace agentcs
 
         public void ResultMessage(string message)
         {
-            MessageBox.Show(message);
+            MessageBox.Show(this, message);
         }
 
         public void LoginSuccess()
