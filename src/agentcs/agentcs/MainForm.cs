@@ -66,6 +66,7 @@ namespace agentcs
         private int print_margin_pin_bottom = 5;
         private int print_margin_order_top = 3;
         private int print_margin_order_bottom = 5;
+        private bool sound_use = true;
         private bool print_use = true;
         private bool order_popup = true;
         readonly Config config = Config.Instance;
@@ -210,6 +211,10 @@ namespace agentcs
             if (config.GetString("order_popup") == "false")
             {
                 order_popup = false;
+            }
+            if (config.GetString("sound_use") == "false")
+            {
+                sound_use = false;
             }
             if (config.GetString("print_use") == "false")
             {

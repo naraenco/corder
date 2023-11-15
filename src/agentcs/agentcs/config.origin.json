@@ -9,6 +9,7 @@
   "path_status": "C:\\_OKPOS\\OKPOSIF\\KOD\\SEND\\TableStatus.json",
   "path_order": "C:\\_OKPOS\\OKPOSIF\\KOD\\RECV\\",
   "order_popup": "true",
+  "sound_use": "true",
   "print_use": "false",
   "print_port": "COM6",
   "print_speed": 9600,

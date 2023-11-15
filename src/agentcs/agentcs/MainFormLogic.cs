@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Security.Cryptography;
+using WMPLib;
 
 namespace agentcs
 {
@@ -260,7 +261,6 @@ namespace agentcs
                     Log.Warning("pin is null or empty");
                     return;
                 }
-                //ThemalPrint print = new();
                 themalPrint.PrintPin(pin, createdAt, print_pin_width, print_pin_height);
             }
             catch (Exception ex)
@@ -320,6 +320,14 @@ namespace agentcs
                 JsonUtil.WriteFile(path, obj, indent: true, codepage: 51949);
                 Log.Debug(path);
 
+                if (sound_use != false)
+                {
+                    WindowsMediaPlayer wmp = new()
+                    {
+                        URL = "order.mp3"
+                    };
+                    wmp.controls.play();
+                }
 
                 if (print_use != false)
                 {
