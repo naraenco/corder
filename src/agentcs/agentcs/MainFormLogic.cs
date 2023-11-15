@@ -325,7 +325,9 @@ namespace agentcs
                 {
                     string orderText = "[모바일 오더 주문서]\n\n";
 
-                    orderText += "[테 이 블] " + tableNo + "\n";
+                    string tableName = GetTableNameByCode(tableNo);
+
+                    orderText += "[테 이 블] " + tableName + "\n";
                     orderText += "[발행일시] " + dt.ToString() + "\n";
                     orderText += "==========================================\n";
                     orderText += "  메뉴명                            수량\n";
@@ -371,7 +373,9 @@ namespace agentcs
                     //    qtyList));
                     //dialogThread.Start();
 
-                    this.formOrder!.AddData(tableNo, dt.ToString(), productList, qtyList);
+                    string tableName = GetTableNameByCode(tableNo);
+
+                    this.formOrder!.AddData(tableName, dt.ToString(), productList, qtyList);
                     if (this.formOrder.Visible == false)
                     {
                         this.formOrder.SetData();
