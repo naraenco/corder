@@ -18,7 +18,7 @@ class WebSocketManager:
     async def check_connection(self, shop_no):
         pid = os.getpid()
         logging.getLogger().debug(f"pid : {pid}, check_connection :\n{self.connections}")
-        if type(shop_no) == int:
+        if type(shop_no) is int:
             shop_no = str(shop_no)
         try:
             conn = self.connections.get(shop_no)
@@ -78,7 +78,7 @@ class WebSocketManager:
     async def send(self, message: str, shop_no):
         logging.getLogger().debug("ConnectionManager.send")
         try:
-            if type(shop_no) == int:
+            if type(shop_no) is int:
                 shop_no = str(shop_no)
             conn = self.connections.get(shop_no)
             await conn.send_text(message)
@@ -89,7 +89,7 @@ class WebSocketManager:
         logging.getLogger().debug("ConnectionManager.write")
         result = None
         try:
-            if type(shop_no) == int:
+            if type(shop_no) is int:
                 shop_no = str(shop_no)
             conn = self.connections.get(shop_no)
             await conn.send_text(message)
@@ -105,24 +105,26 @@ class WebSocketManager:
     async def login(self, recvmsg, websocket: WebSocket):
         logging.getLogger().info("ConnectionManager.login")
         try:
-            shop_no = str(recvmsg['shop_no'])
             business_number = recvmsg['business_number']
             login_pass = recvmsg['login_pass']
 
+            # 3694
             from database import engine
-            sql = ("SELECT COUNT(*) FROM shop WHERE shop_no=" + recvmsg['shop_no']
-                   + " and business_number='" + business_number
+            sql = ("SELECT * FROM shop WHERE business_number='" + business_number
                    + "' and login_pass='" + login_pass
                    + "';")
             db = engine.connect()
-            result = db.execute(text(sql)).fetchone()
-            if result[0] == 1:
-                recvmsg['result'] = "true"
-                self.connections[shop_no] = websocket
-                logging.getLogger().info(f"Login was successful : {shop_no}")
-            else:
+            result = db.execute(text(sql)).mappings().fetchone()
+            print(result)
+            if result is None:
                 recvmsg['result'] = "false"
-                logging.getLogger().info(f"Login failed : {shop_no}")
+                logging.getLogger().info(f"Login failed : {business_number}")
+            else:
+                recvmsg['result'] = "true"
+                shop_no = str(result['shop_no'])
+                print(shop_no)
+                self.connections[shop_no] = websocket
+                logging.getLogger().info(f"Login was successful : {business_number}")
             data = json.dumps(recvmsg, ensure_ascii=False)
             await websocket.send_text(data)
         except Exception as e:
@@ -169,10 +171,10 @@ class WebSocketManager:
         except Exception as e:
             logging.getLogger().error(e)
 
-    async def api_order(self,params):
+    async def api_order(self, params):
         # await self.lock.acquire()
         logging.getLogger().debug("ConnectionManager.api_order")
-        error = "0000"
+        # error = "0000"
         try:
             shop_no = str(params['shop_no'])
             table_cd = params['table_cd']
