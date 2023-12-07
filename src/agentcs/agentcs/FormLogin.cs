@@ -23,7 +23,7 @@ namespace agentcs
             textPW.AutoSize = false;
 
             textID.Text = uid;
-            //textPW.Text = "3694";
+            //textPW.Text = "3694"; password
 
             //textID.PlaceholderText = "ID를 입력하세요";
             textPW.PlaceholderText = "암호를 입력하세요";

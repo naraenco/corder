@@ -174,7 +174,6 @@ class WebSocketManager:
     async def api_order(self, params):
         # await self.lock.acquire()
         logging.getLogger().debug("ConnectionManager.api_order")
-        # error = "0000"
         try:
             shop_no = str(params['shop_no'])
             table_cd = params['table_cd']
@@ -205,10 +204,31 @@ class WebSocketManager:
             value = json.dumps(orders)
             self.redis.set(key, value)
             response = str(json.dumps(response, ensure_ascii=False))
-            logging.getLogger().debug(f"api_order 06 : {response}")
             await conn.send_text(response)      # API에서 요청 받은 주문을 agent에 전송
         except Exception as e:
             error = "1001"
             logging.getLogger().error(f"api_order : {e}")
         # self.lock.release()
+        return error
+
+    async def api_pager(self, params):
+        logging.getLogger().debug("ConnectionManager.api_pager")
+        error = "0000"
+        try:
+            shop_no = str(params['shop_no'])
+            pid = os.getpid()
+            logging.getLogger().debug(f"pid : {pid}, connections : {self.connections}")
+            conn = self.connections.get(shop_no)
+            logging.getLogger().debug(f"connection : {conn}")
+            if conn is None:
+                logging.getLogger().error("api_pager - get connection failure")
+                return "2001"
+            response = copy.deepcopy(params)
+            response['msgtype'] = "pager"
+            response = str(json.dumps(response, ensure_ascii=False))
+            logging.getLogger().debug(f"api_pager : {response}")
+            await conn.send_text(response)      # API에서 요청 받은 직원 호출을 agent에 전송
+        except Exception as e:
+            error = "1001"
+            logging.getLogger().error(f"api_pager : {e}")
         return error

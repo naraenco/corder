@@ -90,8 +90,9 @@ namespace agentcs
                         OrderAns(json);
                         break;
 
-                    case "mylist":
-                        Log.Verbose("MessageHandler.mylist");
+                    case "pager":
+                        Log.Verbose("MessageHandler.pager");
+                        PagerAns(json);
                         break;
 
                     default:
@@ -408,6 +409,32 @@ namespace agentcs
                 Log.Error(ex.Message);
             }
         }
+
+        public void PagerAns(JsonNode node)
+        {
+            Log.Information("PagerAns()");
+
+            try
+            {
+
+                MessageBox.Show(this, "직원 호출이 있습니다!");
+
+                //if (sound_use != false)
+                //{
+                //    WindowsMediaPlayer wmp = new()
+                //    {
+                //        URL = "order.mp3"
+                //    };
+                //    wmp.controls.play();
+                //}
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+            }
+
+        }
+
 
         public async void SendTableStatus()
         {

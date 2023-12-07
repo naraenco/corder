@@ -7,6 +7,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from starlette.middleware.cors import CORSMiddleware
 from domain import root_router
 import domain.order.router as order
+import domain.pager.router as pager
 from common import ws_manager, logger
 
 origins = [
@@ -28,6 +29,7 @@ app.add_middleware(
 )
 app.include_router(root_router.router, prefix='')
 app.include_router(order.router, prefix='/api/order')
+app.include_router(pager.router, prefix='/api/pager')
 
 
 @app.websocket("/ws")
