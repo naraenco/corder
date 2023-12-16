@@ -8,6 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>AnyCPU;x86</Platforms>
     <AssemblyName>COrderAgent</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <IsPublishable>True</IsPublishable>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <ApplicationIcon>COrder.ico</ApplicationIcon>
@@ -56,7 +57,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(SolutionDir)agentcs\order.mp3&quot; &quot;$(TargetDir)order.mp3&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)agentcs\config.origin.json&quot; &quot;$(TargetDir)\config.json&quot;&#xD;&#xA;" />
+    <Exec Command="copy /Y &quot;$(SolutionDir)agentcs\order.mp3&quot; &quot;$(TargetDir)order.mp3&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)config.origin.json&quot; &quot;$(TargetDir)\config.json&quot;&#xD;&#xA;" />
   </Target>
 
 </Project>
