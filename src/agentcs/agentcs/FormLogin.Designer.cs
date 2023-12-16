@@ -68,11 +68,11 @@
             // textPW
             // 
             textPW.BorderStyle = BorderStyle.None;
-            textPW.Font = new Font("맑은 고딕", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            textPW.Font = new Font("맑은 고딕", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
             textPW.Location = new Point(493, 11);
             textPW.Name = "textPW";
             textPW.PasswordChar = '*';
-            textPW.Size = new Size(100, 16);
+            textPW.Size = new Size(100, 19);
             textPW.TabIndex = 2;
             textPW.WordWrap = false;
             textPW.Enter += textPW_Enter;

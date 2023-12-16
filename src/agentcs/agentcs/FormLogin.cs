@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace agentcs
 {
@@ -20,13 +21,15 @@ namespace agentcs
             picLogo.Location = new Point(49, 15);
 
             textID.AutoSize = false;
+            textID.Height = 18;
             textPW.AutoSize = false;
+            textPW.Height = 18;
 
             textID.Text = uid;
             //textPW.Text = "3694"; password
 
             //textID.PlaceholderText = "ID를 입력하세요";
-            textPW.PlaceholderText = "암호를 입력하세요";
+            textPW.PlaceholderText = "암호 입력";
 
             this.ActiveControl = null;
         }

@@ -2,7 +2,6 @@
 using System.Net.WebSockets;
 using Serilog;
 using System.Text;
-using System.Windows.Forms;
 using System.Globalization;
 using System.Security.Cryptography;
 using WMPLib;
@@ -82,7 +81,7 @@ namespace agentcs
 
                     case "genpin":
                         Log.Verbose("MessageHandler.genpin");
-                        if (print_use != false) GenPinAns(json);
+                        if (otp_print != false) GenPinAns(json);
                         break;
 
                     case "order":
@@ -108,6 +107,12 @@ namespace agentcs
 
         public async void SendPosData()
         {
+            if (shop_no == String.Empty)
+            {
+                MessageBox.Show("shop_no를 확인할 수 없습니다. 다시 로그인해주세요.");
+                return;
+            }
+
             Log.Information("SendPosData()");
 
             JsonWrapper jsonScdTable = new();
@@ -229,8 +234,7 @@ namespace agentcs
 
             try
             {
-                string message = "{\"msgtype\":\"login\",\"shop_no\": \"" + shop_no 
-                    + "\",\"business_number\":\"" + business_number
+                string message = "{\"msgtype\":\"login\",\"business_number\":\"" + business_number
                     + "\",\"login_pass\":\"" + login_pass
                     + "\"}";
                 await client.SendAsync(message);
@@ -244,6 +248,12 @@ namespace agentcs
 
         public async void GenPinReq()
         {
+            if (shop_no == String.Empty)
+            {
+                MessageBox.Show("shop_no를 확인할 수 없습니다. 다시 로그인해주세요.");
+                return;
+            }
+
             string message = "{\"msgtype\":\"genpin\",\"shop_no\": \"" + shop_no + "\"}";
             await client.SendAsync(message);
             Log.Debug("GenPinReq : " + message);
@@ -284,6 +294,40 @@ namespace agentcs
                 }
 
                 formLogin?.LoginSuccess();
+                shop_no = node["shop_no"]!.ToString();
+                JsonNode confignode = JsonNode.Parse(node["config"]!.ToString())!;
+
+                Log.Debug("shop_no: " + shop_no);
+                Log.Debug("config: " + confignode.ToString());
+
+                if (confignode["pos_number"] != null)
+                {
+                    pos_number = confignode["pos_number"]!.ToString();
+                }
+                if (confignode["order_auto"]!.ToString() == "N")
+                {
+                }
+                if (confignode["order_sound"]!.ToString() == "N")
+                {
+                    order_sound = false;
+                }
+                if (confignode["order_print"]!.ToString() == "N")
+                {
+                    order_print = false;
+                }
+                if (confignode["otp_print"]!.ToString() == "N")
+                {
+                    otp_print = false;
+                }
+                if (confignode["printer_port"] != null)
+                {
+                    print_port = confignode["printer_port"]!.ToString();
+                }
+                if (confignode["printer_speed"] != null)
+                {
+                    print_speed = Int32.Parse(confignode["printer_port"]!.ToString());
+                }
+
 
                 SendPosData();
                 SendTableStatus();
@@ -304,7 +348,7 @@ namespace agentcs
             {
                 string orderno = node["order_no"]!.ToString();
                 string regdate = node["regdate"]!.ToString();
-                string path = path_order + regdate + pos_extra + orderno + ".json";
+                string path = path_order + regdate + pos_number + orderno + ".json";
                 JsonNode orderList = node["pos_order"]!["orderList"]!;
 
                 CultureInfo provider = CultureInfo.InvariantCulture;
@@ -321,7 +365,7 @@ namespace agentcs
                 JsonUtil.WriteFile(path, obj, indent: true, codepage: 51949);
                 Log.Debug(path);
 
-                if (sound_use != false)
+                if (order_sound != false)
                 {
                     WindowsMediaPlayer wmp = new()
                     {
@@ -330,7 +374,7 @@ namespace agentcs
                     wmp.controls.play();
                 }
 
-                if (print_use != false)
+                if (order_print != false)
                 {
                     string orderText = "[모바일 오더 주문서]\n\n";
 
@@ -346,8 +390,16 @@ namespace agentcs
                     {
                         string productCode = order!["productCode"]!.ToString();
                         string qty = order!["qty"]!.ToString();
+                        string desc = String.Empty;
+                        if (order!["desc"] != null)
+                        {
+                            desc = order!["desc"]!.ToString();
+                        }
                         string productName = dicMenuName[productCode];
-
+                        if (desc != String.Empty)
+                        {
+                            productName = desc + " (" + productName + ")";
+                        }
                         byte[] data = Encoding.Unicode.GetBytes(productName);
                         int count = data.Length;
                         int pad = 38 - count;
@@ -361,7 +413,7 @@ namespace agentcs
                     themalPrint.PrintOrder(orderText);
                 }
 
-                if (order_popup != false)
+                //if (order_auto_popup != false)
                 {
                     List<string> productList = new();
                     List<string> qtyList = new();
@@ -370,17 +422,21 @@ namespace agentcs
                     {
                         string productCode = order!["productCode"]!.ToString();
                         string qty = order!["qty"]!.ToString();
+                        string desc = String.Empty;
+                        if (order!["desc"] != null)
+                        {
+                            desc = order!["desc"]!.ToString();
+                        }
                         string productName = dicMenuName[productCode];
+                        if (desc != String.Empty)
+                        {
+                            productName = desc + " (" + productName + ")";
+                        }
+                        //string productName = dicMenuName[productCode];
 
                         productList.Add(productName);
                         qtyList.Add(qty);
                     }
-
-                    //Thread dialogThread = new Thread(() => CreateOrderDialog(tableNo,
-                    //    dt.ToString(),
-                    //    productList,
-                    //    qtyList));
-                    //dialogThread.Start();
 
                     string tableName = GetTableNameByCode(tableNo);
 
@@ -390,19 +446,7 @@ namespace agentcs
                         this.formOrder.SetData();
                     }
                     this.formOrder.Show();
-
-                    //FormOrder formOrder = new()
-                    //{
-                    //    TopLevel = true
-                    //};
-                    //Point parentPoint = this.Location;
-                    //formOrder.Location = parentPoint;
-                    //formOrder.Top += 54;
-                    //formOrder.SetData(tableNo, dt.ToString(), productList, qtyList);
-                    //formOrder.Show();
-                    //formOrder.ShowDialog();
                 }
-
             }
             catch (Exception ex)
             {
@@ -416,10 +460,11 @@ namespace agentcs
 
             try
             {
+                string desc = node["desc"]!.ToString();
 
-                MessageBox.Show(this, "직원 호출이 있습니다!");
+                MessageBox.Show(this, "직원 호출이 있습니다 : " + desc);
 
-                //if (sound_use != false)
+                //if (order_sound != false)
                 //{
                 //    WindowsMediaPlayer wmp = new()
                 //    {
@@ -427,6 +472,7 @@ namespace agentcs
                 //    };
                 //    wmp.controls.play();
                 //}
+
             }
             catch (Exception ex)
             {
@@ -502,6 +548,11 @@ namespace agentcs
 
         public async void SendClear(int type, string table_cd)
         {
+            if (shop_no == String.Empty)
+            {
+                MessageBox.Show("shop_no를 확인할 수 없습니다. 다시 로그인해주세요.");
+                return;
+            }
             Log.Information("SendClear() - type : {0}, table : {1}", type, table_cd);
 
             string message = "{\"msgtype\":\"clear\",\"shop_no\": \""

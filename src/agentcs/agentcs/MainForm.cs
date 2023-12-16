@@ -52,23 +52,31 @@ namespace agentcs
         FileSystemWatcher watcher = new();
         private Network client;
         const string apiUrl = "http://corder.co.kr/api/";
+
+        // config from server
         private string shop_no = string.Empty;
-        private string business_number = string.Empty;
-        private string auth_key = "C.ORDER";
-        private string path_status = string.Empty;
-        private string pos_extra = string.Empty;
-        private string path_order = string.Empty;
         private string print_port = "COM6";
         private int print_speed = 9600;
+        private bool otp_print = true;
+        private bool order_print = true;
+        private bool order_sound = true;
+
+        // config from file
+        private string auth_key = "C.ORDER";
+        private string pos_number = string.Empty;
+        private string path_status = string.Empty;
+        private string path_order = string.Empty;
         private int print_pin_width = 2;
         private int print_pin_height = 2;
         private int print_margin_pin_top = 3;
         private int print_margin_pin_bottom = 5;
         private int print_margin_order_top = 3;
         private int print_margin_order_bottom = 5;
-        private bool sound_use = true;
-        private bool print_use = true;
-        private bool order_popup = true;
+
+        // config from user
+        private string business_number = string.Empty;
+
+
         readonly Config config = Config.Instance;
         JsonWrapper? lastTableStatus = null;
         public Dictionary<string, string> dicScdTable = new();
@@ -202,27 +210,13 @@ namespace agentcs
         {
             if (config.Load() == false)
                 return;
-            path_status = config.GetString("path_status");
-            pos_extra = config.GetString("pos_extra");
-            path_order = config.GetString("path_order") + "Order_";
-            shop_no = config.GetString("shop_no");
-            business_number = config.GetString("business_number");
-            auth_key = config.GetString("auth_key");
-            if (config.GetString("order_popup") == "false")
-            {
-                order_popup = false;
-            }
-            if (config.GetString("sound_use") == "false")
-            {
-                sound_use = false;
-            }
-            if (config.GetString("print_use") == "false")
-            {
-                print_use = false;
-            }
 
-            print_port = config.GetString("print_port");
-            print_speed = config.GetInt("print_speed");
+            business_number = config.GetString("business_number");
+
+            path_status = config.GetString("path_status");
+            path_order = config.GetString("path_order") + "Order_";
+            auth_key = config.GetString("auth_key");
+
             print_pin_width = config.GetInt("print_pin_width");
             print_pin_height = config.GetInt("print_pin_height");
             print_margin_pin_top = config.GetInt("print_margin_pin_top");

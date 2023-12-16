@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import json
 import time
 from fastapi import APIRouter
 from database import SessionLocal
@@ -43,6 +44,7 @@ async def orderpost(orderdto: OrderDto):
             return "1003", data
 
         dao = OrderDao(**orderdto.dict())
+        dao.pos_order = json.dumps(dao.pos_order, ensure_ascii=False)
         db = SessionLocal()
         db.add(dao)
         db.commit()

@@ -120,8 +120,10 @@ class WebSocketManager:
                 recvmsg['result'] = "false"
                 logging.getLogger().info(f"Login failed : {business_number}")
             else:
-                recvmsg['result'] = "true"
                 shop_no = str(result['shop_no'])
+                recvmsg['shop_no'] = shop_no
+                recvmsg['result'] = "true"
+                recvmsg['config'] = result['agent_config']
                 print(shop_no)
                 self.connections[shop_no] = websocket
                 logging.getLogger().info(f"Login was successful : {business_number}")
@@ -175,6 +177,7 @@ class WebSocketManager:
         # await self.lock.acquire()
         logging.getLogger().debug("ConnectionManager.api_order")
         try:
+            error = "0000"
             shop_no = str(params['shop_no'])
             table_cd = params['table_cd']
             pin = str(params['otp_pin'])
