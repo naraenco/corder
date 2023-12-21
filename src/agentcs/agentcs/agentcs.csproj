@@ -7,11 +7,10 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>AnyCPU;x86</Platforms>
-    <AssemblyName>COrderAgent</AssemblyName>
+    <AssemblyName>corderagent</AssemblyName>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <IsPublishable>True</IsPublishable>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
-    <ApplicationIcon>COrder.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

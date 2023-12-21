@@ -265,8 +265,14 @@ namespace agentcs
             }
         }
 
-        public MainForm()
+        public MainForm(string[] args)
         {
+            if ((args.Length != 1) || (args[0] != "C.ORDER"))
+            {
+                MessageBox.Show("에이전트를 직접 실행할 수 없습니다.\ncorder.exe 를 실해해주세요");
+                Close();
+            }
+
             InitializeComponent();
             InitUI();
             InitData();

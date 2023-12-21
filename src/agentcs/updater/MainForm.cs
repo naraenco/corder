@@ -5,8 +5,9 @@ namespace COrderUpdater
 {
     public partial class MainForm : Form
     {
-        readonly static string APPNAME = "COrderAgent.exe";
-        readonly static string PACKNAME = "COrderPack.exe";
+        readonly static string APPNAME = "corderagent.exe";
+        readonly static string FULLPACK = "fullpack.exe";
+        readonly static string UPDATEPACK = "updatepack.exe";
 
         public string server_address = "127.0.0.1";
         public string server_port = "19000";
@@ -37,16 +38,22 @@ namespace COrderUpdater
         public async void CheckVersion()
         {
             string? response = await CallApiAsync(api_url);
+            if (response == null)
+            {
+                lbMessage.Text = "서버에서 버전 정보를 얻을 수 없습니다.";
+                MessageBox.Show("서버에서 버전 정보를 얻을 수 없습니다.");
+                return;
+            }
+
             JsonNode? node = JsonNode.Parse(response!);
             if (node == null)
             {
                 lbMessage.Text = "서버에서 버전 정보를 얻을 수 없습니다.";
+                MessageBox.Show("서버에서 버전 정보를 얻을 수 없습니다.");
                 return;
             }
             current_version = node["version"]!.ToString();
             lbCurrentVersion.Text = current_version;
-            //String status = DiffVersion();
-
             lbFileVersion.Text = "";
             path = Directory.GetCurrentDirectory() + "\\" + APPNAME;
             if (File.Exists(path) == false)
@@ -54,9 +61,9 @@ namespace COrderUpdater
                 // 신규 다운로드 
                 lbFileVersion.Text = "";
                 lbMessage.Text = "에이전트 파일이 없습니다. 신규 설치를 진행합니다";
-                await DownloadAgent(PACKNAME);
+                await DownloadAgent(FULLPACK);
                 lbMessage.Text = "다운로드 완료";
-                path = Directory.GetCurrentDirectory() + "\\" + PACKNAME;
+                path = Directory.GetCurrentDirectory() + "\\" + FULLPACK;
                 if (File.Exists(path))
                 {
                     Process.Start(path, "");
@@ -73,7 +80,7 @@ namespace COrderUpdater
                 if (current_version != agentInfo.FileVersion)
                 {
                     lbMessage.Text = "업데이트를 진행합니다";
-                    path = Directory.GetCurrentDirectory() + "\\" + APPNAME;
+                    path = Directory.GetCurrentDirectory() + "\\" + UPDATEPACK;
                     UpdateAgent();
                     return;
                 }
@@ -81,7 +88,7 @@ namespace COrderUpdater
                 {
                     lbMessage.Text = "에이전트가 최신 버전입니다";
                     path = Directory.GetCurrentDirectory() + "\\" + APPNAME;
-                    Process.Start(path, "");
+                    Process.Start(path, "C.ORDER");
                     Close();
                     return;
                 }
@@ -90,7 +97,6 @@ namespace COrderUpdater
             {
                 lbMessage.Text = "버전을 확인할 수 없습니다";
             }
-            //Close();
         }
 
         private void button1_Click(object sender, EventArgs e)

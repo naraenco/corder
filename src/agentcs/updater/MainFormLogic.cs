@@ -27,7 +27,7 @@ namespace COrderUpdater
 
         public async void UpdateAgent()
         {
-            Process[] processes = Process.GetProcessesByName("COrderAgent");
+            Process[] processes = Process.GetProcessesByName("corderagent");
             if (processes.Length != 0)
             {
                 lbMessage.Text = "프로세스가 실행중입니다. 종료하고 업데이트를 시작합니다";
@@ -38,8 +38,9 @@ namespace COrderUpdater
                 }
             }
 
-            await DownloadAgent(APPNAME);
-            CheckVersion();
+            await DownloadAgent(UPDATEPACK);
+            Close();
+            //CheckVersion();
         }
 
         public static async Task DownloadAgent(String filename)
@@ -59,11 +60,12 @@ namespace COrderUpdater
                         }
                     }
 
-                    //if (File.Exists(filename))
-                    //{
-                    //    Process.Start(filename, "");
-                    //    //await Process.Start(filename, "").WaitForExitAsync();
-                    //}
+                    if (File.Exists(filename))
+                    {
+                        Process.Start(filename, "");
+                        //await Process.Start(filename, "").WaitForExitAsync();
+                    }
+                    
                 }
             }
             catch (HttpRequestException hre)
