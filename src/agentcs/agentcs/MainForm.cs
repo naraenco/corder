@@ -75,6 +75,7 @@ namespace agentcs
 
         // config from user
         private string business_number = string.Empty;
+        private string login_pass = string.Empty;
 
 
         readonly Config config = Config.Instance;

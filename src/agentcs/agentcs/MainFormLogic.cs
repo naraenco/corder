@@ -5,6 +5,7 @@ using System.Text;
 using System.Globalization;
 using System.Security.Cryptography;
 using WMPLib;
+using System;
 
 namespace agentcs
 {
@@ -43,6 +44,10 @@ namespace agentcs
                 case WebSocketError.Success:
                     client.connect_status = true;
                     Log.Information("StatusHandler : CONNECTED");
+                    if (login_pass != String.Empty)
+                    {
+                        LoginReq(business_number, login_pass, true);
+                    }
                     break;
 
                 case WebSocketError.Faulted:
@@ -137,6 +142,8 @@ namespace agentcs
                 jsonUseTable.Parse();
             }
 
+            dicMenuName.Clear();
+            dicMenuPrice.Clear();
             JsonWrapper jsonMenu = new();
             if (jsonMenu.Load(config.GetString("path_menu"), codepage: 51949) == true)
             {
@@ -177,6 +184,7 @@ namespace agentcs
                 + jsonUseTable.ToString()
                 + "}";
             await client.SendAsync(message);
+
 
             string url1 = apiUrl + "sync_tables.php?shop_no=" + shop_no;
             try
@@ -221,7 +229,7 @@ namespace agentcs
             await client.ConnectAsync(serverUri);
         }
 
-        public async void LoginReq(string business_number, string password)
+        public async void LoginReq(string uid, string pwd, bool autologin = false)
         {
             if (client.connect_status == false)
             {
@@ -230,7 +238,11 @@ namespace agentcs
             }
 
             Log.Information("LoginReq()");
-            string login_pass = ComputeMD5(password);
+            if (autologin == false)
+            {
+                business_number = uid;
+                login_pass = ComputeMD5(pwd);
+            }
 
             try
             {
@@ -289,6 +301,7 @@ namespace agentcs
 
                 if (result == "false")
                 {
+                    login_pass = String.Empty;
                     formLogin?.ResultMessage("로그인에 실패했습니다");
                     return;
                 }
@@ -522,7 +535,7 @@ namespace agentcs
                         if (obj?.ContainsKey("orderList") == true)
                         {
                             string tableNo = table?["tableNo"]!.ToString()!;
-                            if (orders.Contains(tableNo) == false)
+                            if (orders?.Contains(tableNo) == false)
                             {
                                 SendClear(1, tableNo);
                             }
