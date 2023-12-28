@@ -37,10 +37,8 @@ namespace COrderUpdater
                     processes[i].Kill();
                 }
             }
-
-            await DownloadAgent(UPDATEPACK);
+            await DownloadAgent(FULLPACK);
             Close();
-            //CheckVersion();
         }
 
         public static async Task DownloadAgent(String filename)
@@ -49,8 +47,10 @@ namespace COrderUpdater
             {
                 using (HttpClient httpClient = new HttpClient())
                 {
-                    var result = await httpClient.GetAsync("http://bizorder.co.kr/agent/" + filename);
+                    var result = await httpClient.GetAsync(update_url + filename);
                     result.EnsureSuccessStatusCode();
+
+                    //MessageBox.Show(result.ToString());
 
                     using (var stream = await result.Content.ReadAsStreamAsync())
                     {
@@ -65,15 +65,16 @@ namespace COrderUpdater
                         Process.Start(filename, "");
                         //await Process.Start(filename, "").WaitForExitAsync();
                     }
-                    
                 }
             }
             catch (HttpRequestException hre)
             {
+                MessageBox.Show("다운로드에 실패했습니다");
                 Console.WriteLine($"{nameof(HttpRequestException)} - {hre.Message}");
             }
             catch (Exception e)
             {
+                MessageBox.Show("다운로드에 실패했습니다");
                 Console.WriteLine($"Error : {e.Message}{Environment.NewLine} Data : {e.Data}{Environment.NewLine} StackTrace : {e.StackTrace}");
             }
         }
