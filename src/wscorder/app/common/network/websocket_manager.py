@@ -72,7 +72,11 @@ class WebSocketManager:
             if conn == websocket:
                 shop_no = no
                 break
-        del self.connections[shop_no]
+        try:
+            del self.connections[shop_no]
+            del self.redis.expires[shop_no]
+        except Exception as e:
+            logging.getLogger().error(e)
         # websocket.close()
 
     async def send(self, message: str, shop_no):
@@ -115,7 +119,7 @@ class WebSocketManager:
                    + "';")
             db = engine.connect()
             result = db.execute(text(sql)).mappings().fetchone()
-            print(result)
+            # print(result)
             if result is None:
                 recvmsg['result'] = "false"
                 logging.getLogger().info(f"Login failed : {business_number}")
@@ -124,8 +128,12 @@ class WebSocketManager:
                 recvmsg['shop_no'] = shop_no
                 recvmsg['result'] = "true"
                 recvmsg['config'] = result['agent_config']
-                print(shop_no)
                 self.connections[shop_no] = websocket
+                temp_config = json.loads(result['agent_config'])
+                if 'expire_time' in temp_config:
+                    self.redis.expires[shop_no] = int(temp_config['expire_time']) * 60
+                else:
+                    self.redis.expires[shop_no] = self.redis.expire_time
                 logging.getLogger().info(f"Login was successful : {business_number}")
             data = json.dumps(recvmsg, ensure_ascii=False)
             await websocket.send_text(data)
@@ -147,20 +155,17 @@ class WebSocketManager:
     async def tablestatus(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.tablestatus")
         try:
-            key = "status_" + str(recvmsg['shop_no'])
+            shop_no = str(recvmsg['shop_no'])
+            key = "status_" + shop_no
             data = recvmsg['data']
             data = json.dumps(data, ensure_ascii=False)
-            self.redis.set(key, data)
+            self.redis.set(key, data, shop_no)
         except Exception as e:
             logging.getLogger().error(e)
 
     async def clear(self, recvmsg):
         logging.getLogger().debug("ConnectionManager.clear")
         try:
-            # if recvmsg['type'] == 0:
-            #     print("cancel")
-            # else:
-            #     print("finish")
             shop_no = recvmsg['shop_no']
             table_cd = recvmsg['table_cd']
             key = f"order_{shop_no}_{table_cd}"
@@ -205,7 +210,7 @@ class WebSocketManager:
                 orders = json.loads(order_info)
                 orders.append(current_order)
             value = json.dumps(orders)
-            self.redis.set(key, value)
+            self.redis.set(key, value, shop_no)
             response = str(json.dumps(response, ensure_ascii=False))
             await conn.send_text(response)      # API에서 요청 받은 주문을 agent에 전송
         except Exception as e:

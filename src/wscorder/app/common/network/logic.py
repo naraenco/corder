@@ -9,13 +9,13 @@ from sqlalchemy import text
 def genpin(recvmsg):
     logging.getLogger().debug("ConnectionManager.genpin")
     try:
-        from common import redis_pool
+        from common import redis_pool as redis
         shop_no = str(recvmsg['shop_no'])
         logging.getLogger().debug(f"ConnectionManager.genpin - shop_no : {shop_no}")
         while True:
             num = random.randrange(1, 9999)
             pin = str(num).zfill(4)
-            if redis_pool.exists(f"pin_{shop_no}_{pin}") == 0:     # 중복 확인
+            if redis.exists(f"pin_{shop_no}_{pin}") == 0:     # 중복 확인
                 break
         now = time
         data = {
@@ -27,7 +27,7 @@ def genpin(recvmsg):
         response = str(json.dumps(response, ensure_ascii=False))
         data = str(json.dumps(data, ensure_ascii=False))
         logging.getLogger().debug(f"생성된 핀 데이터 : {data}")
-        redis_pool.set(f"pin_{shop_no}_{pin}", data)
+        redis.set(f"pin_{shop_no}_{pin}", data, shop_no)
         return response
     except Exception as e:
         logging.getLogger().error(e)

@@ -94,7 +94,7 @@ namespace agentcs
                     if (result.MessageType == WebSocketMessageType.Close)
                     {
                         //Console.WriteLine("WebSocketMessageType.Close");
-                        //await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                        //await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, String.Empty, CancellationToken.None);
                         connect_status = false;
                         break;
                     }
@@ -135,7 +135,7 @@ namespace agentcs
         public async Task CloseAsync()
         {
             Log.Information("Network.CloseAsync()");
-            await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+            await clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, String.Empty, CancellationToken.None);
         }
     }
 }

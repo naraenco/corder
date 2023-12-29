@@ -18,8 +18,8 @@ namespace agentcs
         //private const int WM_NCLBUTTONDOWN = 0xA1;
         //private const int HT_CAPTION = 0x2; const int WH_KEYBOARD_LL = 13;
 
-        string tableName = string.Empty;
-        string datetime = string.Empty;
+        string tableName = String.Empty;
+        string datetime = String.Empty;
         List<string> productList = new List<string>();
         List<string> qtyList = new List<string>();
         int total = 0;
@@ -121,10 +121,10 @@ namespace agentcs
             OrderData order = orderList[0];
             pageNo = 0;
 
-            lbTableName.Text = string.Empty;
-            lbDateTime.Text = string.Empty;
-            lbMenu.Text = string.Empty;
-            lbQty.Text = string.Empty;
+            lbTableName.Text = String.Empty;
+            lbDateTime.Text = String.Empty;
+            lbMenu.Text = String.Empty;
+            lbQty.Text = String.Empty;
 
             this.tableName = order.tableName;
             this.datetime = order.datetime;
@@ -149,8 +149,8 @@ namespace agentcs
         {
             lbPage.Text = (pageNo + 1).ToString() + " / " + totalPage.ToString();
 
-            string menus = string.Empty;
-            string qtys = string.Empty;
+            string menus = String.Empty;
+            string qtys = String.Empty;
 
             int start = pageNo * 10;
             int end = (pageNo + 1) * 10;
@@ -195,8 +195,8 @@ namespace agentcs
 
     public class OrderData
     {
-        public string tableName = string.Empty;
-        public string datetime = string.Empty;
+        public string tableName = String.Empty;
+        public string datetime = String.Empty;
         public List<string> productList = new List<string>();
         public List<string> qtyList = new List<string>();
     }

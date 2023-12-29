@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "agentcs": {
+      "commandName": "Project",
+      "commandLineArgs": "C.ORDER"
+    }
+  }
+}

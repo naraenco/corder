@@ -334,13 +334,12 @@ namespace agentcs
                 }
                 if (confignode["printer_port"] != null)
                 {
-                    print_port = confignode["printer_port"]!.ToString();
+                    printer_port = confignode["printer_port"]!.ToString();
                 }
                 if (confignode["printer_speed"] != null)
                 {
-                    print_speed = Int32.Parse(confignode["printer_port"]!.ToString());
+                    printer_speed = Int32.Parse(confignode["printer_port"]!.ToString());
                 }
-
 
                 SendPosData();
                 SendTableStatus();
@@ -598,7 +597,7 @@ namespace agentcs
 
         public string GetTableNameByCode(string code)
         {
-            string table_nm = string.Empty;
+            string table_nm = String.Empty;
             foreach (string key in dicScdTable.Keys)
             {
                 if (dicScdTable[key] == code)

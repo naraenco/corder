@@ -54,18 +54,18 @@ namespace agentcs
         const string apiUrl = "http://corder.co.kr/api/";
 
         // config from server
-        private string shop_no = string.Empty;
-        private string print_port = "COM6";
-        private int print_speed = 9600;
+        private string shop_no = String.Empty;
+        private string printer_port = "COM6";
+        private int printer_speed = 9600;
         private bool otp_print = true;
         private bool order_print = true;
         private bool order_sound = true;
 
         // config from file
         private string auth_key = "C.ORDER";
-        private string pos_number = string.Empty;
-        private string path_status = string.Empty;
-        private string path_order = string.Empty;
+        private string pos_number = String.Empty;
+        private string path_status = String.Empty;
+        private string path_order = String.Empty;
         private int print_pin_width = 2;
         private int print_pin_height = 2;
         private int print_margin_pin_top = 3;
@@ -74,8 +74,8 @@ namespace agentcs
         private int print_margin_order_bottom = 5;
 
         // config from user
-        private string business_number = string.Empty;
-        private string login_pass = string.Empty;
+        private string business_number = String.Empty;
+        private string login_pass = String.Empty;
 
 
         readonly Config config = Config.Instance;
@@ -113,8 +113,6 @@ namespace agentcs
             if (wParam == (IntPtr)WM_KEYDOWN)
             {
                 Keys vkKey = (Keys)Marshal.ReadInt32(lParam);
-                //int keyCode = Marshal.ReadInt32(lParam);
-                //Console.WriteLine("code : {0}, vkKey : {1}", keyCode, vkKey);
 
                 if (vkKey == Keys.LControlKey)
                 {
@@ -130,7 +128,6 @@ namespace agentcs
             if (wParam == (IntPtr)WM_SYSKEYDOWN) // 알트 키 눌림
             {
                 int key = Marshal.ReadInt32(lParam);
-                //Console.WriteLine(key);
 
                 if (key == 221)
                 {
@@ -228,12 +225,7 @@ namespace agentcs
             string log_level = config.GetString("log_level");
             log_level = log_level.ToLower();
 
-            // Verbose
-            // Debug
-            // Information
-            // Warning
-            // Error
-            // Fatal
+            // Verbose | Debug | Information | Warning | Error | Fatal
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
@@ -241,29 +233,29 @@ namespace agentcs
                 .WriteTo.File("log/log_.txt", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)
             .CreateLogger();
 
-            themalPrint.setConstant(print_port,
-                print_speed,
+            themalPrint.setConstant(printer_port,
+                printer_speed,
                 print_margin_pin_top,
                 print_margin_pin_bottom,
                 print_margin_order_top,
                 print_margin_order_bottom);
 
             // Temporary Process;
-            JsonWrapper jsonScdTable = new();
-            if (jsonScdTable.Load(config.GetString("path_scdtable"), codepage: 51949) == true)
-            {
-                jsonScdTable.SetOptions(false);
-                jsonScdTable.Parse();
-            }
+            //JsonWrapper jsonScdTable = new();
+            //if (jsonScdTable.Load(config.GetString("path_scdtable"), codepage: 51949) == true)
+            //{
+            //    jsonScdTable.SetOptions(false);
+            //    jsonScdTable.Parse();
+            //}
 
-            var data = jsonScdTable.GetNode("TABLE").AsArray();
-            dicScdTable.Clear();
-            foreach (var node in data)
-            {
-                string table_nm = node!["TABLE_NM"]!.ToString();
-                string table_cd = node!["TABLE_CD"]!.ToString();
-                dicScdTable[table_nm] = table_cd;
-            }
+            //var data = jsonScdTable.GetNode("TABLE").AsArray();
+            //dicScdTable.Clear();
+            //foreach (var node in data)
+            //{
+            //    string table_nm = node!["TABLE_NM"]!.ToString();
+            //    string table_cd = node!["TABLE_CD"]!.ToString();
+            //    dicScdTable[table_nm] = table_cd;
+            //}
         }
 
         public MainForm(string[] args)

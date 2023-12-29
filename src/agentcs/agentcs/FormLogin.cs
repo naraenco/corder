@@ -7,7 +7,7 @@ namespace agentcs
     {
         private int currentInput = 0;
         public MainForm? mainForm;
-        public string uid = string.Empty;
+        public string uid = String.Empty;
 
         public FormLogin()
         {

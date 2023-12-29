@@ -41,7 +41,7 @@ async def orderpost(orderdto: OrderDto):
             logging.getLogger().debug(f"orderpost : connetion not found")
             return "2001", data
         if redis_pool.exists(f"pin_{shop_no}_{data['otp_pin']}") == 0:
-            return "1003", data
+            return "1003", data     # 존재하지 않는 PIN 번호 입니다
 
         dao = OrderDao(**orderdto.dict())
         dao.pos_order = json.dumps(dao.pos_order, ensure_ascii=False)
@@ -52,7 +52,7 @@ async def orderpost(orderdto: OrderDto):
         error = await ws_manager.api_order(data)
     except CorderException as e:
         logging.getLogger().debug(f"orderpost 1 : {e}")
-        # error = e.value()
+        error = e.value()
     except Exception as e:
         logging.getLogger().debug(f"orderpost 2 : {e}")
         error = "1001", data

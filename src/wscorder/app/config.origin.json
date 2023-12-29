@@ -6,7 +6,7 @@
   "db_uid": "corder",
   "db_pwd": "dhejwnans!1231",
   "redis_ip": "127.0.0.1",
-  "pin_expire_time": 6000,
+  "expire_time": 14400,
   "service_port": 19000,
   "reconnect_timer": 10
 }
