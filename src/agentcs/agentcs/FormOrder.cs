@@ -10,14 +10,6 @@ namespace agentcs
 {
     public partial class FormOrder : Form
     {
-        //[DllImport("user32.dll")]
-        //private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        //[DllImport("user32.dll")]
-        //private static extern bool ReleaseCapture();
-
-        //private const int WM_NCLBUTTONDOWN = 0xA1;
-        //private const int HT_CAPTION = 0x2; const int WH_KEYBOARD_LL = 13;
-
         string tableName = String.Empty;
         string datetime = String.Empty;
         List<string> productList = new List<string>();
@@ -25,6 +17,7 @@ namespace agentcs
         int total = 0;
         int pageNo = 0;
         int totalPage = 0;
+        bool bFold = false;
 
         public MainForm? mainForm;
 
@@ -38,6 +31,9 @@ namespace agentcs
             this.MouseDown += FormOrder_MouseDown;
 
             orderList = new List<OrderData>();
+
+            lbTableName.Top = 10;
+            lbTotalOrder.Top = 30;
 
             lbTableName.Parent = picTitlebar;
             lbTableName.BackColor = Color.Transparent;
@@ -194,6 +190,19 @@ namespace agentcs
             //Point parentPoint = mainForm!.Location;
             //this.Location = parentPoint;
             //this.Top += 54;
+        }
+
+        private void picTitlebar_Click(object sender, EventArgs e)
+        {
+            if (bFold == false)
+            {
+                this.Height = 50;
+                bFold = true;
+            } else
+            {
+                this.Height = 500;
+                bFold = false;
+            }
         }
     }
 

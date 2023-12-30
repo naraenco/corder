@@ -58,6 +58,7 @@ namespace agentcs
         private string printer_port = "COM6";
         private int printer_speed = 9600;
         private bool otp_print = true;
+        private bool order_auto_popup = true;
         private bool order_print = true;
         private bool order_sound = true;
 
@@ -90,6 +91,7 @@ namespace agentcs
         FormTable? formTable;
         FormMenu? formMenu;
         FormOrder? formOrder;
+        FormPager? formPager;
 
         public void globalKeyboardHook()
         {
@@ -317,8 +319,19 @@ namespace agentcs
                 TopLevel = true
             };
 
+            this.formPager = new()
+            {
+                mainForm = this,
+                Location = parentPoint,
+                Top = Top + 54,
+                Left = Left + 430,
+                TopLevel = true
+            };
+
             this.formOrder.Show();
             this.formOrder.Hide();
+            this.formPager.Show();
+            this.formPager.Hide();
 
             Connect();
             DialogResult result = this.formLogin.ShowDialog();

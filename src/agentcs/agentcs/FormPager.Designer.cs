@@ -1,6 +1,6 @@
 ﻿namespace agentcs
 {
-    partial class FormOrder
+    partial class FormPager
     {
         /// <summary>
         /// Required designer variable.
@@ -28,26 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormOrder));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormPager));
             picConfirm = new PictureBox();
             lbDateTitle = new Label();
             lbDateTime = new Label();
             label3 = new Label();
             label4 = new Label();
-            lbPage = new Label();
-            picButtonNext = new PictureBox();
-            picButtonPrev = new PictureBox();
             label6 = new Label();
-            label7 = new Label();
             lbMenu = new Label();
-            lbQty = new Label();
             picTitlebar = new PictureBox();
             lbTotalOrder = new Label();
             lbTableName = new Label();
             label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)picConfirm).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)picButtonNext).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)picButtonPrev).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picTitlebar).BeginInit();
             SuspendLayout();
             // 
@@ -101,38 +94,6 @@
             label4.TabIndex = 19;
             label4.Text = "----------------------------------------------------------";
             // 
-            // lbPage
-            // 
-            lbPage.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            lbPage.Location = new Point(165, 430);
-            lbPage.Name = "lbPage";
-            lbPage.Size = new Size(70, 20);
-            lbPage.TabIndex = 21;
-            lbPage.Text = "PAGE";
-            lbPage.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // picButtonNext
-            // 
-            picButtonNext.BackColor = Color.Transparent;
-            picButtonNext.Image = (Image)resources.GetObject("picButtonNext.Image");
-            picButtonNext.Location = new Point(310, 430);
-            picButtonNext.Name = "picButtonNext";
-            picButtonNext.Size = new Size(70, 24);
-            picButtonNext.TabIndex = 23;
-            picButtonNext.TabStop = false;
-            picButtonNext.Click += picButtonNext_Click;
-            // 
-            // picButtonPrev
-            // 
-            picButtonPrev.BackColor = Color.Transparent;
-            picButtonPrev.Image = (Image)resources.GetObject("picButtonPrev.Image");
-            picButtonPrev.Location = new Point(20, 430);
-            picButtonPrev.Name = "picButtonPrev";
-            picButtonPrev.Size = new Size(70, 24);
-            picButtonPrev.TabIndex = 22;
-            picButtonPrev.TabStop = false;
-            picButtonPrev.Click += picButtonPrev_Click;
-            // 
             // label6
             // 
             label6.AutoSize = true;
@@ -143,16 +104,6 @@
             label6.TabIndex = 24;
             label6.Text = "메  뉴  명";
             // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            label7.Location = new Point(317, 126);
-            label7.Name = "label7";
-            label7.Size = new Size(47, 19);
-            label7.TabIndex = 25;
-            label7.Text = "수  량";
-            // 
             // lbMenu
             // 
             lbMenu.AutoSize = true;
@@ -162,16 +113,6 @@
             lbMenu.Size = new Size(37, 19);
             lbMenu.TabIndex = 26;
             lbMenu.Text = "메뉴";
-            // 
-            // lbQty
-            // 
-            lbQty.AutoSize = true;
-            lbQty.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            lbQty.Location = new Point(331, 165);
-            lbQty.Name = "lbQty";
-            lbQty.Size = new Size(17, 19);
-            lbQty.TabIndex = 27;
-            lbQty.Text = "0";
             // 
             // picTitlebar
             // 
@@ -208,13 +149,13 @@
             // label1
             // 
             label1.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Pixel);
-            label1.Location = new Point(324, 11);
+            label1.Location = new Point(327, 11);
             label1.Name = "label1";
             label1.Size = new Size(59, 12);
             label1.TabIndex = 33;
-            label1.Text = "남은 주문서";
+            label1.Text = "남은 호츌";
             // 
-            // FormOrder
+            // FormPager
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -225,13 +166,8 @@
             Controls.Add(lbTableName);
             Controls.Add(lbTotalOrder);
             Controls.Add(picTitlebar);
-            Controls.Add(lbQty);
             Controls.Add(lbMenu);
-            Controls.Add(label7);
             Controls.Add(label6);
-            Controls.Add(picButtonNext);
-            Controls.Add(picButtonPrev);
-            Controls.Add(lbPage);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(lbDateTime);
@@ -240,17 +176,15 @@
             FormBorderStyle = FormBorderStyle.None;
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "FormOrder";
+            Name = "FormPager";
             ShowIcon = false;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
-            Text = "FormOrder";
+            Text = "FormPager";
             TopMost = true;
             TransparencyKey = Color.Fuchsia;
-            Load += FormOrder_Load;
+            Load += FormPager_Load;
             ((System.ComponentModel.ISupportInitialize)picConfirm).EndInit();
-            ((System.ComponentModel.ISupportInitialize)picButtonNext).EndInit();
-            ((System.ComponentModel.ISupportInitialize)picButtonPrev).EndInit();
             ((System.ComponentModel.ISupportInitialize)picTitlebar).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -263,13 +197,8 @@
         private Label lbDateTime;
         private Label label3;
         private Label label4;
-        private Label lbPage;
-        private PictureBox picButtonNext;
-        private PictureBox picButtonPrev;
         private Label label6;
-        private Label label7;
         private Label lbMenu;
-        private Label lbQty;
         private PictureBox picTitlebar;
         private Label lbTotalOrder;
         private Label lbTableName;

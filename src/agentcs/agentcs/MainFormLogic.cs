@@ -324,6 +324,10 @@ namespace agentcs
                 {
                     order_sound = false;
                 }
+                if (confignode["order_auto_popup"]!.ToString() == "N")
+                {
+                    order_auto_popup = false;
+                }
                 if (confignode["order_print"]!.ToString() == "N")
                 {
                     order_print = false;
@@ -425,7 +429,7 @@ namespace agentcs
                     themalPrint.PrintOrder(orderText);
                 }
 
-                //if (order_auto_popup != false)
+                if (order_auto_popup != false)
                 {
                     List<string> productList = new();
                     List<string> qtyList = new();
@@ -473,8 +477,21 @@ namespace agentcs
             try
             {
                 string desc = node["desc"]!.ToString();
+                string tableNo = node["table_cd"]?.ToString()!;
+                string regdate = node["regdate"]!.ToString();
+                DateTime dt = DateTime.ParseExact(regdate, "yyyyMMddHHmmss", null);
 
-                MessageBox.Show(this, "직원 호출이 있습니다 : " + desc);
+                //if (pager_auto_popup != false)
+                {
+                    string tableName = GetTableNameByCode(tableNo);
+
+                    this.formPager!.AddData(tableName, dt.ToString(), desc);
+                    if (this.formPager.Visible == false)
+                    {
+                        this.formPager.SetData();
+                    }
+                    this.formPager.Show();
+                }
 
                 //if (order_sound != false)
                 //{
