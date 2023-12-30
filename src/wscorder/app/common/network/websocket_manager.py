@@ -37,7 +37,7 @@ class WebSocketManager:
             if len(message) > 0:
                 json_object = json.loads(message)
                 msgtype = json_object.get("msgtype")
-                logging.getLogger().debug(f"ConnectionManager.message_handler : {msgtype}")
+                logging.getLogger().info(f"ConnectionManager.message_handler : {msgtype}")
                 if msgtype == "login":      # 상점 로그인 (실패시 소켓 끊김)
                     await self.login(json_object, websocket)
                 elif msgtype == "genpin":   # PIN 번호 생성 요청
@@ -65,7 +65,7 @@ class WebSocketManager:
             logging.getLogger().error(e)
 
     def disconnect(self, websocket):
-        logging.getLogger().debug("ConnectionManager.disconnect")
+        logging.getLogger().info("ConnectionManager.disconnect")
         shop_no = 0
         for no, conn in self.connections:
             print("disconnect - no : ", str(no))
@@ -143,7 +143,7 @@ class WebSocketManager:
         logging.getLogger().debug(f"connections : {self.connections}")
 
     async def delpin(self, recvmsg):
-        logging.getLogger().debug("ConnectionManager.delpin")
+        logging.getLogger().info("ConnectionManager.delpin")
         try:
             shop_no = str(recvmsg['shop_no'])
             pin = f"pin_{shop_no}_{recvmsg['otp_pin']}"
@@ -153,7 +153,7 @@ class WebSocketManager:
             logging.getLogger().error(e)
 
     async def tablestatus(self, recvmsg):
-        logging.getLogger().debug("ConnectionManager.tablestatus")
+        logging.getLogger().info("ConnectionManager.tablestatus")
         try:
             shop_no = str(recvmsg['shop_no'])
             key = "status_" + shop_no
@@ -164,7 +164,7 @@ class WebSocketManager:
             logging.getLogger().error(e)
 
     async def clear(self, recvmsg):
-        logging.getLogger().debug("ConnectionManager.clear")
+        logging.getLogger().info("ConnectionManager.clear")
         try:
             shop_no = recvmsg['shop_no']
             table_cd = recvmsg['table_cd']
@@ -180,7 +180,7 @@ class WebSocketManager:
 
     async def api_order(self, params):
         # await self.lock.acquire()
-        logging.getLogger().debug("ConnectionManager.api_order")
+        logging.getLogger().info("ConnectionManager.api_order")
         try:
             error = "0000"
             shop_no = str(params['shop_no'])

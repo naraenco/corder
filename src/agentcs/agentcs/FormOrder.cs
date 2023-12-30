@@ -38,6 +38,9 @@ namespace agentcs
             this.MouseDown += FormOrder_MouseDown;
 
             orderList = new List<OrderData>();
+
+            lbTableName.Parent = picTitlebar;
+            lbTableName.BackColor = Color.Transparent;
         }
 
         private void FormOrder_Load(object sender, EventArgs e)
@@ -58,10 +61,11 @@ namespace agentcs
 
         private void FormOrder_Paint(object? sender, PaintEventArgs e)
         {
-            using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
-            {
-                e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
-            }
+            //using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
+            //{
+            //    e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
+            //}
+
         }
 
         private void picConfirm_Click(object sender, EventArgs e)
@@ -111,7 +115,7 @@ namespace agentcs
 
             orderList.Add(order);
 
-            lbTotalOrder.Text = "(주문수 : " + orderList.Count + ")";
+            lbTotalOrder.Text = orderList.Count.ToString();
         }
 
         public void SetData()
@@ -141,7 +145,7 @@ namespace agentcs
                 this.totalPage = this.total / 10 + 1;
             }
             orderList.RemoveAt(0);
-            lbTotalOrder.Text = "(남은 주문수 : " + orderList.Count + ")";
+            lbTotalOrder.Text = orderList.Count.ToString();
             ShowMenu();
         }
 

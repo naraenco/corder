@@ -31,8 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormOrder));
             picConfirm = new PictureBox();
             picLogo = new PictureBox();
-            label2 = new Label();
-            lbTableName = new Label();
             lbDateTitle = new Label();
             lbDateTime = new Label();
             label3 = new Label();
@@ -45,12 +43,15 @@
             label7 = new Label();
             lbMenu = new Label();
             lbQty = new Label();
-            label8 = new Label();
+            picTitlebar = new PictureBox();
             lbTotalOrder = new Label();
+            lbTableName = new Label();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)picConfirm).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picLogo).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picButtonNext).BeginInit();
             ((System.ComponentModel.ISupportInitialize)picButtonPrev).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)picTitlebar).BeginInit();
             SuspendLayout();
             // 
             // picConfirm
@@ -66,33 +67,12 @@
             // picLogo
             // 
             picLogo.Image = (Image)resources.GetObject("picLogo.Image");
-            picLogo.Location = new Point(295, 29);
+            picLogo.Location = new Point(152, 377);
             picLogo.Name = "picLogo";
             picLogo.Size = new Size(83, 20);
             picLogo.TabIndex = 1;
             picLogo.TabStop = false;
             picLogo.Click += picLogo_Click;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            label2.Location = new Point(24, 30);
-            label2.Name = "label2";
-            label2.Size = new Size(98, 19);
-            label2.TabIndex = 13;
-            label2.Text = "모바일 주문서";
-            // 
-            // lbTableName
-            // 
-            lbTableName.AutoSize = true;
-            lbTableName.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            lbTableName.ForeColor = Color.FromArgb(255, 108, 0);
-            lbTableName.Location = new Point(110, 65);
-            lbTableName.Name = "lbTableName";
-            lbTableName.Size = new Size(78, 19);
-            lbTableName.TabIndex = 12;
-            lbTableName.Text = "0번 테이블";
             // 
             // lbDateTitle
             // 
@@ -216,26 +196,46 @@
             lbQty.TabIndex = 27;
             lbQty.Text = "0";
             // 
-            // label8
+            // picTitlebar
             // 
-            label8.AutoSize = true;
-            label8.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            label8.Location = new Point(24, 65);
-            label8.Name = "label8";
-            label8.Size = new Size(90, 19);
-            label8.TabIndex = 28;
-            label8.Text = "[ 주문위치 ] ";
+            picTitlebar.Image = (Image)resources.GetObject("picTitlebar.Image");
+            picTitlebar.Location = new Point(0, 0);
+            picTitlebar.Name = "picTitlebar";
+            picTitlebar.Size = new Size(400, 50);
+            picTitlebar.TabIndex = 30;
+            picTitlebar.TabStop = false;
             // 
             // lbTotalOrder
             // 
-            lbTotalOrder.AutoSize = true;
-            lbTotalOrder.Font = new Font("맑은 고딕", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-            lbTotalOrder.ForeColor = SystemColors.MenuHighlight;
-            lbTotalOrder.Location = new Point(128, 31);
+            lbTotalOrder.Font = new Font("맑은 고딕", 16F, FontStyle.Bold, GraphicsUnit.Pixel);
+            lbTotalOrder.ForeColor = Color.Black;
+            lbTotalOrder.Location = new Point(330, 27);
             lbTotalOrder.Name = "lbTotalOrder";
-            lbTotalOrder.Size = new Size(88, 17);
-            lbTotalOrder.TabIndex = 29;
-            lbTotalOrder.Text = "(남은 주문수)";
+            lbTotalOrder.Size = new Size(50, 17);
+            lbTotalOrder.TabIndex = 31;
+            lbTotalOrder.Text = "0";
+            lbTotalOrder.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // lbTableName
+            // 
+            lbTableName.BackColor = Color.Transparent;
+            lbTableName.Font = new Font("맑은 고딕", 20F, FontStyle.Bold, GraphicsUnit.Pixel);
+            lbTableName.ForeColor = Color.White;
+            lbTableName.Location = new Point(110, 9);
+            lbTableName.Name = "lbTableName";
+            lbTableName.Size = new Size(150, 30);
+            lbTableName.TabIndex = 32;
+            lbTableName.Text = "테이블";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Pixel);
+            label1.Location = new Point(324, 14);
+            label1.Name = "label1";
+            label1.Size = new Size(59, 12);
+            label1.TabIndex = 33;
+            label1.Text = "남은 주문서";
             // 
             // FormOrder
             // 
@@ -244,8 +244,10 @@
             BackColor = Color.FromArgb(251, 244, 235);
             ClientSize = new Size(400, 500);
             ControlBox = false;
+            Controls.Add(label1);
+            Controls.Add(lbTableName);
             Controls.Add(lbTotalOrder);
-            Controls.Add(label8);
+            Controls.Add(picTitlebar);
             Controls.Add(lbQty);
             Controls.Add(lbMenu);
             Controls.Add(label7);
@@ -258,8 +260,6 @@
             Controls.Add(label3);
             Controls.Add(lbDateTime);
             Controls.Add(lbDateTitle);
-            Controls.Add(label2);
-            Controls.Add(lbTableName);
             Controls.Add(picLogo);
             Controls.Add(picConfirm);
             FormBorderStyle = FormBorderStyle.None;
@@ -271,11 +271,13 @@
             StartPosition = FormStartPosition.Manual;
             Text = "FormOrder";
             TopMost = true;
+            TransparencyKey = Color.Fuchsia;
             Load += FormOrder_Load;
             ((System.ComponentModel.ISupportInitialize)picConfirm).EndInit();
             ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonNext).EndInit();
             ((System.ComponentModel.ISupportInitialize)picButtonPrev).EndInit();
+            ((System.ComponentModel.ISupportInitialize)picTitlebar).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -284,8 +286,6 @@
 
         private PictureBox picConfirm;
         private PictureBox picLogo;
-        private Label label2;
-        private Label lbTableName;
         private Label lbDateTitle;
         private Label lbDateTime;
         private Label label3;
@@ -298,7 +298,9 @@
         private Label label7;
         private Label lbMenu;
         private Label lbQty;
-        private Label label8;
+        private PictureBox picTitlebar;
         private Label lbTotalOrder;
+        private Label lbTableName;
+        private Label label1;
     }
 }
