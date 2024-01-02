@@ -132,12 +132,13 @@ class WebSocketManager:
                 temp_config = json.loads(result['agent_config'])
                 if 'expire_time' in temp_config:
                     expire_time = temp_config['expire_time']
-                    if type(temp_config['expire_time']) is str:
+                    if expire_time is None:
+                        expire_time = self.redis.expire_time
+                    elif type(temp_config['expire_time']) is str:
                         expire_time = int(expire_time)
                     self.redis.expires[shop_no] = expire_time * 60
-                    # self.redis.expires[shop_no] = int(temp_config['expire_time']) * 60
                 else:
-                    self.redis.expires[shop_no] = self.redis.expire_time
+                    self.redis.expires[shop_no] = self.redis.expire_time * 60
                 logging.getLogger().info(f"Login was successful : {business_number}")
             data = json.dumps(recvmsg, ensure_ascii=False)
             await websocket.send_text(data)

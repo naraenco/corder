@@ -7,7 +7,7 @@ class RedisUtil:
     def __init__(self):
         from common import config
         redisip = config.get('redis_ip')
-        self.expire_time = int(config.get('expire_time')) * 60
+        self.expire_time = int(config.get('expire_time'))
         self.redis = redis.ConnectionPool(host=redisip,
                                           port=6379,
                                           db=0,
