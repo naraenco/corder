@@ -8,12 +8,12 @@ namespace COrderUpdater
     partial class MainForm
     {
 
-        public static async Task<string?> CallApiAsync(string apiUrl)
+        public static async Task<string?> CallApiAsync(string url)
         {
             using HttpClient client = new();
             try
             {
-                var buffer = await client.GetByteArrayAsync(apiUrl);
+                var buffer = await client.GetByteArrayAsync(url);
                 var byteArray = buffer.ToArray();
                 var responseString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
                 return responseString;

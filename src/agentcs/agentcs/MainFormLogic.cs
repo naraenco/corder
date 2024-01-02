@@ -11,12 +11,12 @@ namespace agentcs
 {
     partial class MainForm
     {
-        public static async Task<string?> CallApiAsync(string apiUrl)
+        public static async Task<string?> CallApiAsync(string url)
         {
             using HttpClient client = new();
             try
             {
-                var buffer = await client.GetByteArrayAsync(apiUrl);
+                var buffer = await client.GetByteArrayAsync(url);
                 var byteArray = buffer.ToArray();
                 var responseString = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
                 return responseString;
@@ -186,7 +186,7 @@ namespace agentcs
             await client.SendAsync(message);
 
 
-            string url1 = apiUrl + "sync_tables.php?shop_no=" + shop_no;
+            string url1 = api_url + "sync_tables.php?shop_no=" + shop_no;
             try
             {
                 string? response = await CallApiAsync(url1);
@@ -208,7 +208,7 @@ namespace agentcs
                 + "}";
             await client.SendAsync(message);
 
-            string url2 = apiUrl + "sync_menus.php?shop_no=" + shop_no;
+            string url2 = api_url + "sync_menus.php?shop_no=" + shop_no;
             try
             {
                 string? response = await CallApiAsync(url2);
@@ -578,7 +578,7 @@ namespace agentcs
             Console.WriteLine(message);
             await client.SendAsync(message);
 
-            string url = apiUrl + $"delete_connect.php?shop_no={shop_no}&table_cd={table_cd}";
+            string url = api_url + $"delete_connect.php?shop_no={shop_no}&table_cd={table_cd}";
             try
             {
                 string? response = await CallApiAsync(url);

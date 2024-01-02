@@ -14,6 +14,7 @@ namespace agentcs
     public partial class FormMenu : Form
     {
         public MainForm? mainForm;
+        public string address = string.Empty;
 
         public FormMenu()
         {
@@ -32,12 +33,13 @@ namespace agentcs
 
         private void menuConfig_Click(object sender, EventArgs e)
         {
-            mainForm?.PopupMessage("설정 기능은 준비중입니다");
+            string url = "http:" + address + "/ManagerAgent";
+            util.Tools.Browse(url);
         }
 
         private void menuManager_Click(object sender, EventArgs e)
         {
-            string url = "http://corder.co.kr/manager";
+            string url = "http:" + address + "/Manager";
             util.Tools.Browse(url);
         }
 

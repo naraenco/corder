@@ -6,7 +6,6 @@ namespace agentcs.util
     {
         public static void Browse(string url)
         {
-            //string url = "http://corder.co.kr/manager";
             string command = $"start {url}";
             Process process = new Process();
             process.EnableRaisingEvents = true;

@@ -51,7 +51,8 @@ namespace agentcs
 
         FileSystemWatcher watcher = new();
         private Network client;
-        const string apiUrl = "http://corder.co.kr/api/";
+        private string server_address = string.Empty;
+        private string api_url = string.Empty;
 
         // config from server
         private string shop_no = string.Empty;
@@ -213,6 +214,8 @@ namespace agentcs
                 return;
 
             business_number = config.GetString("business_number");
+            server_address = config.GetString("server_address");
+            api_url = server_address + "/api/";
 
             path_status = config.GetString("path_status");
             path_order = config.GetString("path_order") + "Order_";
@@ -387,7 +390,7 @@ namespace agentcs
 
         private void picShowOrder_Click(object sender, EventArgs e)
         {
-            string url = "http://corder.co.kr/ManagerOrder";
+            string url = "http://" + server_address + "/ManagerOrder";
             util.Tools.Browse(url);
         }
 
@@ -411,6 +414,7 @@ namespace agentcs
             {
                 Owner = this,
                 TopLevel = true,
+                address = server_address,
                 mainForm = this
             };
 
