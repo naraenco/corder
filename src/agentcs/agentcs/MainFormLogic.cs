@@ -294,6 +294,8 @@ namespace agentcs
         
         public void LoginAns(JsonNode node)
         {
+            Log.Information("LoginAns()");
+
             try
             {
                 string result = node["result"]!.ToString();
@@ -313,12 +315,16 @@ namespace agentcs
                 Log.Debug("shop_no: " + shop_no);
                 Log.Debug("config: " + confignode.ToString());
 
+                Log.Information("LoginAns() - send pos data");
+                SendPosData();
+                SendTableStatus();
+                StatusMonitor();
+
+                Log.Information("LoginAns() - load config from server");
+
                 if (confignode["pos_number"] != null)
                 {
                     pos_number = confignode["pos_number"]!.ToString();
-                }
-                if (confignode["order_auto"]!.ToString() == "N")
-                {
                 }
                 if (confignode["order_sound"]!.ToString() == "N")
                 {
@@ -342,18 +348,15 @@ namespace agentcs
                 }
                 if (confignode["printer_speed"] != null)
                 {
-                    printer_speed = Int32.Parse(confignode["printer_port"]!.ToString());
+                    printer_speed = Int32.Parse(confignode["printer_speed"]!.ToString());
                 }
 
-                SendPosData();
-                SendTableStatus();
-                StatusMonitor();
+                Log.Information("LoginAns() - config loaded successfully");
             }
             catch (Exception ex)
             {
                 Log.Error(ex.Message);
             }
-
         }
 
         public void OrderAns(JsonNode node)
