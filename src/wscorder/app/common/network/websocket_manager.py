@@ -131,7 +131,11 @@ class WebSocketManager:
                 self.connections[shop_no] = websocket
                 temp_config = json.loads(result['agent_config'])
                 if 'expire_time' in temp_config:
-                    self.redis.expires[shop_no] = int(temp_config['expire_time']) * 60
+                    expire_time = temp_config['expire_time']
+                    if type(temp_config['expire_time']) is str:
+                        expire_time = int(expire_time)
+                    self.redis.expires[shop_no] = expire_time * 60
+                    # self.redis.expires[shop_no] = int(temp_config['expire_time']) * 60
                 else:
                     self.redis.expires[shop_no] = self.redis.expire_time
                 logging.getLogger().info(f"Login was successful : {business_number}")
