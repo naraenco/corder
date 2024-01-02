@@ -324,6 +324,10 @@ namespace agentcs
                 {
                     order_sound = false;
                 }
+                if (confignode["order_auto_popup"]!.ToString() == "N")
+                {
+                    order_auto_popup = false;
+                }
                 if (confignode["order_print"]!.ToString() == "N")
                 {
                     order_print = false;
@@ -334,13 +338,12 @@ namespace agentcs
                 }
                 if (confignode["printer_port"] != null)
                 {
-                    print_port = confignode["printer_port"]!.ToString();
+                    printer_port = confignode["printer_port"]!.ToString();
                 }
                 if (confignode["printer_speed"] != null)
                 {
-                    print_speed = Int32.Parse(confignode["printer_port"]!.ToString());
+                    printer_speed = Int32.Parse(confignode["printer_port"]!.ToString());
                 }
-
 
                 SendPosData();
                 SendTableStatus();
@@ -426,7 +429,7 @@ namespace agentcs
                     themalPrint.PrintOrder(orderText);
                 }
 
-                //if (order_auto_popup != false)
+                if (order_auto_popup != false)
                 {
                     List<string> productList = new();
                     List<string> qtyList = new();
@@ -474,8 +477,21 @@ namespace agentcs
             try
             {
                 string desc = node["desc"]!.ToString();
+                string tableNo = node["table_cd"]?.ToString()!;
+                string regdate = node["regdate"]!.ToString();
+                DateTime dt = DateTime.ParseExact(regdate, "yyyyMMddHHmmss", null);
 
-                MessageBox.Show(this, "직원 호출이 있습니다 : " + desc);
+                //if (pager_auto_popup != false)
+                {
+                    string tableName = GetTableNameByCode(tableNo);
+
+                    this.formPager!.AddData(tableName, dt.ToString(), desc);
+                    if (this.formPager.Visible == false)
+                    {
+                        this.formPager.SetData();
+                    }
+                    this.formPager.Show();
+                }
 
                 //if (order_sound != false)
                 //{
@@ -598,7 +614,7 @@ namespace agentcs
 
         public string GetTableNameByCode(string code)
         {
-            string table_nm = string.Empty;
+            string table_nm = String.Empty;
             foreach (string key in dicScdTable.Keys)
             {
                 if (dicScdTable[key] == code)

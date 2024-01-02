@@ -10,21 +10,14 @@ namespace agentcs
 {
     public partial class FormOrder : Form
     {
-        //[DllImport("user32.dll")]
-        //private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
-        //[DllImport("user32.dll")]
-        //private static extern bool ReleaseCapture();
-
-        //private const int WM_NCLBUTTONDOWN = 0xA1;
-        //private const int HT_CAPTION = 0x2; const int WH_KEYBOARD_LL = 13;
-
-        string tableName = string.Empty;
-        string datetime = string.Empty;
+        string tableName = String.Empty;
+        string datetime = String.Empty;
         List<string> productList = new List<string>();
         List<string> qtyList = new List<string>();
         int total = 0;
         int pageNo = 0;
         int totalPage = 0;
+        bool bFold = false;
 
         public MainForm? mainForm;
 
@@ -38,6 +31,12 @@ namespace agentcs
             this.MouseDown += FormOrder_MouseDown;
 
             orderList = new List<OrderData>();
+
+            lbTableName.Top = 10;
+            lbTotalOrder.Top = 30;
+
+            lbTableName.Parent = picTitlebar;
+            lbTableName.BackColor = Color.Transparent;
         }
 
         private void FormOrder_Load(object sender, EventArgs e)
@@ -58,10 +57,11 @@ namespace agentcs
 
         private void FormOrder_Paint(object? sender, PaintEventArgs e)
         {
-            using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
-            {
-                e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
-            }
+            //using (Pen pen = new Pen(Color.FromArgb(255, 225, 225, 225), 2))
+            //{
+            //    e.Graphics.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
+            //}
+
         }
 
         private void picConfirm_Click(object sender, EventArgs e)
@@ -111,7 +111,7 @@ namespace agentcs
 
             orderList.Add(order);
 
-            lbTotalOrder.Text = "(주문수 : " + orderList.Count + ")";
+            lbTotalOrder.Text = orderList.Count.ToString();
         }
 
         public void SetData()
@@ -121,10 +121,10 @@ namespace agentcs
             OrderData order = orderList[0];
             pageNo = 0;
 
-            lbTableName.Text = string.Empty;
-            lbDateTime.Text = string.Empty;
-            lbMenu.Text = string.Empty;
-            lbQty.Text = string.Empty;
+            lbTableName.Text = String.Empty;
+            lbDateTime.Text = String.Empty;
+            lbMenu.Text = String.Empty;
+            lbQty.Text = String.Empty;
 
             this.tableName = order.tableName;
             this.datetime = order.datetime;
@@ -141,7 +141,7 @@ namespace agentcs
                 this.totalPage = this.total / 10 + 1;
             }
             orderList.RemoveAt(0);
-            lbTotalOrder.Text = "(남은 주문수 : " + orderList.Count + ")";
+            lbTotalOrder.Text = orderList.Count.ToString();
             ShowMenu();
         }
 
@@ -149,8 +149,8 @@ namespace agentcs
         {
             lbPage.Text = (pageNo + 1).ToString() + " / " + totalPage.ToString();
 
-            string menus = string.Empty;
-            string qtys = string.Empty;
+            string menus = String.Empty;
+            string qtys = String.Empty;
 
             int start = pageNo * 10;
             int end = (pageNo + 1) * 10;
@@ -191,12 +191,25 @@ namespace agentcs
             //this.Location = parentPoint;
             //this.Top += 54;
         }
+
+        private void picTitlebar_Click(object sender, EventArgs e)
+        {
+            if (bFold == false)
+            {
+                this.Height = 50;
+                bFold = true;
+            } else
+            {
+                this.Height = 500;
+                bFold = false;
+            }
+        }
     }
 
     public class OrderData
     {
-        public string tableName = string.Empty;
-        public string datetime = string.Empty;
+        public string tableName = String.Empty;
+        public string datetime = String.Empty;
         public List<string> productList = new List<string>();
         public List<string> qtyList = new List<string>();
     }

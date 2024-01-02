@@ -124,7 +124,7 @@ namespace agentcs
         /// <returns>변환된 문자열</returns>
         public static string DecimalToCharString(decimal val)
         {
-            string result = string.Empty;
+            string result = String.Empty;
 
             try
             {
@@ -229,7 +229,7 @@ namespace agentcs
             try
             {
                 serialPort.Open();
-                string command = string.Empty;
+                string command = String.Empty;
 
                 // 시간 인쇄
                 string strfont = ConvertFontSize(1, 1);
@@ -243,12 +243,12 @@ namespace agentcs
                 Encoding encode = Encoding.GetEncoding(51949);
 
                 // Margin
-                string margintop = string.Empty;
+                string margintop = String.Empty;
                 for (int i = 0; i < margin_pin_top; i++)
                 {
                     margintop += "\n";
                 }
-                string marginbttom = string.Empty;
+                string marginbttom = String.Empty;
                 for (int i = 0;i < margin_pin_bottom; i++)
                 { 
                     marginbttom += "\n";
@@ -295,15 +295,15 @@ namespace agentcs
             try
             {
                 serialPort.Open();
-                string command = string.Empty;
+                string command = String.Empty;
 
                 // Margin
-                string margintop = string.Empty;
+                string margintop = String.Empty;
                 for (int i = 0; i < margin_order_top; i++)
                 {
                     margintop += "\n";
                 }
-                string marginbttom = string.Empty;
+                string marginbttom = String.Empty;
                 for (int i = 0; i < margin_order_bottom; i++)
                 {
                     marginbttom += "\n";

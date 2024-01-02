@@ -36,7 +36,7 @@ namespace agentcs
 
         public string GetString(string key)
         {
-            string result = string.Empty;
+            string result = String.Empty;
             if (root != null)
             {
                 result = root[key]!.ToString();
