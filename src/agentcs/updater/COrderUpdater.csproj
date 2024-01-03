@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
+    <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
     <Platforms>AnyCPU;x86</Platforms>
     <ApplicationIcon>COrder.ico</ApplicationIcon>
     <AssemblyName>corder</AssemblyName>

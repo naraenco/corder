@@ -95,6 +95,7 @@
             picBtnLogin.Location = new Point(626, 11);
             picBtnLogin.Name = "picBtnLogin";
             picBtnLogin.Size = new Size(60, 24);
+            picBtnLogin.SizeMode = PictureBoxSizeMode.StretchImage;
             picBtnLogin.TabIndex = 17;
             picBtnLogin.TabStop = false;
             picBtnLogin.Click += picBtnLogin_Click;
@@ -105,6 +106,7 @@
             picLogo.Location = new Point(49, 15);
             picLogo.Name = "picLogo";
             picLogo.Size = new Size(83, 20);
+            picLogo.SizeMode = PictureBoxSizeMode.StretchImage;
             picLogo.TabIndex = 15;
             picLogo.TabStop = false;
             // 
@@ -115,6 +117,7 @@
             picNo0.Location = new Point(556, 284);
             picNo0.Name = "picNo0";
             picNo0.Size = new Size(60, 60);
+            picNo0.SizeMode = PictureBoxSizeMode.StretchImage;
             picNo0.TabIndex = 27;
             picNo0.TabStop = false;
             picNo0.Click += picNo0_Click;
@@ -126,6 +129,7 @@
             picNo1.Location = new Point(486, 74);
             picNo1.Name = "picNo1";
             picNo1.Size = new Size(60, 60);
+            picNo1.SizeMode = PictureBoxSizeMode.StretchImage;
             picNo1.TabIndex = 28;
             picNo1.TabStop = false;
             picNo1.Click += picNo1_Click;
@@ -137,6 +141,7 @@
             picNo2.Location = new Point(556, 74);
             picNo2.Name = "picNo2";
             picNo2.Size = new Size(60, 60);
+            picNo2.SizeMode = PictureBoxSizeMode.StretchImage;
             picNo2.TabIndex = 29;
             picNo2.TabStop = false;
             picNo2.Click += picNo2_Click;
@@ -148,6 +153,7 @@
             picNo3.Location = new Point(626, 74);
             picNo3.Name = "picNo3";
             picNo3.Size = new Size(60, 60);
+            picNo3.SizeMode = PictureBoxSizeMode.StretchImage;
             picNo3.TabIndex = 30;
             picNo3.TabStop = false;
             picNo3.Click += picNo3_Click;
@@ -159,6 +165,7 @@
             picNo4.Location = new Point(486, 144);
             picNo4.Name = "picNo4";
             picNo4.Size = new Size(60, 60);
+            picNo4.SizeMode = PictureBoxSizeMode.StretchImage;
             picNo4.TabIndex = 31;
             picNo4.TabStop = false;
             picNo4.Click += picNo4_Click;
@@ -170,6 +177,7 @@
             picNo5.Location = new Point(556, 144);
             picNo5.Name = "picNo5";
             picNo5.Size = new Size(60, 60);
+            picNo5.SizeMode = PictureBoxSizeMode.StretchImage;
             picNo5.TabIndex = 32;
             picNo5.TabStop = false;
             picNo5.Click += picNo5_Click;
@@ -181,6 +189,7 @@
             picNo6.Location = new Point(626, 144);
             picNo6.Name = "picNo6";
             picNo6.Size = new Size(60, 60);
+            picNo6.SizeMode = PictureBoxSizeMode.StretchImage;
             picNo6.TabIndex = 33;
             picNo6.TabStop = false;
             picNo6.Click += picNo6_Click;
@@ -192,6 +201,7 @@
             picNo7.Location = new Point(486, 214);
             picNo7.Name = "picNo7";
             picNo7.Size = new Size(60, 60);
+            picNo7.SizeMode = PictureBoxSizeMode.StretchImage;
             picNo7.TabIndex = 34;
             picNo7.TabStop = false;
             picNo7.Click += picNo7_Click;
@@ -203,6 +213,7 @@
             picNo8.Location = new Point(556, 214);
             picNo8.Name = "picNo8";
             picNo8.Size = new Size(60, 60);
+            picNo8.SizeMode = PictureBoxSizeMode.StretchImage;
             picNo8.TabIndex = 35;
             picNo8.TabStop = false;
             picNo8.Click += picNo8_Click;
@@ -214,6 +225,7 @@
             picNo9.Location = new Point(626, 214);
             picNo9.Name = "picNo9";
             picNo9.Size = new Size(60, 60);
+            picNo9.SizeMode = PictureBoxSizeMode.StretchImage;
             picNo9.TabIndex = 36;
             picNo9.TabStop = false;
             picNo9.Click += picNo9_Click;
@@ -225,6 +237,7 @@
             picBack.Location = new Point(486, 284);
             picBack.Name = "picBack";
             picBack.Size = new Size(60, 60);
+            picBack.SizeMode = PictureBoxSizeMode.StretchImage;
             picBack.TabIndex = 37;
             picBack.TabStop = false;
             picBack.Click += picBack_Click;
@@ -236,6 +249,7 @@
             picClear.Location = new Point(626, 284);
             picClear.Name = "picClear";
             picClear.Size = new Size(60, 60);
+            picClear.SizeMode = PictureBoxSizeMode.StretchImage;
             picClear.TabIndex = 38;
             picClear.TabStop = false;
             picClear.Click += picClear_Click;
@@ -276,7 +290,8 @@
             // 
             // FormLogin
             // 
-            AutoScaleMode = AutoScaleMode.None;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
             ClientSize = new Size(701, 364);
             ControlBox = false;

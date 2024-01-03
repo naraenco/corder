@@ -6,11 +6,14 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
+    <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
     <Platforms>AnyCPU;x86</Platforms>
     <AssemblyName>corderagent</AssemblyName>
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
     <IsPublishable>True</IsPublishable>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>

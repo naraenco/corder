@@ -20,10 +20,10 @@ namespace agentcs
 
             picLogo.Location = new Point(49, 15);
 
-            textID.AutoSize = false;
-            textID.Height = 18;
-            textPW.AutoSize = false;
-            textPW.Height = 18;
+            //textID.AutoSize = false;
+            //textID.Height = 18;
+            //textPW.AutoSize = false;
+            //textPW.Height = 18;
 
             textID.Text = uid;
             //textPW.Text = "3694"; password
