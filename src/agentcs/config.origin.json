@@ -16,6 +16,8 @@
   "print_margin_order_bottom": 5,
   "timer_status_query": 30,
   "timer_connect_retry": 10,
+  "popup_x" : 107,
+  "popup_y" : 70,
   "update_url": "bizorder.co.kr",
   "server_address": "127.0.0.1",
   "server_port": "19000",

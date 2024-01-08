@@ -171,7 +171,7 @@ namespace agentcs
                     qtys = qtys + this.qtyList[i] + "\r\n";
                 }
 
-                lbTableName.Text = this.tableName + " 테이블";
+                lbTableName.Text = this.tableName;
                 lbDateTime.Text = this.datetime;
                 lbMenu.Text = menus;
                 lbQty.Text = qtys;

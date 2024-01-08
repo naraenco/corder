@@ -100,9 +100,9 @@
             label6.Font = new Font("맑은 고딕", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
             label6.Location = new Point(35, 126);
             label6.Name = "label6";
-            label6.Size = new Size(71, 19);
+            label6.Size = new Size(70, 19);
             label6.TabIndex = 24;
-            label6.Text = "메  뉴  명";
+            label6.Text = "주문 내용";
             // 
             // lbMenu
             // 

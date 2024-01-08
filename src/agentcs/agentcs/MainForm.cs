@@ -74,6 +74,8 @@ namespace agentcs
         private int print_margin_pin_bottom = 5;
         private int print_margin_order_top = 3;
         private int print_margin_order_bottom = 5;
+        private int popup_x = 0;
+        private int popup_y = 0;
 
         // config from user
         private string business_number = String.Empty;
@@ -226,6 +228,9 @@ namespace agentcs
             print_margin_pin_bottom = config.GetInt("print_margin_pin_bottom");
             print_margin_order_top = config.GetInt("print_margin_order_top");
             print_margin_order_bottom = config.GetInt("print_margin_order_bottom");
+            popup_x = config.GetInt("popup_x");
+            popup_y = config.GetInt("popup_y");
+
 
             string log_level = config.GetString("log_level");
             log_level = log_level.ToLower();
@@ -317,17 +322,23 @@ namespace agentcs
             this.formOrder = new()
             {
                 mainForm = this,
-                Location = parentPoint,
-                Top = Top + 54,
+                //Location = parentPoint,
+                //Top = Top + 54,
+                //Top = parentPoint.Y + 54,
+                //Left = Left + 0,
+                Top = popup_y,
+                Left = popup_x,
                 TopLevel = true
             };
 
             this.formPager = new()
             {
                 mainForm = this,
-                Location = parentPoint,
-                Top = Top + 54,
-                Left = Left + 430,
+                //Location = parentPoint,
+                //Top = parentPoint.Y + 54,
+                //Left = Left + 430,
+                Top = popup_y,
+                Left = popup_x + 430,
                 TopLevel = true
             };
 

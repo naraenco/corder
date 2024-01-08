@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace agentcs
@@ -19,6 +20,12 @@ namespace agentcs
             this.Paint += FormLogin_Paint;
 
             picLogo.Location = new Point(49, 15);
+
+            picBG.Location = new Point(0, 0);
+            picBG.Size = new Size(701, 363);
+
+            picAD.Location = new Point(0, 52);
+            picAD.Size = new Size(471, 311);
 
             //textID.AutoSize = false;
             //textID.Height = 18;
