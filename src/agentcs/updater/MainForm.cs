@@ -27,7 +27,7 @@ namespace COrderUpdater
             if (config.Load() == false)
                 return;
 
-            update_url = "http://" + config.GetString("update_url") + "/agent/";
+            update_url = config.GetString("update_url");
             api_url = "http://" + config.GetString("server_address") + ":" + config.GetString("server_port") + "/agent-version";
             path = Directory.GetCurrentDirectory() + "\\" + APPNAME;
 

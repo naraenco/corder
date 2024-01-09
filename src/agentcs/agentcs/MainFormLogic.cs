@@ -187,6 +187,7 @@ namespace agentcs
 
 
             string url1 = api_url + "sync_tables.php?shop_no=" + shop_no;
+            Log.Debug(url1);
             try
             {
                 string? response = await CallApiAsync(url1);
@@ -209,6 +210,7 @@ namespace agentcs
             await client.SendAsync(message);
 
             string url2 = api_url + "sync_menus.php?shop_no=" + shop_no;
+            Log.Debug(url2);
             try
             {
                 string? response = await CallApiAsync(url2);

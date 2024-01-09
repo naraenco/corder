@@ -1,6 +1,8 @@
 ﻿using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using static System.Net.Mime.MediaTypeNames;
+using Serilog;
+using System.Text.Json.Nodes;
 
 namespace agentcs
 {
@@ -9,6 +11,7 @@ namespace agentcs
         private int currentInput = 0;
         public MainForm? mainForm;
         public string uid = String.Empty;
+        public string logo = String.Empty;
 
         public FormLogin()
         {
@@ -26,6 +29,11 @@ namespace agentcs
 
             picAD.Location = new Point(0, 52);
             picAD.Size = new Size(471, 311);
+
+            if (logo != String.Empty)
+            {
+                picLogo.Load(logo);
+            }
 
             //textID.AutoSize = false;
             //textID.Height = 18;

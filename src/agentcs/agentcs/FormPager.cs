@@ -3,6 +3,7 @@ using Serilog.Core;
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.Json.Nodes;
 using System.Windows.Forms;
 
 
@@ -65,10 +66,28 @@ namespace agentcs
             string datetime,
             string desc)
         {
+            string tmp_desc = String.Empty;
+            try
+            {
+                var json = JsonNode.Parse(desc);
+                if (json != null)
+                {
+                    foreach (var node in json.AsArray())
+                    {
+                        tmp_desc += node!.ToString() + "\n";
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                tmp_desc = desc;
+                Console.WriteLine(exception.ToString());
+            }
+
             PagerData pager = new();
             pager.tableName = tableName;
             pager.datetime = datetime;
-            pager.desc = desc;
+            pager.desc = tmp_desc;
             pagerList.Add(pager);
 
             lbTotalOrder.Text = pagerList.Count.ToString();
@@ -86,7 +105,6 @@ namespace agentcs
             this.tableName = pager.tableName;
             this.datetime = pager.datetime;
             this.lbMenu.Text = pager.desc;
-            //this.desc = pager.desc;
 
             pagerList.RemoveAt(0);
             lbTotalOrder.Text = pagerList.Count.ToString();

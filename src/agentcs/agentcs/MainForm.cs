@@ -216,7 +216,7 @@ namespace agentcs
 
             business_number = config.GetString("business_number");
             server_address = config.GetString("server_address");
-            api_url = server_address + "/api/";
+            api_url = "http://" + server_address + "/api/";
 
             path_status = config.GetString("path_status");
             path_order = config.GetString("path_order") + "Order_";
@@ -297,15 +297,24 @@ namespace agentcs
         private void MainForm_Load(object sender, EventArgs e)
         {
             Log.Debug("MainForm_Load");
-            // ToDo: 기능 중단 
+            
             this.Location = new Point(256, 17);
             Point parentPoint = this.Location;
+
+            //string logoName = "logo_corder.png";
+            string logoName = String.Empty;
+            if (server_address == "bizorder.co.kr")
+            {
+                logoName = "logo_bizorder.png";
+                picLogo.Load(logoName);
+            }
 
             this.formLogin = new()
             {
                 Location = parentPoint,
                 mainForm = this,
                 Owner = this,
+                logo = logoName,
                 TopLevel = true
             };
             formLogin.uid = business_number;

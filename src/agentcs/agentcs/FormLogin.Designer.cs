@@ -294,7 +294,7 @@
             // picLogo
             // 
             picLogo.Image = (Image)resources.GetObject("picLogo.Image");
-            picLogo.Location = new Point(49, 15);
+            picLogo.Location = new Point(49, 14);
             picLogo.Name = "picLogo";
             picLogo.Size = new Size(83, 20);
             picLogo.SizeMode = PictureBoxSizeMode.StretchImage;

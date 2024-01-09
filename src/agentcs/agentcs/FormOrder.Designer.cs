@@ -208,7 +208,7 @@
             // label1
             // 
             label1.Font = new Font("맑은 고딕", 10F, FontStyle.Regular, GraphicsUnit.Pixel);
-            label1.Location = new Point(324, 11);
+            label1.Location = new Point(321, 11);
             label1.Name = "label1";
             label1.Size = new Size(59, 12);
             label1.TabIndex = 33;

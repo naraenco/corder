@@ -62,7 +62,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(SolutionDir)agentcs\order.mp3&quot; &quot;$(TargetDir)order.mp3&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)config.origin.json&quot; &quot;$(TargetDir)\config.json&quot;&#xD;&#xA;" />
+    <Exec Command="copy /Y &quot;$(SolutionDir)agentcs\order.mp3&quot; &quot;$(TargetDir)order.mp3&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)logo_corder.png&quot; &quot;$(TargetDir)logo_corder.png&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)logo_bizorder.png&quot; &quot;$(TargetDir)logo_bizorder.png&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)config.origin.json&quot; &quot;$(TargetDir)\config.json&quot;&#xD;&#xA;" />
   </Target>
 
 </Project>

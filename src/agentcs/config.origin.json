@@ -18,7 +18,7 @@
   "timer_connect_retry": 10,
   "popup_x" : 107,
   "popup_y" : 70,
-  "update_url": "bizorder.co.kr",
+  "update_url": "http://bizorder.co.kr/agent/",
   "server_address": "127.0.0.1",
   "server_port": "19000",
   "business_number": "1230012345",
