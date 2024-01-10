@@ -24,11 +24,11 @@ namespace agentcs
 
             picLogo.Location = new Point(49, 15);
 
-            picBG.Location = new Point(0, 0);
-            picBG.Size = new Size(701, 363);
+            //picBG.Location = new Point(0, 0);
+            //picBG.Size = new Size(701, 363);
 
-            picAD.Location = new Point(0, 52);
-            picAD.Size = new Size(471, 311);
+            //picAD.Location = new Point(0, 52);
+            //picAD.Size = new Size(471, 311);
 
             if (logo != String.Empty)
             {
@@ -51,17 +51,17 @@ namespace agentcs
 
         private void FormLogin_Paint(object? sender, PaintEventArgs e)
         {
-            System.Drawing.Graphics formGraphics;
-            formGraphics = this.CreateGraphics();
+            //System.Drawing.Graphics formGraphics;
+            //formGraphics = this.CreateGraphics();
 
-            System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(Color.FromArgb(255, 239, 237, 238));
-            formGraphics.FillRectangle(myBrush, new Rectangle(0, 44, 701, 9));
+            //System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(Color.FromArgb(255, 239, 237, 238));
+            //formGraphics.FillRectangle(myBrush, new Rectangle(0, 44, 701, 9));
 
-            myBrush = new System.Drawing.SolidBrush(Color.FromArgb(255, 251, 244, 235));
-            formGraphics.FillRectangle(myBrush, new Rectangle(470, 53, 231, 311));
+            //myBrush = new System.Drawing.SolidBrush(Color.FromArgb(255, 251, 244, 235));
+            //formGraphics.FillRectangle(myBrush, new Rectangle(470, 53, 231, 311));
 
-            myBrush.Dispose();
-            formGraphics.Dispose();
+            //myBrush.Dispose();
+            //formGraphics.Dispose();
         }
 
         private void NumClick(string value)

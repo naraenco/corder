@@ -76,6 +76,7 @@
             picBG.Margin = new Padding(0);
             picBG.Name = "picBG";
             picBG.Size = new Size(701, 363);
+            picBG.SizeMode = PictureBoxSizeMode.StretchImage;
             picBG.TabIndex = 42;
             picBG.TabStop = false;
             // 
@@ -93,6 +94,7 @@
             // 
             // label1
             // 
+            label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
             label1.Font = new Font("맑은 고딕", 9F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = Color.White;
