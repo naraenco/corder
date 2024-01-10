@@ -6,8 +6,8 @@ namespace COrderUpdater
     public partial class MainForm : Form
     {
         readonly static string APPNAME = "corderagent.exe";
-        readonly static string FULLPACK = "fullpack.exe";
         public static string update_url = String.Empty;
+        public static string update_file = String.Empty;
         public static string api_url = String.Empty;
 
         public string path = String.Empty;
@@ -27,8 +27,7 @@ namespace COrderUpdater
             if (config.Load() == false)
                 return;
 
-            update_url = config.GetString("update_url");
-            api_url = "http://" + config.GetString("server_address") + ":" + config.GetString("server_port") + "/agent-version";
+            api_url = "http://" + config.GetString("server_address") + "/api/agent_version.php";
             path = Directory.GetCurrentDirectory() + "\\" + APPNAME;
 
             CheckVersion();
@@ -37,6 +36,7 @@ namespace COrderUpdater
         public async void CheckVersion()
         {
             string? response = await CallApiAsync(api_url);
+
             if (response == null)
             {
                 lbMessage.Text = "서버가 응답하지 않습니다.";
@@ -52,6 +52,13 @@ namespace COrderUpdater
                 return;
             }
             current_version = node["version"]!.ToString();
+            update_url = node["file_path"]!.ToString();
+            if (!update_url.EndsWith('/'))
+            {
+                update_url = update_url + "/";
+            }
+            update_file = node["file_name"]!.ToString();
+
             lbCurrentVersion.Text = current_version;
             lbFileVersion.Text = "";
             bool bUpdate = false;

@@ -37,7 +37,7 @@ namespace COrderUpdater
                     processes[i].Kill();
                 }
             }
-            await DownloadAgent(FULLPACK);
+            await DownloadAgent(update_file);
             Close();
         }
 
@@ -49,8 +49,6 @@ namespace COrderUpdater
                 {
                     var result = await httpClient.GetAsync(update_url + filename);
                     result.EnsureSuccessStatusCode();
-
-                    //MessageBox.Show(result.ToString());
 
                     using (var stream = await result.Content.ReadAsStreamAsync())
                     {
