@@ -1,4 +1,6 @@
 using System.Text;
+using Serilog;
+using Serilog.Core;
 
 
 namespace agentcs
@@ -273,7 +275,7 @@ namespace agentcs
             }
             catch (Exception ex)
             {
-                Console.WriteLine("프린터와 통신 중 오류 발생: " + ex.Message);
+                Log.Error("프린터와 통신 중 오류 발생: " + ex.Message);
             }
             finally
             {
@@ -326,7 +328,7 @@ namespace agentcs
             }
             catch (Exception ex)
             {
-                Console.WriteLine("프린터와 통신 중 오류 발생: " + ex.Message);
+                Log.Error("프린터와 통신 중 오류 발생: " + ex.Message);
             }
             finally
             {
