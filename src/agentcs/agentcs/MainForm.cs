@@ -3,6 +3,7 @@ using Serilog.Configuration;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Windows.Forms;
 
 namespace agentcs
@@ -56,14 +57,18 @@ namespace agentcs
 
         // config from server
         private string shop_no = String.Empty;
-        private string printer_port = "COM6";
+        private string printer_port = "COM0";
         private int printer_speed = 9600;
         private bool otp_print = true;
         private bool order_auto_popup = true;
         private bool order_print = true;
         private bool order_sound = true;
+        private bool pager_auto_popup = true;
+        private bool pager_sound = true;
 
         // config from file
+        private string business_number = String.Empty;
+        private string pos_bizno = String.Empty;
         private string auth_key = "C.ORDER";
         private string pos_number = String.Empty;
         private string path_status = String.Empty;
@@ -78,7 +83,7 @@ namespace agentcs
         private int popup_y = 0;
 
         // config from user
-        private string business_number = String.Empty;
+        private string login_id = String.Empty;
         private string login_pass = String.Empty;
 
 
@@ -214,7 +219,6 @@ namespace agentcs
             if (config.Load() == false)
                 return;
 
-            business_number = config.GetString("business_number");
             server_address = config.GetString("server_address");
             api_url = "http://" + server_address + "/api/";
 
@@ -243,29 +247,23 @@ namespace agentcs
                 .WriteTo.File("log/log_.txt", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)
             .CreateLogger();
 
-            themalPrint.setConstant(printer_port,
-                printer_speed,
-                print_margin_pin_top,
-                print_margin_pin_bottom,
-                print_margin_order_top,
-                print_margin_order_bottom);
+            JsonWrapper jsonBusiness = new();
+            if (jsonBusiness.Load("security.json", codepage: 51949) == true)
+            {
+                jsonBusiness.SetOptions(false);
+                jsonBusiness.Parse();
+                business_number = jsonBusiness.GetNode("business_number").AsValue().ToString();
+                Log.Information("business_number : " + pos_bizno);
+            }
 
-            // Temporary Process;
-            //JsonWrapper jsonScdTable = new();
-            //if (jsonScdTable.Load(config.GetString("path_scdtable"), codepage: 51949) == true)
-            //{
-            //    jsonScdTable.SetOptions(false);
-            //    jsonScdTable.Parse();
-            //}
-
-            //var data = jsonScdTable.GetNode("TABLE").AsArray();
-            //dicScdTable.Clear();
-            //foreach (var node in data)
-            //{
-            //    string table_nm = node!["TABLE_NM"]!.ToString();
-            //    string table_cd = node!["TABLE_CD"]!.ToString();
-            //    dicScdTable[table_nm] = table_cd;
-            //}
+            JsonWrapper jsonMenu = new();
+            if (jsonMenu.Load(config.GetString("path_menu"), codepage: 51949) == true)
+            {
+                jsonMenu.SetOptions(false);
+                jsonMenu.Parse();
+                pos_bizno = jsonMenu.GetNode("BIZNO").AsValue().ToString();
+                Log.Information("BIZNO : " + pos_bizno);
+            }
         }
 
         public MainForm(string[] args)
@@ -331,10 +329,6 @@ namespace agentcs
             this.formOrder = new()
             {
                 mainForm = this,
-                //Location = parentPoint,
-                //Top = Top + 54,
-                //Top = parentPoint.Y + 54,
-                //Left = Left + 0,
                 Top = popup_y,
                 Left = popup_x,
                 TopLevel = true
@@ -343,9 +337,6 @@ namespace agentcs
             this.formPager = new()
             {
                 mainForm = this,
-                //Location = parentPoint,
-                //Top = parentPoint.Y + 54,
-                //Left = Left + 430,
                 Top = popup_y,
                 Left = popup_x + 430,
                 TopLevel = true

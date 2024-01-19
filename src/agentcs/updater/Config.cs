@@ -5,6 +5,7 @@ namespace COrderUpdater
     public sealed class Config
     {
         private JsonNode? root = null;
+        private String filename = "config.json";
 
         private Config()
         {
@@ -15,11 +16,11 @@ namespace COrderUpdater
 
         public bool Load()
         {
-            if (!File.Exists("config.json")) return false;
+            if (!File.Exists(filename)) return false;
 
             try
             {
-                string json = File.ReadAllText("config.json");
+                string json = File.ReadAllText(filename);
                 JsonNode document = JsonNode.Parse(json)!;
                 root = document.Root;
             }

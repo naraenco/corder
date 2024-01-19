@@ -1,3 +1,4 @@
+using System.IO.Ports;
 using System.Text;
 using Serilog;
 using Serilog.Core;
@@ -142,7 +143,7 @@ namespace agentcs
     {
         private System.IO.Ports.SerialPort? serialPort = null;
 
-        private string portname = "COM6";
+        private string portname = "COM0";
         private int baudrate = 9600;
         private int margin_pin_top = 3;
         private int margin_pin_bottom = 5;
@@ -156,6 +157,7 @@ namespace agentcs
             int order_top, 
             int order_bottom)
         {
+            Log.Information("setConstant - PortName : {0}, BaudRate : {1}", port, rate.ToString());
             portname = port;
             baudrate = rate;
             margin_pin_top = pin_top;
@@ -219,6 +221,8 @@ namespace agentcs
             int pin_width = 2, 
             int pin_height = 2)
         {
+            Log.Information("PrintPin : " + pin);
+
             serialPort = new System.IO.Ports.SerialPort
             {
                 PortName = this.portname,

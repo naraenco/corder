@@ -11,6 +11,51 @@ namespace agentcs
 {
     partial class MainForm
     {
+        static int CountDigits(string input)
+        {
+            int count = 0;
+            foreach (char c in input)
+            {
+                if (Char.IsDigit(c))
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        static int CountLetters(string input)
+        {
+            int count = 0;
+            foreach (char c in input)
+            {
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '(' || c == ')')
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        static int CountHangul(string input)
+        {
+            int count = 0;
+            foreach (char c in input)
+            {
+                if (IsHangul(c))
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        static bool IsHangul(char c)
+        {
+            UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(c);
+            return uc == UnicodeCategory.OtherLetter || uc == UnicodeCategory.OtherPunctuation;
+        }
+
         public static async Task<string?> CallApiAsync(string url)
         {
             using HttpClient client = new();
@@ -46,7 +91,7 @@ namespace agentcs
                     Log.Information("StatusHandler : CONNECTED");
                     if (login_pass != String.Empty)
                     {
-                        LoginReq(business_number, login_pass, true);
+                        LoginReq(login_id, login_pass, true);
                     }
                     break;
 
@@ -242,13 +287,20 @@ namespace agentcs
             Log.Information("LoginReq()");
             if (autologin == false)
             {
-                business_number = uid;
+                login_id = uid;
                 login_pass = ComputeMD5(pwd);
+            }
+
+            if (uid != pos_bizno)
+            {
+                // ToDo : 테스트 할 때만 주석
+                MessageBox.Show(this, "로그인 실패 : POS에 설정 된 사업자 번호가 일치하지 않습니다.");
+                return;
             }
 
             try
             {
-                string message = "{\"msgtype\":\"login\",\"business_number\":\"" + business_number
+                string message = "{\"msgtype\":\"login\",\"business_number\":\"" + login_id
                     + "\",\"login_pass\":\"" + login_pass
                     + "\"}";
                 await client.SendAsync(message);
@@ -317,6 +369,11 @@ namespace agentcs
                 Log.Debug("shop_no: " + shop_no);
                 Log.Debug("config: " + confignode.ToString());
 
+                business_number = login_id;
+                JsonObject obj = new();
+                obj.Add("business_number", business_number);
+                JsonUtil.WriteFile("security.json", obj, indent: true, codepage: 51949);
+
                 Log.Information("LoginAns() - send pos data");
                 SendPosData();
                 SendTableStatus();
@@ -327,6 +384,14 @@ namespace agentcs
                 if (confignode["pos_number"] != null)
                 {
                     pos_number = confignode["pos_number"]!.ToString();
+                }
+                if (confignode["pager_sound"]!.ToString() == "N")
+                {
+                    pager_sound = false;
+                }
+                if (confignode["pager_auto_popup"]!.ToString() == "N")
+                {
+                    pager_auto_popup = false;
                 }
                 if (confignode["order_sound"]!.ToString() == "N")
                 {
@@ -352,6 +417,13 @@ namespace agentcs
                 {
                     printer_speed = Int32.Parse(confignode["printer_speed"]!.ToString());
                 }
+
+                themalPrint.setConstant(printer_port,
+                    printer_speed,
+                    print_margin_pin_top,
+                    print_margin_pin_bottom,
+                    print_margin_order_top,
+                    print_margin_order_bottom);
 
                 Log.Information("LoginAns() - config loaded successfully");
             }
@@ -404,7 +476,7 @@ namespace agentcs
                     orderText += "[테 이 블] " + tableName + "\n";
                     orderText += "[발행일시] " + dt.ToString() + "\n";
                     orderText += "==========================================\n";
-                    orderText += "  메뉴명                            수량\n";
+                    orderText += "  메뉴명                        수량\n";
                     orderText += "------------------------------------------\n";
 
                     foreach (var order in orderList.AsArray())
@@ -423,8 +495,19 @@ namespace agentcs
                         }
                         byte[] data = Encoding.Unicode.GetBytes(productName);
                         int count = data.Length;
-                        int pad = 38 - count;
-                        orderText += productName + qty.PadLeft(pad) + "\n";
+
+                        int digitCount = CountDigits(productName);
+                        int letterCount = CountLetters(productName);
+                        int hangulCount = CountHangul(productName);
+                        int pad = 30 - (digitCount + letterCount + hangulCount * 2);
+                        string space = string.Empty;
+                        for (int j = 0; j < pad; j++)
+                        {
+                            space += " ";
+                        }
+                        orderText += productName + space + qty + "\n";
+                        //int pad = 38 - count;
+                        //orderText += productName + qty.PadLeft(pad) + "\n";
                     }
                     orderText += "------------------------------------------\n\n";
 
@@ -486,7 +569,7 @@ namespace agentcs
                 string regdate = node["regdate"]!.ToString();
                 DateTime dt = DateTime.ParseExact(regdate, "yyyyMMddHHmmss", null);
 
-                //if (pager_auto_popup != false)
+                if (pager_auto_popup != false)
                 {
                     string tableName = GetTableNameByCode(tableNo);
 
@@ -498,14 +581,14 @@ namespace agentcs
                     this.formPager.Show();
                 }
 
-                //if (order_sound != false)
-                //{
-                //    WindowsMediaPlayer wmp = new()
-                //    {
-                //        URL = "order.mp3"
-                //    };
-                //    wmp.controls.play();
-                //}
+                if (pager_sound != false)
+                {
+                    WindowsMediaPlayer wmp = new()
+                    {
+                        URL = "pager.mp3"
+                    };
+                    wmp.controls.play();
+                }
 
             }
             catch (Exception ex)

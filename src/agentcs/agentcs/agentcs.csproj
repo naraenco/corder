@@ -10,7 +10,7 @@
     <ForceDesignerDpiUnaware>true</ForceDesignerDpiUnaware>
     <Platforms>AnyCPU;x86</Platforms>
     <AssemblyName>corderagent</AssemblyName>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
     <IsPublishable>True</IsPublishable>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -62,7 +62,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(SolutionDir)agentcs\order.mp3&quot; &quot;$(TargetDir)order.mp3&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)logo_corder.png&quot; &quot;$(TargetDir)logo_corder.png&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)logo_bizorder.png&quot; &quot;$(TargetDir)logo_bizorder.png&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)config.origin.json&quot; &quot;$(TargetDir)\config.json&quot;&#xD;&#xA;" />
+    <Exec Command="copy /Y &quot;$(SolutionDir)agentcs\order.mp3&quot; &quot;$(TargetDir)order.mp3&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)agentcs\pager.mp3&quot; &quot;$(TargetDir)pager.mp3&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)logo_corder.png&quot; &quot;$(TargetDir)logo_corder.png&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)logo_bizorder.png&quot; &quot;$(TargetDir)logo_bizorder.png&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)config.origin.json&quot; &quot;$(TargetDir)\config.json&quot;&#xD;&#xA;copy /Y &quot;$(SolutionDir)security.origin.json&quot; &quot;$(TargetDir)\security.json&quot;&#xD;&#xA;&#xD;&#xA;" />
   </Target>
 
 </Project>
