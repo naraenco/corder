@@ -17,13 +17,12 @@ C.Order : Order system using QR code
 ## Backend 
 
 ### API Server
-> * `Python 3.10.6`
+> * `Python 3.11`
 > * `FastAPI 0.95.2 `
 > * `MySQL 8.0.33`
 
-### Sync Server
-> * `Python 3.10.6`
-> * `Tornado 6.2`
+### Shop Server
+> * `Python 3.11`
 
 
 ## Frontend
