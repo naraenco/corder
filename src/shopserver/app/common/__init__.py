@@ -20,7 +20,8 @@ except IOError as e:
     print(e)
 
 rotation_log.create_date_rotating_file_handler(
-    log_name="wscorder",
+    log_system=config.get('run_system'),
+    log_name="shopserver",
     log_level=logging.DEBUG,
     console=True)
 logger = rotation_log.logging.getLogger()

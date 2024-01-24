@@ -7,11 +7,12 @@ from common import redis_pool, ws_manager
 from common.util.corder_exception import CorderException
 from common.util.response_entity import response_entity
 
+# router = APIRouter(redirect_slashes=False)
 router = APIRouter()
 lock = asyncio.Lock()
 
 
-@router.get("")
+@router.get("/")
 @router.get("", include_in_schema=False)
 async def pagerget():
     success = True

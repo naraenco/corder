@@ -7,20 +7,24 @@ class RedisUtil:
     def __init__(self):
         from common import config
         redisip = config.get('redis_ip')
-        self.expire_time = config.get('pin_expire_time')
+        self.expire_time = int(config.get('expire_time'))
         self.redis = redis.ConnectionPool(host=redisip,
                                           port=6379,
                                           db=0,
-                                          max_connections=4,
-                                          socket_connect_timeout=5,
-                                          socket_timeout=5)
+                                          max_connections=4)
+        self.expires: dict[str, int] = {}
 
-    def set(self, key, value, expire_time=60000):
+    def set(self, key, value, shop_no=None):
         try:
-            with redis.StrictRedis(connection_pool=self.redis) as conn:
+            with redis.Redis(connection_pool=self.redis) as conn:
                 conn.set(key, value)
-                conn.expire(key, expire_time)
-                # logging.getLogger().debug(f"redis.set - {key}: {value}")
+                if shop_no is None:
+                    conn.expire(key, self.expire_time)
+                else:
+                    param = self.expires.get(shop_no)
+                    conn.expire(key, param)
+                    # logging.getLogger().debug(f"redis.set - shop_no: {shop_no}, expire_time: {param}")
+                logging.getLogger().debug(f"redis.set - {key}: {value}")
         except Exception as e:
             logging.getLogger().error(e)
             raise Exception
@@ -28,10 +32,10 @@ class RedisUtil:
     def get(self, key):
         data = None
         try:
-            with redis.StrictRedis(connection_pool=self.redis) as conn:
+            with redis.Redis(connection_pool=self.redis) as conn:
                 if conn.exists(key) == 1:
                     data = bytes(conn.get(key)).decode('utf-8')
-                    ttl = conn.ttl(key)
+                    # ttl = conn.ttl(key)
                     # logging.getLogger().debug(f"redis.get - {key}: {data} ({ttl})")
         except Exception as e:
             logging.getLogger().error(e)
@@ -41,7 +45,7 @@ class RedisUtil:
     def remove(self, key):
         data = None
         try:
-            with redis.StrictRedis(connection_pool=self.redis) as conn:
+            with redis.Redis(connection_pool=self.redis) as conn:
                 if conn.exists(key) == 1:
                     conn.delete(key)
                     logging.getLogger().debug(f"redis.del - {key}")
@@ -52,25 +56,42 @@ class RedisUtil:
 
     def exists(self, key):
         try:
-            with redis.StrictRedis(connection_pool=self.redis) as conn:
+            with redis.Redis(connection_pool=self.redis) as conn:
                 return conn.exists(key)
+        except Exception as e:
+            logging.getLogger().error(e)
+            raise Exception
+
+    def publish(self, channel, message):
+        try:
+            with redis.Redis(connection_pool=self.redis) as conn:
+                conn.publish(channel, message)
+                logging.getLogger().debug(f"redis.publish - {channel}: {message}")
+        except Exception as e:
+            logging.getLogger().error(e)
+            raise Exception
+
+    def pubsub(self):
+        try:
+            with redis.Redis(connection_pool=self.redis) as conn:
+                return conn.pubsub()
         except Exception as e:
             logging.getLogger().error(e)
             raise Exception
 
     def validate_pin(self, key):
         try:
-            with redis.StrictRedis(connection_pool=self.redis) as conn:
+            with redis.Redis(connection_pool=self.redis) as conn:
                 if conn.exists(key) == 0:
-                    return "1003"
+                    return "1003"   # 존재하지 않는 PIN 번호 입니다
         except Exception as e:
             logging.getLogger().error(e)
-            return "1002"
+            return "1002"   # PIN 인증 과정에서 오류가 발생했습니다
         return "0000"
 
     def update_pin(self, key, value):
         try:
-            with redis.StrictRedis(connection_pool=self.redis) as conn:
+            with redis.Redis(connection_pool=self.redis) as conn:
                 data = bytes(conn.get(key)).decode('utf-8')
                 data = json.loads(data)
                 if data.get('table_cd') is None:
@@ -83,5 +104,5 @@ class RedisUtil:
                 conn.expire(key, ttl)
         except Exception as e:
             logging.getLogger().error(e)
-            return "1005", 0
+            return "1005", 0    # PIN 번호 업데이트에 실패하였습니다
         return "0000"

@@ -8,7 +8,7 @@ from common.util.response_entity import response_entity
 router = APIRouter()
 
 
-@router.get("")
+@router.get("/")
 @router.get("", include_in_schema=False)
 async def pagerget():
     success = True

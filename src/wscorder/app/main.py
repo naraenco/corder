@@ -14,23 +14,7 @@ origins = [
     "http://0.0.0.0:19000",
     # "http://127.0.0.1:5173",
 ]
-
-logger.info("--------------------------------------------------------------------------------")
-logger.info("API Server 시작")
-
 app = FastAPI()
-app.router.redirect_slashes = False
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-app.include_router(root_router.router, prefix='')
-app.include_router(order.router, prefix='/api/order')
-app.include_router(pager.router, prefix='/api/pager')
-
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -50,3 +34,21 @@ async def websocket_endpoint(websocket: WebSocket):
         logger.error(f"WebSocketDisconnect : {e}")
     except Exception as e:
         logger.error(f"Exception : {e}")
+
+
+logger.info("--------------------------------------------------------------------------------")
+logger.info("COrder WS-Server 시작")
+
+app.router.redirect_slashes = False
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.include_router(root_router.router, prefix='')
+app.include_router(order.router, prefix='/api/order')
+app.include_router(pager.router, prefix='/api/pager')
+
+

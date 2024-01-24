@@ -13,7 +13,7 @@ origins = [
 ]
 
 logger.info("--------------------------------------------------------------------------------")
-logger.info("API Server 시작")
+logger.info("COrder - API Server 시작")
 
 app = FastAPI()
 app.router.redirect_slashes = False

@@ -14,7 +14,7 @@ router = APIRouter()
 lock = asyncio.Lock()
 
 
-@router.get("")
+@router.get("/")
 @router.get("", include_in_schema=False)
 async def orderget():
     success = True

@@ -1,34 +1,21 @@
 import asyncio
 import os
 import sys
+
+import common
+
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from starlette.middleware.cors import CORSMiddleware
 from domain import root_router
 from common import ws_manager, logger
+import subscribe
 
 origins = [
-    "http://0.0.0.0:19000",
+    "http://0.0.0.0:19001",
 ]
-
-logger.info("--------------------------------------------------------------------------------")
-logger.info("API Server 시작")
-
 app = FastAPI()
-app.router.redirect_slashes = False
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-app.include_router(root_router.router, prefix='')
-
-pid = os.getpid()
-ppid = os.getppid()
-logger.info(f"pid : {pid}, ppid : {ppid}")
 
 
 @app.websocket("/ws")
@@ -49,3 +36,24 @@ async def websocket_endpoint(websocket: WebSocket):
         logger.error(f"WebSocketDisconnect : {e}")
     except Exception as e:
         logger.error(f"Exception : {e}")
+
+
+logger.info("--------------------------------------------------------------------------------")
+logger.info("COrder - Shop Server 시작")
+logger.info(f"pid : {os.getpid()}, ppid : {os.getppid()}")
+try:
+    app.router.redirect_slashes = False
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    app.include_router(root_router.router, prefix='')
+    subscribe.run()
+
+    common.redis_pool.publish("corder", "message1")
+
+except (KeyboardInterrupt, SystemExit):
+    sys.exit()
