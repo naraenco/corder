@@ -476,7 +476,7 @@ namespace agentcs
                     orderText += "[테 이 블] " + tableName + "\n";
                     orderText += "[발행일시] " + dt.ToString() + "\n";
                     orderText += "==========================================\n";
-                    orderText += "  메뉴명                        수량\n";
+                    orderText += "  메뉴명                    수량\n";
                     orderText += "------------------------------------------\n";
 
                     foreach (var order in orderList.AsArray())
