@@ -177,7 +177,7 @@ namespace agentcs
             {
                 string table_nm = node!["TABLE_NM"]!.ToString();
                 string table_cd = node!["TABLE_CD"]!.ToString();
-                dicScdTable[table_nm] = table_cd;
+                dicScdTable[table_cd] = table_nm;
             }
 
             JsonWrapper jsonUseTable = new();
@@ -696,21 +696,21 @@ namespace agentcs
 
         public string GetTableCodeByName(string tableName)
         {
-            string table_cd = dicScdTable[tableName];
+            string table_cd = String.Empty;
+            foreach (string key in dicScdTable.Keys)
+            {
+                if (dicScdTable[key] == tableName)
+                {
+                    table_cd = key;
+                    break;
+                }
+            }
             return table_cd;
         }
 
         public string GetTableNameByCode(string code)
         {
-            string table_nm = String.Empty;
-            foreach (string key in dicScdTable.Keys)
-            {
-                if (dicScdTable[key] == code)
-                {
-                    table_nm = key;
-                    break;
-                }
-            }
+            string table_nm= dicScdTable[code];
             return table_nm;
         }
 
